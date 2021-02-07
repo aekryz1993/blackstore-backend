@@ -7,7 +7,7 @@ export const loginRequest = (user, req, res) => {
         }
 
         if (req.isAuthenticated()) {
-            return res.redirect('/')
+            return res.send('Welcome to your account')
         }
     })
 }

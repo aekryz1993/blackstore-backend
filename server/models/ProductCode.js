@@ -1,7 +1,6 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 
 import sequelize from "../config/db.config";
-import ProductCategory from "./ProductCategory"
 
 class ProductCode extends Model {}
 
@@ -32,7 +31,5 @@ ProductCode.init({
     modelName: 'ProductCode',
     tableName: 'ProductCode',
 })
-
-ProductCode.belongsTo(ProductCategory);
 
 export default ProductCode

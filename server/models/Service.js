@@ -1,8 +1,6 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 
 import sequelize from "../config/db.config";
-import ProductCategory from "./ProductCategory"
-import ProductID from "./ProductID"
 
 class Service extends Model {}
 
@@ -15,6 +13,7 @@ Service.init({
     label: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
     },
     category: {
         type: DataTypes.ENUM,
@@ -25,8 +24,5 @@ Service.init({
     modelName: 'Service',
     tableName: 'Service',
 })
-
-Service.hasMany(ProductID)
-Service.hasMany(ProductCategory)
 
 export default Service

@@ -1,15 +1,4 @@
 import { Sequelize } from "sequelize";
-// function connectTODatabase(config = {}, db= {}) {
-
-//     const sequelize = new Sequelize(devEnv.database, devEnv.username, devEnv.password, {
-//         host: devEnv.host,
-//         dialect: 'postgres',
-//         logging: false,
-//     });
-
-
-
-// }
 
 const devEnv = {
     database: process.env.DB,

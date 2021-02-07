@@ -15,5 +15,10 @@ export const userNotExist = (info) => ({
 
 export const forbiddenAdminPremission = () => ({
     success: false,
-    message: 'This api is forbidden for not admin users',
+    message: 'This function is forbidden for not admin users',
+});
+
+export const forbiddenActivePremission = () => ({
+    success: false,
+    message: 'This function is forbidden for not active users',
 });

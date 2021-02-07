@@ -29,7 +29,7 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    return res.redirect('/auth');
+    return res.status(401).send('user does not authenticated');
 }
 
 export const localPassportStrategy = (passport) => {

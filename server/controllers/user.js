@@ -10,9 +10,11 @@ export const addUser = (req, res) => {
 
         const { username, email, phone } = user.dataValues
 
-        if (!isNewUser) res.status(409).json(fieldAlreadyExist(username, email, phone));
+        if (!isNewUser) {
+          return res.status(409).json(fieldAlreadyExist(username, email, phone));
+        }
 
-        res.status(201).json(successRegistration())
+        return res.status(201).json(successRegistration())
 
       } catch (err) {
         return res.json(serverErrorMessage());

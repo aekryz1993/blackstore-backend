@@ -23,12 +23,8 @@ const apiRouter = (app, passport) => {
 
     localPassportStrategy(passport);
 
-    app.get('/', (req, res) => {
-        res.send('hello in user session')
-    })
-
-    router.use('/', passport.authenticationMiddleware, userSessionRouter(router));
-    router.use('/auth', authRouter(passport, router));
+    router.use('/auth', authRouter(passport));
+    router.use('/userSession', passport.authenticationMiddleware, userSessionRouter());
 
     return router;
 }

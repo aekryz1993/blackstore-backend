@@ -1,6 +1,10 @@
+import express from 'express'
+
 import { addUser } from "../controllers/user";
 
-const usersRouter = (router) => {
+const router = express.Router();
+
+const usersRouter = () => {
 
   router.post('/add', addUser);
 

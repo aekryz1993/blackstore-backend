@@ -2,8 +2,9 @@ import http from 'http';
 
 import app from './app';
 import { hostServer, baseUrl } from './config/server.config';
-import sequelize from "./config/db.config";
 import { createAdmin } from './db/seed';
+import { initializeModels } from './models/associations';
+import sequelize from './config/db.config'
 
 const config = {
   host: hostServer(app)['host'],
@@ -46,7 +47,7 @@ const listen = (port, host) => {
     const result = await listen(config.port, config.host)
     console.log('Connection has been established successfully.');
     console.log(result)
-    await sequelize.sync();
+    await sequelize.sync()
     createAdmin()
   } catch (err) {
     console.log(err)

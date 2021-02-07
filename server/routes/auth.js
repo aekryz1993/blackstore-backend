@@ -1,6 +1,10 @@
+import express from 'express'
+
 import { signIn } from '../controllers/auth';
 
-const authRouter = (passport, router) => {
+const router = express.Router();
+
+const authRouter = (passport) => {
 
   router.get('/', (req, res) => {
     res.send('LOG IN --------------- SIGN UP');

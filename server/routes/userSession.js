@@ -1,13 +1,19 @@
-import { checkAdminPermission } from '../controllers/middleware/user';
+import express from 'express'
+
+import { checkActivePermission, checkAdminPermission } from '../controllers/middleware/user';
+import servicesRouter from './services';
 import usersRouter from './users'
 
-const userSessionRouter = (router) => {
+const router = express.Router();
+
+const userSessionRouter = () => {
 
   router.get('/', (req, res) => {
-    res.send('LOG IN --------------- SIGN UP');
+    res.send('User Session');
   });
 
-  router.use('/users', checkAdminPermission, usersRouter(router));
+  router.use('/users', checkAdminPermission, usersRouter());
+  router.use('/services', checkActivePermission, servicesRouter());
 
   return router;
 

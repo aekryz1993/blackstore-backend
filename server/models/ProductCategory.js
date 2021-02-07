@@ -1,8 +1,6 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 
 import sequelize from "../config/db.config";
-import ProductCode from "./ProductCode"
-import Service from "./Service"
 
 class ProductCategory extends Model {}
 
@@ -21,9 +19,5 @@ ProductCategory.init({
     modelName: 'ProductCategory',
     tableName: 'ProductCategory',
 })
-
-
-ProductCategory.hasMany(ProductCode)
-ProductCategory.belongsTo(Service)
 
 export default ProductCategory

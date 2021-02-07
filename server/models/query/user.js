@@ -1,6 +1,6 @@
 import {Op} from 'sequelize'
 
-import User from '../User'
+import models from '../associations'
 
 export const createUser = (body) => {
     const {
@@ -11,7 +11,7 @@ export const createUser = (body) => {
 
     return new Promise(async (resolve, reject) => {
         try {
-            const [user, isNewUser] = await User.findOrCreate({
+            const [user, isNewUser] = await models.User.findOrCreate({
                 where: {
                     [Op.or]: [
                         { username: username },
@@ -32,7 +32,7 @@ export const createUser = (body) => {
 export const findUser = (userIdentifier) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({
+            const user = await models.User.findOne({
                 where: {
                     [Op.or]: [
                         { username: userIdentifier },
@@ -51,7 +51,7 @@ export const findUser = (userIdentifier) => {
 export const findUserById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findByPk(id)
+            const user = await models.User.findByPk(id)
             resolve(user)
         } catch (err) {
             reject(err)

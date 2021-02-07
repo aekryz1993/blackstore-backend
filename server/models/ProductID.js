@@ -1,7 +1,6 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 
 import sequelize from "../config/db.config";
-import Service from "./Service"
 
 class ProductID extends Model {}
 
@@ -34,7 +33,5 @@ ProductID.init({
     modelName: 'ProductID',
     tableName: 'ProductID',
 })
-
-ProductID.belongsTo(Service);
 
 export default ProductID
