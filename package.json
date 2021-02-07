@@ -1,0 +1,56 @@
+{
+  "name": "blackbock-services",
+  "version": "1.0.0",
+  "description": "Backend Application for Holesale Digital Services",
+  "scripts": {
+    "start": "webpack --config ./tools/webpack.dev.js --watch",
+    "build": "webpack --config ./tools/webpack.prod.js && node ./dist/main",
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aekryz1993/blackBock-services.git"
+  },
+  "author": "Riazi Abdelkader",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aekryz1993/blackBock-services/issues"
+  },
+  "homepage": "https://github.com/aekryz1993/blackBock-services#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "babel-jest": "^26.6.3",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "dotenv-webpack": "^6.0.0",
+    "jest": "^26.6.3",
+    "nodemon-webpack-plugin": "^4.4.4",
+    "supertest": "^6.1.3",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.4.0",
+    "webpack-merge": "^5.7.3",
+    "webpack-node-externals": "^2.5.2"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie-session": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "helmet": "^4.4.1",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.4.17",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.5.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node"
+  }
+}
