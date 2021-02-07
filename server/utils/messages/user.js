@@ -12,3 +12,8 @@ export const userNotExist = (info) => ({
     success: false,
     message: info ? info.message : 'Login failed',
 });
+
+export const forbiddenAdminPremission = () => ({
+    success: false,
+    message: 'This api is forbidden for not admin users',
+});

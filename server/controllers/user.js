@@ -1,11 +1,10 @@
 import { createUser } from '../models/query/user'
+import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist, successRegistration } from '../utils/messages/user'
 
 export const addUser = (req, res) => {
-
-  const { body } = req
-
     (async () => {
+      const body = req.body
       try {
         const { user, isNewUser } = await createUser(body)
 
@@ -16,7 +15,7 @@ export const addUser = (req, res) => {
         res.status(201).json(successRegistration())
 
       } catch (err) {
-        res.send(err)
+        return res.json(serverErrorMessage());
       }
     })()
 }

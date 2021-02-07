@@ -2,7 +2,7 @@ import { serverErrorMessage } from "../utils/messages";
 import { userNotExist } from "../utils/messages/user";
 import { loginRequest } from "./helper";
 
-export const signIn = (app, passport) => (req, res) => {
+export const signIn = (passport) => (req, res) => {
     passport.authenticate('local', (error, user, info) => {
         if (error) {
             return res.json(serverErrorMessage());
@@ -12,8 +12,6 @@ export const signIn = (app, passport) => (req, res) => {
         }
 
         loginRequest(user, req, res)
-
-        return
 
     })(req, res)
 }

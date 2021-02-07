@@ -1,12 +1,12 @@
 import { signIn } from '../controllers/auth';
 
-const authRouter = (app, passport, router) => {
+const authRouter = (passport, router) => {
 
   router.get('/', (req, res) => {
     res.send('LOG IN --------------- SIGN UP');
   });
 
-  router.post('/login', signIn(app, passport));
+  router.post('/login', signIn(passport));
 
   return router;
 
