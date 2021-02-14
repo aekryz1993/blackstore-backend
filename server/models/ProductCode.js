@@ -10,21 +10,15 @@ ProductCode.init({
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    isAvailable: {
+    code: {
         type: DataTypes.STRING,
-        defaultValue: true,
+        allowNull: false
     },
     priceCoin: {
         type: DataTypes.FLOAT,
     },
     pricePoint: {
         type: DataTypes.FLOAT,
-    },
-    picture: {
-        type: DataTypes.STRING,
-    },
-    code: {
-        type: DataTypes.STRING,
     },
 }, {
     sequelize,

@@ -11,12 +11,20 @@ ProductCategory.hasMany(ProductCode)
 ProductCategory.belongsTo(Service, {
     foreignKey: {
         allowNull: false
-    } 
+    }
 })
 
-ProductCode.belongsTo(ProductCategory);
+ProductCode.belongsTo(ProductCategory, {
+    foreignKey: {
+        allowNull: false
+    }
+});
 
-ProductID.belongsTo(Service);
+ProductID.belongsTo(Service, {
+    foreignKey: {
+        allowNull: false
+    }
+});
 
 export default {
     User,

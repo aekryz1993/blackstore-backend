@@ -5,6 +5,7 @@ import servicesRouter from './services';
 import usersRouter from './users'
 import productCategoryRouter from './productCategory'
 import productIDRouter from './productID'
+import productCodeRouter from './productCode'
 
 const router = express.Router();
 
@@ -15,9 +16,10 @@ const userSessionRouter = () => {
   });
 
   router.use('/users', checkAdminPermission, usersRouter());
-  router.use('/services', checkActivePermission, servicesRouter());
-  router.use('/productCategory', checkActivePermission, productCategoryRouter());
-  router.use('/productID', checkActivePermission, productIDRouter());
+  router.use('/services', checkAdminPermission, checkActivePermission, servicesRouter());
+  router.use('/productCategory', checkAdminPermission, checkActivePermission, productCategoryRouter());
+  router.use('/productID', checkAdminPermission, checkActivePermission, productIDRouter());
+  router.use('/productCode', checkAdminPermission, checkActivePermission, productCodeRouter());
 
   return router;
 

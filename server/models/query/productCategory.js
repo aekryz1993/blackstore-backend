@@ -23,3 +23,16 @@ export const findProductCategory = (label) => {
         }
     })
 }
+
+export const findProductCategoryById = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const productCategory = await models.ProductCategory.findByPk(id, {
+                include: models.ProductCode,
+            })
+            resolve(productCategory)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
