@@ -8,7 +8,11 @@ Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
 
 ProductCategory.hasMany(ProductCode)
-ProductCategory.belongsTo(Service)
+ProductCategory.belongsTo(Service, {
+    foreignKey: {
+        allowNull: false
+    } 
+})
 
 ProductCode.belongsTo(ProductCategory);
 

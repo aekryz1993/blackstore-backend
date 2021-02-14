@@ -4,6 +4,7 @@ import { checkActivePermission, checkAdminPermission } from '../controllers/midd
 import servicesRouter from './services';
 import usersRouter from './users'
 import productCategoryRouter from './productCategory'
+import productIDRouter from './productID'
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ const userSessionRouter = () => {
   router.use('/users', checkAdminPermission, usersRouter());
   router.use('/services', checkActivePermission, servicesRouter());
   router.use('/productCategory', checkActivePermission, productCategoryRouter());
+  router.use('/productID', checkActivePermission, productIDRouter());
 
   return router;
 

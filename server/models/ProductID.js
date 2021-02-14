@@ -10,9 +10,8 @@ ProductID.init({
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    category: {
+    label: {
         type: DataTypes.STRING,
-        unique: true,
         allowNull: false
     },
     isAvailable: {

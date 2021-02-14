@@ -34,7 +34,7 @@ export const findServiceById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const service = await models.Service.findByPk(id, {
-                include: models.ProductCategory
+                include: [models.ProductCategory, models.ProductID],
             })
             resolve(service)
         } catch (err) {

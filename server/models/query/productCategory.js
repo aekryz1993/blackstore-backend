@@ -3,10 +3,7 @@ import models from '../associations'
 export const createProductCategory = (body) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const productCategory = await models.ProductCategory.create({
-                label: body.label,
-                ServiceId: body.serviceId
-            })
+            const productCategory = await models.ProductCategory.create(body)
             resolve({ productCategory })
         } catch (err) {
             reject(err)
