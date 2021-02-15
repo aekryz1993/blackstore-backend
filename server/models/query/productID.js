@@ -23,3 +23,14 @@ export const findProductID = (label) => {
         }
     })
 }
+
+export const findProductIDById = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const productID = await models.ProductID.findByPk(id)
+            resolve(productID)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}

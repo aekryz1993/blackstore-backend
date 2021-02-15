@@ -18,7 +18,7 @@ const userSessionRouter = () => {
   router.use('/users', checkAdminPermission, usersRouter());
   router.use('/services', checkAdminPermission, checkActivePermission, servicesRouter());
   router.use('/productCategory', checkAdminPermission, checkActivePermission, productCategoryRouter());
-  router.use('/productID', checkAdminPermission, checkActivePermission, productIDRouter());
+  router.use('/productID', checkActivePermission, productIDRouter(checkAdminPermission));
   router.use('/productCode', checkAdminPermission, checkActivePermission, productCodeRouter());
 
   return router;

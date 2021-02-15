@@ -12,3 +12,8 @@ export const productCategoryNotExistMsg = (label) => ({
     success: false,
     message: `غير موجود ${label}`
 })
+
+export const requestSuccessfulySent = () => ({
+    success: true,
+    message: 'تم إرسال الطلب بنجاح'
+})

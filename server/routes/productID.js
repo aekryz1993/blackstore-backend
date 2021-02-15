@@ -1,12 +1,14 @@
 import express from 'express'
 
-import { addProductID } from "../controllers/productID";
+import { addProductID, sendRequestProductID } from "../controllers/productID";
 
 const router = express.Router();
 
-const productIDRouter = () => {
+const productIDRouter = (checkAdminPermission) => {
 
-  router.post('/add', addProductID);
+  router.post('/add', checkAdminPermission, addProductID);
+
+  router.post('/send', sendRequestProductID);
 
   return router;
 

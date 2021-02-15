@@ -1,8 +1,9 @@
-import { createProductID } from "../models/query/productID";
+import { createProductID, findProductIDById } from "../models/query/productID";
 import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
-import { productCategoryAlreadyExistMsg, productCategorySuccessRegistrationMsg } from '../utils/messages/productCategory'
+import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, productCategorySuccessRegistrationMsg, requestSuccessfulySent } from '../utils/messages/productCategory'
+import { createRequestProductID } from "../models/query/RequestProductID";
 
 export const addProductID = (req, res) => {
    (async () => {
@@ -21,6 +22,27 @@ export const addProductID = (req, res) => {
          const { productID } = await createProductID(body)
          const { label } = productID.dataValues
          return res.status(201).json(productCategorySuccessRegistrationMsg(label))
+
+      } catch (err) {
+         console.log(err)
+         return res.json(serverErrorMessage());
+      }
+   })()
+}
+
+export const sendRequestProductID = (req, res) => {
+   (async () => {
+      const body = req.body
+      try {
+         const productID = await findProductIDById(body.ProductIDId)
+
+         if (productID === null) {
+            return res.status(401).json(productCategoryNotExistMsg(body.productIdLabel))
+         }
+
+         await createRequestProductID(body)
+         
+         return res.status(201).json(requestSuccessfulySent())
 
       } catch (err) {
          console.log(err)

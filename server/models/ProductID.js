@@ -15,7 +15,7 @@ ProductID.init({
         allowNull: false
     },
     isAvailable: {
-        type: DataTypes.STRING,
+        type: DataTypes.BOOLEAN,
         defaultValue: true,
     },
     priceCoin: {

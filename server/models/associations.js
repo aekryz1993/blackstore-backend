@@ -3,6 +3,7 @@ import Service from './Service'
 import ProductCategory from './ProductCategory'
 import ProductID from './ProductID'
 import ProductCode from './ProductCode'
+import RequestProductID from './RequestProductID'
 
 Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
@@ -26,10 +27,18 @@ ProductID.belongsTo(Service, {
     }
 });
 
+ProductID.hasMany(RequestProductID)
+RequestProductID.belongsTo(ProductID, {
+    foreignKey: {
+        allowNull: false
+    }
+});
+
 export default {
     User,
     Service,
     ProductCategory,
     ProductCode,
     ProductID,
+    RequestProductID,
 }
