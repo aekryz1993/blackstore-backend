@@ -3,7 +3,7 @@ import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, productCategorySuccessRegistrationMsg, requestSuccessfulySent } from '../utils/messages/productCategory'
-import { createRequestProductID } from "../models/query/RequestProductID";
+import { createRequestProductID, findAllRequestProductID } from "../models/query/RequestProductID";
 
 export const addProductID = (req, res) => {
    (async () => {
@@ -41,7 +41,64 @@ export const sendRequestProductID = (req, res) => {
          }
 
          await createRequestProductID(body)
-         
+
+         return res.status(201).json(requestSuccessfulySent())
+
+      } catch (err) {
+         console.log(err)
+         return res.json(serverErrorMessage());
+      }
+   })()
+}
+
+export const fetchAllRequestsProductID = (req, res) => {
+   (async () => {
+      try {
+         const RequestsProductID = await findAllRequestProductID()
+
+         const returnRequests = () => new Promise((resolve, reject) => {
+            const requestsIDBody = []
+            RequestsProductID.map(async (requestID, idx) => {
+               try {
+                  const productID = await findProductIDById(requestID.dataValues.ProductIDId)
+                  const service = await findServiceById(productID.dataValues.ServiceId)
+                  const RequestBody = {
+                     ...requestID.dataValues,
+                     productIDLabel: productID.dataValues.label,
+                     // productIDPriceCoint: productID.dataValues.priceCoin,
+                     // productIDPricePoint: productID.dataValues.pricePoint,
+                     serviceLabel: service.dataValues.label,
+                  }
+                  requestsIDBody.push(RequestBody)
+                  if (idx + 1 === RequestsProductID.length) resolve(requestsIDBody)
+               } catch (err) {
+                  reject(err)
+               }
+            })
+         })
+
+         const requestsIDBody = await returnRequests()
+
+         return res.status(200).json(requestsIDBody)
+      } catch (err) {
+         console.log(err)
+         return res.json(serverErrorMessage());
+      }
+   })()
+}
+
+export const treatRequestProductID = (req, res) => {
+   (async () => {
+      const body = req.body
+      try {
+         const productID = await findProductIDById(body.ProductIDId)
+
+         if (productID === null) {
+            return res.status(401).json(productCategoryNotExistMsg(body.productIdLabel))
+         }
+
+         await createRequestProductID(body)
+
          return res.status(201).json(requestSuccessfulySent())
 
       } catch (err) {
