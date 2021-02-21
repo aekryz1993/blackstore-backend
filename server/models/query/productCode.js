@@ -23,3 +23,16 @@ export const findProductCode = (code) => {
         }
     })
 }
+
+export const findAllProductCodes = (quantity) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const productCodes = await models.ProductCode.findAll({
+                limit: quantity
+            })
+            resolve(productCodes)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}

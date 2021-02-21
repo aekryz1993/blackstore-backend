@@ -1,4 +1,4 @@
-import { createProductCode } from "../models/query/productCode";
+import { createProductCode, findAllProductCodes } from "../models/query/productCode";
 import { findServiceById } from "../models/query/service";
 import { findProductCategoryById } from "../models/query/productCategory";
 import { serverErrorMessage } from "../utils/messages";
@@ -30,6 +30,19 @@ export const addProductCode = (req, res) => {
          const { code } = productCode.dataValues
          return res.status(201).json(productCategorySuccessRegistrationMsg(code))
 
+      } catch (err) {
+         console.log(err)
+         return res.json(serverErrorMessage());
+      }
+   })()
+}
+
+export const getProductCodes = (req, res) => {
+   (async () => {
+      const body = req.body
+      try {
+         const productCodes = await findAllProductCodes(body.quantity)
+         res.status(200).json(productCodes)
       } catch (err) {
          console.log(err)
          return res.json(serverErrorMessage());
