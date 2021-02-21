@@ -17,3 +17,8 @@ export const requestSuccessfulySent = () => ({
     success: true,
     message: 'تم إرسال الطلب بنجاح'
 })
+
+export const requestSuccessfulyTreated = () => ({
+    success: true,
+    message: 'تم معالجة الطلب بنجاح'
+})

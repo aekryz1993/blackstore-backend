@@ -1,6 +1,11 @@
 import express from 'express'
 
-import { addProductID, fetchAllRequestsProductID, sendRequestProductID } from "../controllers/productID";
+import {
+  addProductID,
+  fetchAllRequestsProductID,
+  sendRequestProductID,
+  treatedRequestProductID
+} from "../controllers/productID";
 
 const router = express.Router();
 
@@ -10,7 +15,9 @@ const productIDRouter = (checkAdminPermission) => {
 
   router.post('/send', sendRequestProductID);
 
-  router.get('/requestsID', fetchAllRequestsProductID);
+  router.get('/requestsID', checkAdminPermission, fetchAllRequestsProductID);
+
+  router.put('/treatRequest', checkAdminPermission, treatedRequestProductID);
 
   return router;
 

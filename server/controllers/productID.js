@@ -2,8 +2,8 @@ import { createProductID, findProductIDById } from "../models/query/productID";
 import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
-import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, productCategorySuccessRegistrationMsg, requestSuccessfulySent } from '../utils/messages/productCategory'
-import { createRequestProductID, findAllRequestProductID } from "../models/query/RequestProductID";
+import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, productCategorySuccessRegistrationMsg, requestSuccessfulySent } from '../utils/messages/productCategory'
+import { createRequestProductID, findAllRequestProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
 
 export const addProductID = (req, res) => {
    (async () => {
@@ -58,27 +58,25 @@ export const fetchAllRequestsProductID = (req, res) => {
 
          const returnRequests = () => new Promise((resolve, reject) => {
             const requestsIDBody = []
-            RequestsProductID.map(async (requestID, idx) => {
+            const currentRequests = RequestsProductID.filter(requestID => !requestID.dataValues.isTreated)
+            
+            currentRequests.map(async (requestID, idx) => {
                try {
                   const productID = await findProductIDById(requestID.dataValues.ProductIDId)
                   const service = await findServiceById(productID.dataValues.ServiceId)
                   const RequestBody = {
                      ...requestID.dataValues,
                      productIDLabel: productID.dataValues.label,
-                     // productIDPriceCoint: productID.dataValues.priceCoin,
-                     // productIDPricePoint: productID.dataValues.pricePoint,
                      serviceLabel: service.dataValues.label,
                   }
                   requestsIDBody.push(RequestBody)
-                  if (idx + 1 === RequestsProductID.length) resolve(requestsIDBody)
+                  if (idx + 1 === currentRequests.length) resolve(requestsIDBody)
                } catch (err) {
                   reject(err)
                }
             })
          })
-
          const requestsIDBody = await returnRequests()
-
          return res.status(200).json(requestsIDBody)
       } catch (err) {
          console.log(err)
@@ -87,19 +85,13 @@ export const fetchAllRequestsProductID = (req, res) => {
    })()
 }
 
-export const treatRequestProductID = (req, res) => {
+export const treatedRequestProductID = (req, res) => {
    (async () => {
       const body = req.body
       try {
-         const productID = await findProductIDById(body.ProductIDId)
+         await updateIsTreatedRequestProductID(body.requestIDid)
 
-         if (productID === null) {
-            return res.status(401).json(productCategoryNotExistMsg(body.productIdLabel))
-         }
-
-         await createRequestProductID(body)
-
-         return res.status(201).json(requestSuccessfulySent())
+         return res.status(204).json(requestSuccessfulyTreated())
 
       } catch (err) {
          console.log(err)
