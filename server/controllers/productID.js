@@ -3,7 +3,7 @@ import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, productCategorySuccessRegistrationMsg, requestSuccessfulySent } from '../utils/messages/productCategory'
-import { createRequestProductID, findAllRequestProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
+import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
 
 export const addProductID = (req, res) => {
    (async () => {
@@ -54,13 +54,11 @@ export const sendRequestProductID = (req, res) => {
 export const fetchAllRequestsProductID = (req, res) => {
    (async () => {
       try {
-         const RequestsProductID = await findAllRequestProductID()
+         const RequestsProductID = await findRequestsProductID()
 
          const returnRequests = () => new Promise((resolve, reject) => {
-            const requestsIDBody = []
-            const currentRequests = RequestsProductID.filter(requestID => !requestID.dataValues.isTreated)
-            
-            currentRequests.map(async (requestID, idx) => {
+            const requestsIDBody = []            
+            RequestsProductID.map(async (requestID, idx) => {
                try {
                   const productID = await findProductIDById(requestID.dataValues.ProductIDId)
                   const service = await findServiceById(productID.dataValues.ServiceId)
@@ -70,7 +68,7 @@ export const fetchAllRequestsProductID = (req, res) => {
                      serviceLabel: service.dataValues.label,
                   }
                   requestsIDBody.push(RequestBody)
-                  if (idx + 1 === currentRequests.length) resolve(requestsIDBody)
+                  if (idx + 1 === RequestsProductID.length) resolve(requestsIDBody)
                } catch (err) {
                   reject(err)
                }
@@ -91,7 +89,7 @@ export const treatedRequestProductID = (req, res) => {
       try {
          await updateIsTreatedRequestProductID(body.requestIDid)
 
-         return res.status(204).json(requestSuccessfulyTreated())
+         return res.status(200).json(requestSuccessfulyTreated())
 
       } catch (err) {
          console.log(err)

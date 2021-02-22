@@ -22,6 +22,19 @@ export const findAllRequestProductID = () => {
     })
 }
 
+export const findRequestsProductID = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const RequestsProductID = await models.RequestProductID.findAll({
+                where: {isTreated: false}
+            })
+            resolve(RequestsProductID)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
 export const updateIsTreatedRequestProductID = (_id) => {
     return new Promise(async (resolve, reject) => {
         try {
