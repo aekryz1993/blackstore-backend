@@ -34,6 +34,9 @@ RequestProductID.belongsTo(ProductID, {
     }
 });
 
+User.hasMany(RequestProductID)
+User.hasMany(ProductCode)
+
 export default {
     User,
     Service,

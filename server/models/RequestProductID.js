@@ -14,9 +14,6 @@ RequestProductID.init({
       type: DataTypes.STRING,
       allowNull: false
    },
-   username: {
-      type: DataTypes.STRING,
-   },
    isTreated: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

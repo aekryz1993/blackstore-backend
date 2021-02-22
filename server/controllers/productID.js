@@ -4,6 +4,7 @@ import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, productCategorySuccessRegistrationMsg, requestSuccessfulySent } from '../utils/messages/productCategory'
 import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
+import { findUserById } from "../models/query/user";
 
 export const addProductID = (req, res) => {
    (async () => {
@@ -32,7 +33,7 @@ export const addProductID = (req, res) => {
 
 export const sendRequestProductID = (req, res) => {
    (async () => {
-      const body = req.body
+      const body = {...req.body, UserId: req.user.dataValues.id}
       try {
          const productID = await findProductIDById(body.ProductIDId)
 
@@ -54,25 +55,31 @@ export const sendRequestProductID = (req, res) => {
 export const fetchAllRequestsProductID = (req, res) => {
    (async () => {
       try {
-         const RequestsProductID = await findRequestsProductID()
-
+         const requestsProductID = await findRequestsProductID()
          const returnRequests = () => new Promise((resolve, reject) => {
-            const requestsIDBody = []            
-            RequestsProductID.map(async (requestID, idx) => {
-               try {
-                  const productID = await findProductIDById(requestID.dataValues.ProductIDId)
-                  const service = await findServiceById(productID.dataValues.ServiceId)
-                  const RequestBody = {
-                     ...requestID.dataValues,
-                     productIDLabel: productID.dataValues.label,
-                     serviceLabel: service.dataValues.label,
+            const requestsIDBody = []
+            if (requestsProductID.length !== 0) {
+               requestsProductID.map(async (requestID, idx) => {
+                  try {
+                     const productID = await findProductIDById(requestID.dataValues.ProductIDId)
+                     const user = await findUserById(requestID.dataValues.UserId)
+                     const service = await findServiceById(productID.dataValues.ServiceId)
+                     const RequestBody = {
+                        ...requestID.dataValues,
+                        productIDLabel: productID.dataValues.label,
+                        serviceLabel: service.dataValues.label,
+                        username: user.dataValues.username,
+                        requestDate: user.dataValues.createdAt,
+                     }
+                     requestsIDBody.push(RequestBody)
+                     if (idx + 1 === requestsProductID.length) resolve(requestsIDBody)
+                  } catch (err) {
+                     reject(err)
                   }
-                  requestsIDBody.push(RequestBody)
-                  if (idx + 1 === RequestsProductID.length) resolve(requestsIDBody)
-               } catch (err) {
-                  reject(err)
-               }
-            })
+               })
+            } else {
+               resolve(requestsIDBody)
+            }
          })
          const requestsIDBody = await returnRequests()
          return res.status(200).json(requestsIDBody)
