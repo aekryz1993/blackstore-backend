@@ -2,11 +2,11 @@ import { createProductID, findProductIDById } from "../models/query/productID";
 import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
-import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, productCategorySuccessRegistrationMsg, requestSuccessfulySent } from '../utils/messages/productCategory'
+import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, requestSuccessfulySent } from '../utils/messages/productCategory'
 import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
 import { findUserById } from "../models/query/user";
 
-export const addProductID = (req, res) => {
+export const addProductID = (req, res, next) => {
    (async () => {
       const body = req.body
       try {
@@ -21,8 +21,10 @@ export const addProductID = (req, res) => {
          }
 
          const { productID } = await createProductID(body)
-         const { label } = productID.dataValues
-         return res.status(201).json(productCategorySuccessRegistrationMsg(label))
+         req.body.associatedModelId = productID.dataValues.id
+         req.body.associatedModel = 'ProductIDId'
+         req.body.label = productID.dataValues.label
+         return next()
 
       } catch (err) {
          console.log(err)
@@ -33,7 +35,7 @@ export const addProductID = (req, res) => {
 
 export const sendRequestProductID = (req, res) => {
    (async () => {
-      const body = {...req.body, UserId: req.user.dataValues.id}
+      const body = { ...req.body, UserId: req.user.dataValues.id }
       try {
          const productID = await findProductIDById(body.ProductIDId)
 

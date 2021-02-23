@@ -2,9 +2,9 @@ import { createProductCategory } from "../models/query/productCategory";
 import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
-import { productCategoryAlreadyExistMsg, productCategorySuccessRegistrationMsg } from '../utils/messages/productCategory'
+import { productCategoryAlreadyExistMsg } from '../utils/messages/productCategory'
 
-export const addProductCategory = (req, res) => {
+export const addProductCategory = (req, res, next) => {
    (async () => {
       const body = req.body
       try {
@@ -19,8 +19,10 @@ export const addProductCategory = (req, res) => {
          }
 
          const { productCategory } = await createProductCategory(body)
-         const { label } = productCategory.dataValues
-         return res.status(201).json(productCategorySuccessRegistrationMsg(label))
+         req.body.associatedModelId = productCategory.dataValues.id
+         req.body.associatedModel = 'ProductCategoryId'
+         req.body.label = productCategory.dataValues.label
+         return next()
 
       } catch (err) {
          // console.log(err)

@@ -1,5 +1,7 @@
 import express from 'express'
 
+import { addPicture } from '../controllers/image';
+import upload from '../controllers/middleware/image';
 import {
   addProductID,
   fetchAllRequestsProductID,
@@ -11,7 +13,7 @@ const router = express.Router();
 
 const productIDRouter = (checkAdminPermission) => {
 
-  router.post('/add', checkAdminPermission, addProductID);
+  router.post('/add', checkAdminPermission, upload.single('picture'), addProductID, addPicture);
 
   router.post('/send', sendRequestProductID);
 

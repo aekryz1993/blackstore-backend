@@ -4,6 +4,7 @@ import ProductCategory from './ProductCategory'
 import ProductID from './ProductID'
 import ProductCode from './ProductCode'
 import RequestProductID from './RequestProductID'
+import Image from './Image'
 
 Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
@@ -37,6 +38,10 @@ RequestProductID.belongsTo(ProductID, {
 User.hasMany(RequestProductID)
 User.hasMany(ProductCode)
 
+Service.hasOne(Image)
+ProductCategory.hasOne(Image)
+ProductID.hasOne(Image)
+
 export default {
     User,
     Service,
@@ -44,4 +49,5 @@ export default {
     ProductCode,
     ProductID,
     RequestProductID,
+    Image,
 }

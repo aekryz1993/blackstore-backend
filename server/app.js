@@ -6,7 +6,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 
-import {SESSION_SECRET, SESSION_SECRET_VALUE} from './config/passport.config'
+import { SESSION_SECRET, SESSION_SECRET_VALUE } from './config/passport.config'
 import apiRouter from './routes';
 
 const app = express();

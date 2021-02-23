@@ -23,10 +23,7 @@ ProductID.init({
     },
     pricePoint: {
         type: DataTypes.FLOAT,
-    },
-    picture: {
-        type: DataTypes.STRING,
-    },
+    }
 }, {
     sequelize,
     modelName: 'ProductID',
