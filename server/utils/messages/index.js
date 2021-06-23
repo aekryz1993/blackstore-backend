@@ -1,4 +1,4 @@
-export const serverErrorMessage = () => ({
+export const serverErrorMessage = (err) => ({
     success: false,
-    message: 'Server Error',
+    message: err,
 });

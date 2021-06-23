@@ -27,8 +27,7 @@ export const addProductID = (req, res, next) => {
          return next()
 
       } catch (err) {
-         console.log(err)
-         return res.json(serverErrorMessage());
+         return res.json(serverErrorMessage(err.message));
       }
    })()
 }
@@ -48,8 +47,7 @@ export const sendRequestProductID = (req, res) => {
          return res.status(201).json(requestSuccessfulySent())
 
       } catch (err) {
-         console.log(err)
-         return res.json(serverErrorMessage());
+         return res.json(serverErrorMessage(err.message));
       }
    })()
 }
@@ -86,8 +84,7 @@ export const fetchAllRequestsProductID = (req, res) => {
          const requestsIDBody = await returnRequests()
          return res.status(200).json(requestsIDBody)
       } catch (err) {
-         console.log(err)
-         return res.json(serverErrorMessage());
+         return res.json(serverErrorMessage(err.message));
       }
    })()
 }
@@ -101,8 +98,7 @@ export const treatedRequestProductID = (req, res) => {
          return res.status(200).json(requestSuccessfulyTreated())
 
       } catch (err) {
-         console.log(err)
-         return res.json(serverErrorMessage());
+         return res.json(serverErrorMessage(err.message));
       }
    })()
 }

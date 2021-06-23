@@ -6,6 +6,7 @@ import usersRouter from './users'
 import productCategoryRouter from './productCategory'
 import productIDRouter from './productID'
 import productCodeRouter from './productCode'
+import { logout } from '../controllers/auth';
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ const userSessionRouter = () => {
   router.use('/productCategory', checkAdminPermission, checkActivePermission, productCategoryRouter());
   router.use('/productID', checkActivePermission, productIDRouter(checkAdminPermission));
   router.use('/productCode', checkAdminPermission, checkActivePermission, productCodeRouter());
+  router.get('/logout', logout);
 
   return router;
 

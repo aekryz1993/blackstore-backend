@@ -21,7 +21,7 @@ export const addService = (req, res, next) => {
 
       } catch (err) {
         console.log(err)
-        return res.json(serverErrorMessage());
+        return res.json(serverErrorMessage(err.message));
       }
     })()
 }

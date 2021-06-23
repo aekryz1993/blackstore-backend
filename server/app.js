@@ -3,7 +3,6 @@ import logger from 'morgan';
 import compression from 'compression';
 import helmet from 'helmet';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import passport from 'passport';
 
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from './config/passport.config'
@@ -18,8 +17,8 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(helmet())
 app.use(cors())
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
+app.use(express.json());
+app.use(express.urlencoded({
     extended: false
 }));
 app.set(SESSION_SECRET, SESSION_SECRET_VALUE)

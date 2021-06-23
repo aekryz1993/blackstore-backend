@@ -31,8 +31,7 @@ export const addProductCode = (req, res) => {
          return res.status(201).json(productCategorySuccessRegistrationMsg(code))
 
       } catch (err) {
-         console.log(err)
-         return res.json(serverErrorMessage());
+         return res.json(serverErrorMessage(err.message));
       }
    })()
 }
@@ -44,8 +43,7 @@ export const getProductCodes = (req, res) => {
          const productCodes = await findAllProductCodes(body.quantity)
          res.status(200).json(productCodes)
       } catch (err) {
-         console.log(err)
-         return res.json(serverErrorMessage());
+         return res.json(serverErrorMessage(err.message));
       }
    })()
 }

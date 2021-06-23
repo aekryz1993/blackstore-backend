@@ -1,8 +1,8 @@
 import {fixPort} from './helper'
 
 export const devHostServer = {
-    host: fixPort(process.env.HOST) || 'localhost',
-    port: Number(process.env.PORT) || 3000
+    host: process.env.HOST || 'localhost',
+    port: fixPort(Number(process.env.PORT)) || 3000
 };
 
 export const testHostServer = {

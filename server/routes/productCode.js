@@ -8,7 +8,7 @@ const productCodeRouter = () => {
 
   router.post('/add', addProductCode);
 
-  router.get('/get', getProductCodes);
+  router.post('/get', getProductCodes);
 
   return router;
 

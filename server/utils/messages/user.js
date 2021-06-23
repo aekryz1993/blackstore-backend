@@ -11,6 +11,7 @@ export const successRegistration = () => ({
 export const userNotExist = (info) => ({
     success: false,
     message: info ? info.message : 'Login failed',
+    auth: false
 });
 
 export const forbiddenAdminPremission = () => ({

@@ -28,8 +28,7 @@ export const addPicture = (req, res) => {
 			return res.status(201).json(successRegistration(req.body.label))
 
 		} catch (err) {
-			console.log(err)
-			return res.json(serverErrorMessage());
+			return res.json(serverErrorMessage(err.message));
 		}
 	})()
 }

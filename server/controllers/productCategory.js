@@ -25,8 +25,7 @@ export const addProductCategory = (req, res, next) => {
          return next()
 
       } catch (err) {
-         // console.log(err)
-         return res.json(serverErrorMessage());
+         return res.json(serverErrorMessage(err.message));
       }
    })()
 }
