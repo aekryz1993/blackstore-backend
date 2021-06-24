@@ -62,7 +62,9 @@ export const findUserById = (id) => {
 export const findAllUsers = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allUsers = await models.User.findAll()
+            const allUsers = await models.User.findAll({
+                where: {isAdmin: false}
+            })
             resolve(allUsers)
         } catch (err) {
             reject(err)
