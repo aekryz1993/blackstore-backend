@@ -3,7 +3,7 @@ export const fieldAlreadyExist = (username, email, phone) => ({
     message: `${username} username is already exist with the ${email} and the phone number ${phone}`
 });
 
-export const successRegistration = () => ({
+export const successRegistrationUser = () => ({
     success: true,
     message: `the user is successfuly registred`
 })

@@ -41,6 +41,7 @@ User.hasMany(ProductCode)
 Service.hasOne(Image)
 ProductCategory.hasOne(Image)
 ProductID.hasOne(Image)
+User.hasOne(Image)
 
 export default {
     User,

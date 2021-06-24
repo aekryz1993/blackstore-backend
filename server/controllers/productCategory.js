@@ -3,6 +3,7 @@ import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg } from '../utils/messages/productCategory'
+import { unlink } from 'fs';
 
 export const addProductCategory = (req, res, next) => {
    (async () => {
@@ -12,9 +13,12 @@ export const addProductCategory = (req, res, next) => {
          if (service === null) {
             return res.status(401).json(serviceNotExist(body.serviceName))
          }
-
+         
          const checkExistCategory = service.dataValues.ProductCategories.filter(ProductCategorieItem => ProductCategorieItem.dataValues.label === body.label)
          if (checkExistCategory.length !== 0) {
+            unlink(req.file.path, (err) => {
+               if (err) throw err;
+            });
             return res.status(409).json(productCategoryAlreadyExistMsg(body.label))
          }
 

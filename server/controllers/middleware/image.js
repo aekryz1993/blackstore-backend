@@ -1,8 +1,38 @@
 import multer from "multer"
 import path from "path"
+import fs, { stat } from "fs"
 
 const CURRENT_WORKING_DIR = process.cwd();
-const imageDist = path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures');
+const imageDist = {
+    'productCategory': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/prodectCategory'),
+    'productID': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/productID'),
+    'services': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/services'),
+    'users': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/users'),
+}
+
+const checkIfFile = (file) => new Promise((resolve, reject) => {
+    fs.stat(file, (err, stats) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                resolve(true)
+            } else {
+                reject(err);
+            }
+        } else if (stats) {
+            resolve(stats.isFile())
+        } else {
+            resolve(true)
+        }
+    })
+})
+
+const createDir = (file) => new Promise((resolve, reject) => {
+
+    fs.mkdir(file, (err) => {
+        if (err) reject(err);
+        resolve(true)
+    })
+})
 
 const imageFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image")) {
@@ -13,14 +43,25 @@ const imageFilter = (req, file, cb) => {
 }
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, imageDist)
+    destination: async (req, file, cb) => {
+        try {
+            const dir = imageDist[req.baseUrl.split('/')[req.baseUrl.split('/').length - 1]]
+            const notExist = await checkIfFile(dir)
+            console.log(notExist)
+            if (notExist) {
+                await createDir(dir)
+            }
+
+            cb(null, dir)
+        } catch (error) {
+            cb(error, false)
+        }
     },
-    filename: (req, file, cb) => {
+    filename: async (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now())
     }
 })
 
-const upload = multer({ storage: storage, fileFilter: imageFilter })
+const upload = multer({ storage: storage, fileFilter: imageFilter, preservePath: true })
 
 export default upload

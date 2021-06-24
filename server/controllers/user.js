@@ -1,8 +1,8 @@
 import { createUser, findAllUsers } from '../models/query/user'
 import { serverErrorMessage } from "../utils/messages";
-import { fieldAlreadyExist, successRegistration } from '../utils/messages/user'
+import { fieldAlreadyExist } from '../utils/messages/user'
 
-export const addUser = (req, res) => {
+export const addUser = (req, res, next) => {
     (async () => {
       const body = req.body
       try {
@@ -14,7 +14,10 @@ export const addUser = (req, res) => {
           return res.status(409).json(fieldAlreadyExist(username, email, phone));
         }
 
-        return res.status(201).json(successRegistration())
+        req.body.associatedModelId = user.dataValues.id
+        req.body.associatedModel = 'UserId'
+        req.body.username = user.dataValues.username
+        return next()
 
       } catch (err) {
         return res.json(serverErrorMessage(err.message));
@@ -36,7 +39,6 @@ export const getAllUsers = (req, res) => {
         res.status(200).send(users)
 
       } catch (err) {
-        console.log(err)
         return res.json(serverErrorMessage(err.message));
       }
     })()

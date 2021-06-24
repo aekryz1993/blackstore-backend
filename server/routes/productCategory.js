@@ -9,7 +9,7 @@ const router = express.Router();
 const productCategoryRouter = () => {
 
   router.post('/add', upload.single('picture'), addProductCategory, addPicture);
-
+  
   return router;
 
 };
