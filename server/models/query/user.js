@@ -71,3 +71,57 @@ export const findAllUsers = () => {
         }
     })
 }
+
+export const findActiveUsers = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allUsers = await models.User.findAll({
+                where: {
+                    [Op.and]: [
+                        { isAdmin: false },
+                        { isActive: true },
+                    ]
+                }
+            })
+            resolve(allUsers)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+export const findNotActiveUsers = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allUsers = await models.User.findAll({
+                where: {
+                    [Op.and]: [
+                        { isAdmin: false },
+                        { isActive: false },
+                    ]
+                }
+            })
+            resolve(allUsers)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+export const findAdmins = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allUsers = await models.User.findAll({
+                where: {
+                    [Op.and]: [
+                        { isAdmin: true },
+                        { isActive: true },
+                    ]
+                }
+            })
+            resolve(allUsers)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
