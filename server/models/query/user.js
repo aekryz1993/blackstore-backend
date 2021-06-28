@@ -1,4 +1,4 @@
-import {Op} from 'sequelize'
+import { Op } from 'sequelize'
 
 import models from '../associations'
 
@@ -59,11 +59,28 @@ export const findUserById = (id) => {
     })
 }
 
-export const findAllUsers = () => {
+export const countUsers = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allUsers = await models.User.count({
+                // offset: 4,
+                // limit: 2,
+                where: { isAdmin: false }
+            })
+            resolve(allUsers)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+export const findAllUsers = (limit, offset) => {
     return new Promise(async (resolve, reject) => {
         try {
             const allUsers = await models.User.findAll({
-                where: {isAdmin: false}
+                offset,
+                limit,
+                where: { isAdmin: false }
             })
             resolve(allUsers)
         } catch (err) {

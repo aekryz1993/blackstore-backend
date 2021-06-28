@@ -19,7 +19,6 @@ export const addPicture = (req, res) => {
 			const image = await sharp(req.file.path)
 				.resize(100, 100)
 				.toFile(thumbnailtPath)
-			console.log(req.file.path)
 
 			const body = {
 				type: req.file.mimetype,
