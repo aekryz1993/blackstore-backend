@@ -1,6 +1,8 @@
+import { findImage } from '../models/query/image';
 import { countUsers, createUser, findAllUsers } from '../models/query/user'
 import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist } from '../utils/messages/user'
+import { paginateData } from './helper';
 
 export const addUser = (req, res, next) => {
     (async () => {
@@ -30,15 +32,15 @@ export const getAllUsers = (req, res) => {
       try {
         const { page } = req.query;
         const users = []
-        const limit = 3
-        const offset = page ? limit * page : 0
-        const totalUsers = await countUsers()
-        const totalPages = Math.ceil(totalUsers / limit);
-        const nextPage = (totalPages === Number(page)+1) ? -1 : Number(page) + 1
+        const { offset, limit, totalPages, totalUsers, nextPage } = await paginateData(page, countUsers)
+        
         const initAllUsers = await findAllUsers(limit, offset)
+        
         for (let user of initAllUsers) {
           user = user.dataValues
-          const userInfo = Object.fromEntries(Object.entries(user).filter(([key, _]) => key !== 'id' && key !== 'password'))
+          let userInfo = Object.fromEntries(Object.entries(user).filter(([key, _]) => key !== 'password'))
+          const image = await findImage(userInfo.id)
+          userInfo = {...userInfo, image: image.dataValues.url}
           users.push(userInfo)
         }
         

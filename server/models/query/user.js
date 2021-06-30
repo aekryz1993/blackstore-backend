@@ -63,8 +63,6 @@ export const countUsers = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const allUsers = await models.User.count({
-                // offset: 4,
-                // limit: 2,
                 where: { isAdmin: false }
             })
             resolve(allUsers)
