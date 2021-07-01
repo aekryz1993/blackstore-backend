@@ -10,7 +10,7 @@ const imageDist = {
     'users': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/users'),
 }
 
-const checkIfFile = (file) => new Promise((resolve, reject) => {
+const checkFolder = (file) => new Promise((resolve, reject) => {
     fs.stat(file, (err, stats) => {
         if (err) {
             if (err.code === 'ENOENT') {
@@ -46,12 +46,10 @@ const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
         try {
             const dir = imageDist[req.baseUrl.split('/')[req.baseUrl.split('/').length - 1]]
-            const notExist = await checkIfFile(dir)
-            console.log(notExist)
+            const notExist = await checkFolder(dir)
             if (notExist) {
                 await createDir(dir)
             }
-
             cb(null, dir)
         } catch (error) {
             cb(error, false)

@@ -7,10 +7,24 @@ import { serverErrorMessage } from "../utils/messages";
 import { successRegistration } from '../utils/messages/service'
 import { successRegistrationUser } from "../utils/messages/user";
 
+const CURRENT_WORKING_DIR = process.cwd();
+
 export const addPicture = (req, res) => {
 	(async () => {
 		if (req.file == undefined) {
-			return res.send(`You must select a file.`);
+			const currentModel = req.baseUrl.split('/')[req.baseUrl.split('/').length - 1]
+			const body = {
+				type: 'image/png',
+				name: `default.png`,
+				size: 0,
+				url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/${currentModel}/default.png`),
+				[req.body.associatedModel]: req.body.associatedModelId
+			}
+			await createPicture(body)
+			if (req.body.label) {
+				return res.status(201).json(successRegistration(req.body.label))
+			}
+			return res.status(201).json(successRegistrationUser(req.body.username))
 		}
 		try {
 			const thumbnailName = `thumbnail-${req.file.filename}`
@@ -19,7 +33,7 @@ export const addPicture = (req, res) => {
 			const image = await sharp(req.file.path)
 				.resize(100, 100)
 				.toFile(thumbnailtPath)
-
+				
 			const body = {
 				type: req.file.mimetype,
 				name: thumbnailName,
@@ -36,7 +50,6 @@ export const addPicture = (req, res) => {
 				}
 				return res.status(201).json(successRegistrationUser(req.body.username))
 			})
-			
 		} catch (err) {
 			return res.json(serverErrorMessage(err.message));
 		}
