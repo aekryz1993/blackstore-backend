@@ -4,6 +4,7 @@ import { findProductCategoryById } from "../models/query/productCategory";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, productCategorySuccessRegistrationMsg } from '../utils/messages/productCategory'
+import { saveCodes } from "./middleware/productCode";
 
 export const addProductCode = (req, res) => {
    (async () => {
@@ -29,6 +30,25 @@ export const addProductCode = (req, res) => {
          const { productCode } = await createProductCode(body)
          const { code } = productCode.dataValues
          return res.status(201).json(productCategorySuccessRegistrationMsg(code))
+
+      } catch (err) {
+         return res.json(serverErrorMessage(err.message));
+      }
+   })()
+}
+
+export const addMultiProductCode = (req, res) => {
+   (async () => {
+      const body = req.body
+      const codes = req.codes
+      try {
+         const service = await findServiceById(body.ServiceId)
+         if (service === null) {
+            return res.status(401).json(serviceNotExist(body.serviceName))
+         }
+
+         const message = await saveCodes(codes, service.dataValues)
+         return res.status(201).json(message)
 
       } catch (err) {
          return res.json(serverErrorMessage(err.message));

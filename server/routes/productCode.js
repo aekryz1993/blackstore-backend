@@ -1,13 +1,14 @@
 import express from 'express'
 
-import { addProductCode, getProductCodes } from "../controllers/productCode";
+import upload, { readExcel } from '../controllers/middleware/excel';
+import { addProductCode, getProductCodes, addMultiProductCode } from "../controllers/productCode";
 
 const router = express.Router();
 
 const productCodeRouter = () => {
 
   router.post('/add', addProductCode);
-
+  router.post('/addMulti', upload.single('excel'), readExcel, addMultiProductCode);
   router.post('/get', getProductCodes);
 
   return router;

@@ -16,9 +16,11 @@ export const addProductCategory = (req, res, next) => {
          
          const checkExistCategory = service.dataValues.ProductCategories.filter(ProductCategorieItem => ProductCategorieItem.dataValues.label === body.label)
          if (checkExistCategory.length !== 0) {
-            unlink(req.file.path, (err) => {
-               if (err) throw err;
-            });
+            if (req.file) {
+               unlink(req.file.path, (err) => {
+                  if (err) throw err;
+               });
+            }
             return res.status(409).json(productCategoryAlreadyExistMsg(body.label))
          }
 
