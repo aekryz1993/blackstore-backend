@@ -12,12 +12,10 @@ Wallet.init({
     },
     creditPoint: {
         type: DataTypes.FLOAT,
-        allowNull: false,
         unique: true,
     },
     creditCoin: {
         type: DataTypes.FLOAT,
-        allowNull: false,
         unique: true,
     },
 }, {

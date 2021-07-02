@@ -14,11 +14,11 @@ ProductCode.init({
         type: DataTypes.STRING,
         allowNull: false
     },
-    priceCoin: {
-        type: DataTypes.FLOAT,
+    Serial: {
+        type: DataTypes.STRING,
     },
-    pricePoint: {
-        type: DataTypes.FLOAT,
+    Date: {
+        type: DataTypes.STRING,
     },
 }, {
     sequelize,

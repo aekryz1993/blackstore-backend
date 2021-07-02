@@ -14,6 +14,12 @@ ProductCategory.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
+    priceCoin: {
+        type: DataTypes.FLOAT,
+    },
+    pricePoint: {
+        type: DataTypes.FLOAT,
+    },
 }, {
     sequelize,
     modelName: 'ProductCategory',

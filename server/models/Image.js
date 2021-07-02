@@ -16,11 +16,9 @@ Image.init({
     },
     type: {
         type: DataTypes.STRING,
-        allowNull: false,
     },
     size: {
         type: DataTypes.STRING,
-        allowNull: false,
     },
     url: {
         type: DataTypes.STRING,
