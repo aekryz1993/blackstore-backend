@@ -10,13 +10,8 @@ Wallet.init({
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    creditPoint: {
+    credit: {
         type: DataTypes.FLOAT,
-        unique: true,
-    },
-    creditCoin: {
-        type: DataTypes.FLOAT,
-        unique: true,
     },
 }, {
     sequelize,
