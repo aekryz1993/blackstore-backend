@@ -1,9 +1,10 @@
-import { createProductCategory } from "../models/query/productCategory";
+import { createProductCategory, updatePrice } from "../models/query/productCategory";
 import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg } from '../utils/messages/productCategory'
 import { unlink } from 'fs';
+import { savePrices } from "./middleware/productCategory";
 
 export const addProductCategory = (req, res, next) => {
    (async () => {
@@ -30,6 +31,35 @@ export const addProductCategory = (req, res, next) => {
          req.body.label = productCategory.dataValues.label
          return next()
 
+      } catch (err) {
+         return res.json(serverErrorMessage(err.message));
+      }
+   })()
+}
+
+export const updatePriceProductCategory = (req, res) => {
+   (async () => {
+      const body = req.body
+      try {
+         const message = await updatePrice(body)
+         res.status(200).json({message})
+      } catch (err) {
+         return res.json(serverErrorMessage(err.message));
+      }
+   })()
+}
+
+export const updateMultiPricesProductCategory = (req, res) => {
+   (async () => {
+      const body = req.body
+      const prices = req.dataObj
+      try {
+         const service = await findServiceById(body.ServiceId)
+         if (service === null) {
+            return res.status(401).json(serviceNotExist(body.serviceName))
+         }
+         const message = await savePrices(prices, service.dataValues)
+         return res.status(200).json(message)
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }

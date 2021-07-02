@@ -40,7 +40,7 @@ export const addProductCode = (req, res) => {
 export const addMultiProductCode = (req, res) => {
    (async () => {
       const body = req.body
-      const codes = req.codes
+      const codes = req.dataObj
       try {
          const service = await findServiceById(body.ServiceId)
          if (service === null) {

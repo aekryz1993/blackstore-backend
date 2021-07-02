@@ -36,3 +36,16 @@ export const findProductCategoryById = (id) => {
         }
     })
 }
+
+export const updatePrice = ({id, priceCoin, pricePoint}) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await models.ProductCategory.update({ priceCoin, pricePoint }, {
+                where: {id}
+              });
+            resolve({message: 'تم تحديث السعر بنجاح'})
+        } catch (err) {
+            reject(err)
+        }
+    })
+}

@@ -7,7 +7,7 @@ const CURRENT_WORKING_DIR = process.cwd();
 const dir = path.resolve(CURRENT_WORKING_DIR, 'resources/temporary')
 
 const arrayToObj = (_rows) => {
-    let codes = []
+    let data = []
     let obj = {}
     return new Promise((resolve, reject) => {
         _rows.forEach((col, idx) => {
@@ -15,23 +15,21 @@ const arrayToObj = (_rows) => {
                 col.forEach((elem, idx) => {
                     obj[_rows[0][idx]] = elem
                 })
-                codes = [...codes, obj]
+                data = [...data, obj]
             }
         })
-        resolve(codes)
+        resolve(data)
     })
 }
 
 export const readExcel = async (req, _, next) => {
     try {
-        // const targetFile = path.join(dir, req.file.originalname)
         const targetFile = req.file.path
         const rows = await readXlsxFile(targetFile)
-        const codes = await arrayToObj(rows)
-        req.codes = codes
+        const dataObj = await arrayToObj(rows)
         fs.unlink(targetFile, async (err) => {
             if (err) throw err
-            req.codes = codes
+            req.dataObj = dataObj
         })
         next()
     } catch (error) {
