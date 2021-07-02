@@ -1,18 +1,23 @@
+import { createPicture } from '../models/query/image'
 import { createUser } from '../models/query/user'
 
 export const createAdmin = () => {
     (async () => {
         try {
             const {user, isNewUser} = await createUser(initUser)
-            // console.log(user.dataValues)
-            // console.log(isNewUser)
-            // const { username, email, phone } = targetUser
-            // if (!isNewUser) res.status(409).json(fieldAlreadyExist(username, email, phone));
-            if (!isNewUser) console.log('user already exist')
-            // res.status(201).json(successRegistration())
+            if (isNewUser) {
+                const metadata = {
+                    type: 'image/png',
+                    name: `default.png`,
+                    url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/users/default.png`),
+                    UserId: user.dataValues.id
+                }
+                await createPicture(metadata)
+                return
+            }
+            console.log('user already exist')
         } catch (err) {
-            // res.send(err)
-            console.log(err)
+            console.log(err.message)
         }
     })()
 }

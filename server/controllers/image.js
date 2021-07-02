@@ -16,7 +16,6 @@ export const addPicture = (req, res) => {
 			const body = {
 				type: 'image/png',
 				name: `default.png`,
-				size: 0,
 				url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/${currentModel}/default.png`),
 				[req.body.associatedModel]: req.body.associatedModelId
 			}
