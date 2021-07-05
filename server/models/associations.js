@@ -37,7 +37,6 @@ RequestProductID.belongsTo(ProductID, {
 });
 
 User.hasMany(RequestProductID)
-User.hasMany(ProductCode)
 
 Service.hasOne(Image)
 ProductCategory.hasOne(Image)

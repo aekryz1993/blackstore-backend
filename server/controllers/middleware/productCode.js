@@ -1,8 +1,8 @@
-import { createProductCategory } from "../../models/query/productCategory";
+import { createProductCategory, findProductCategory } from "../../models/query/productCategory";
 import { createProductCode } from "../../models/query/productCode";
 
 export const saveCodes = (codes, service) => {
-    return Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         codes.forEach(async code => {
             try {
                 const label = code["Product"]
@@ -20,15 +20,16 @@ export const saveCodes = (codes, service) => {
                         category = await createProductCategory(body)
                     }
                 }
-                productCodeBody = {
-                    code: codes['PIN/Code'],
+                await createProductCode({
+                    code: code['PIN/Code'],
+                    Serial: code['Serial'],
+                    Date: code['Date'],
                     isAvailable: true,
                     serviceName: serviceName,
                     ServiceId: ServiceId,
-                    productCategoryName: category.dataValues.label,
-                    ProductCategoryId: category.dataValues.id,
-                }
-                await createProductCode(productCodeBody)
+                    productCategoryName: category.productCategory.dataValues.label,
+                    ProductCategoryId: category.productCategory.dataValues.id,
+                })
             } catch (error) {
                 reject(error.message)
             }

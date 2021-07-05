@@ -16,6 +16,7 @@ const arrayToObj = (_rows) => {
                     obj[_rows[0][idx]] = elem
                 })
                 data = [...data, obj]
+                obj = {}
             }
         })
         resolve(data)
@@ -29,8 +30,8 @@ export const readExcel = async (req, _, next) => {
         const dataObj = await arrayToObj(rows)
         fs.unlink(targetFile, async (err) => {
             if (err) throw err
-            req.dataObj = dataObj
         })
+        req.dataObj = dataObj
         next()
     } catch (error) {
         return res.json(serverErrorMessage(error.message));
@@ -88,6 +89,6 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({ storage: storage, fileFilter: excelFilter})
+const uploadExcel = multer({ storage: storage, fileFilter: excelFilter})
 
-export default upload
+export default uploadExcel

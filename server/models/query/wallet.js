@@ -1,3 +1,5 @@
+import models from '../associations'
+
 export const createWallet = (body) => {
     return new Promise(async (resolve, reject) => {
         try {

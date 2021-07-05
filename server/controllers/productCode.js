@@ -46,7 +46,6 @@ export const addMultiProductCode = (req, res) => {
          if (service === null) {
             return res.status(401).json(serviceNotExist(body.serviceName))
          }
-
          const message = await saveCodes(codes, service.dataValues)
          return res.status(201).json(message)
 
