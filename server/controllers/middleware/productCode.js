@@ -9,7 +9,7 @@ export const saveCodes = (codes, service) => {
                 const serviceName = service.label
                 const ServiceId = service.id
                 const body = {label, serviceName: serviceName, ServiceId}
-                let category = await findProductCategory(serviceName)
+                let category = await findProductCategory(label)
                 if (!category) {
                     category = await createProductCategory(body)
                 } else {

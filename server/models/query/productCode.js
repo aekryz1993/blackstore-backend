@@ -1,7 +1,6 @@
 import models from '../associations'
 
 export const createProductCode = (body) => {
-    console.log(body)
     return new Promise(async (resolve, reject) => {
         try {
             const productCode = await models.ProductCode.create(body)
