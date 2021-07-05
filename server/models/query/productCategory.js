@@ -24,6 +24,17 @@ export const findProductCategory = (label) => {
     })
 }
 
+export const findAllProductCategory = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const productCategory = await models.ProductCategory.findAll()
+            resolve(productCategory)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
 export const findProductCategoryById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {

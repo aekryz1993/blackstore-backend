@@ -1,39 +1,63 @@
-import { createProductCategory, findProductCategory } from "../../models/query/productCategory";
+import { createProductCategory, findProductCategory, findProductCategoryById } from "../../models/query/productCategory";
 import { createProductCode } from "../../models/query/productCode";
 
 export const saveCodes = (codes, service) => {
     return new Promise(async (resolve, reject) => {
-        codes.forEach(async code => {
-            try {
-                const label = code["Product"]
+        try {
+            for (let i in codes) {
+                let productCategoryName
+                let ProductCategoryId
+                const label = codes[i]["Product"]
                 const serviceName = service.label
                 const ServiceId = service.id
                 const body = {label, serviceName: serviceName, ServiceId}
                 let category = await findProductCategory(label)
-                if (!category) {
-                    category = await createProductCategory(body)
-                } else {
-                    const productCategoryService = service.ProductCategories.filter(
-                            ProductCategorieItem => ProductCategorieItem.dataValues.id === category.dataValues.id
-                        )
-                    if (!productCategoryService) {
+                if (category) {
+                    const productCategoryInService = service.ProductCategories.filter(
+                        ProductCategorieItem => ProductCategorieItem.dataValues.label === category.dataValues.label
+                    )
+                    if (!productCategoryInService) {
                         category = await createProductCategory(body)
+                        productCategoryName = category.productCategory.dataValues.label
+                        ProductCategoryId = category.productCategory.dataValues.id
+                    } else {
+                        productCategoryName = category.dataValues.label
+                        ProductCategoryId = category.dataValues.id
                     }
+                } else {
+                    // if (!(label in treatedCategories)) {
+                    category = await createProductCategory(body)
+                    productCategoryName = category.productCategory.dataValues.label
+                    ProductCategoryId = category.productCategory.dataValues.id
+                        // treatedCategories = {...treatedCategories, [label]: category.productCategory.dataValues.id}
+                    // } else {
+                        // const categoryId = treatedCategories[label]
+                        // category = await findProductCategoryById(categoryId)
+                        // console.log(category)
+                    // }
                 }
                 await createProductCode({
-                    code: code['PIN/Code'],
-                    Serial: code['Serial'],
-                    Date: code['Date'],
+                    code: codes[i]['PIN/Code'],
+                    Serial: codes[i]['Serial'],
+                    Date: codes[i]['Date'],
                     isAvailable: true,
                     serviceName: serviceName,
                     ServiceId: ServiceId,
-                    productCategoryName: category.productCategory.dataValues.label,
-                    ProductCategoryId: category.productCategory.dataValues.id,
+                    productCategoryName,
+                    ProductCategoryId
                 })
-            } catch (error) {
-                reject(error.message)
+                // } catch (error) {
+                //     // throw error.message
+                //     reject(error)
+                // }
             }
-        });
-        resolve({message: 'تم إضافة الأكواد بنجاح'})
+            // codes.map(async (code, idx) => {
+                
+            // });
+            resolve({message: 'تم إضافة الأكواد بنجاح'})
+        } catch (error) {
+            console.log(error)
+            reject(error)
+        }
     })
 }
