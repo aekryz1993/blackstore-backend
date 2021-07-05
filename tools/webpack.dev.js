@@ -7,6 +7,6 @@ const commonConfig = require('./webpack.common'),
 module.exports = merge([
     commonConfig,
     { mode: 'development' },
-    parts.generateSourceMaps({ type: "inline-source-map" }),
+    parts.generateSourceMaps({ type: "eval" }),
     parts.NodemonPlugin({ verbose: true }),
 ]);
