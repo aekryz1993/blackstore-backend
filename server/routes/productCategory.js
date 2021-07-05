@@ -3,7 +3,7 @@ import express from 'express'
 import { addPicture } from '../controllers/image';
 import { readExcel } from '../controllers/middleware/excel';
 import upload from '../controllers/middleware/excel';
-import { addProductCategory, updateMultiPricesProductCategory } from "../controllers/productCategory";
+import { addProductCategory, updateMultiPricesProductCategory, updatePriceProductCategory } from "../controllers/productCategory";
 
 const router = express.Router();
 

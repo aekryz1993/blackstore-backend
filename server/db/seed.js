@@ -1,5 +1,9 @@
+import path from 'path'
+
 import { createPicture } from '../models/query/image'
 import { createUser } from '../models/query/user'
+
+const CURRENT_WORKING_DIR = process.cwd();
 
 export const createAdmin = () => {
     (async () => {
