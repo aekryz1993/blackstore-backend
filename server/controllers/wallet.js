@@ -1,10 +1,11 @@
 import { createWallet, updateWallet } from "../models/query/wallet";
+import { serverErrorMessage } from "../utils/messages";
 
 export const addWallet = (req, res, next) => {
 	(async () => {
 		try {
-			const {credit, associatedModelId, associatedModel} = body
-            await createWallet({credit, [associatedModelId]: associatedModel})
+			const {credit, associatedModelId, associatedModel} = req.body
+            await createWallet({credit, [associatedModel]: associatedModelId})
             next()
 		} catch (err) {
 			return res.json(serverErrorMessage(err.message));
