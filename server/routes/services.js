@@ -6,8 +6,8 @@ import { addService, fetchAllServices } from "../controllers/service";
 
 const router = express.Router();
 
-const servicesRouter = () => {
-  router.post('/add', upload.single('picture'), addService, addPicture);
+const servicesRouter = (checkAdminPermission, ) => {
+  router.post('/add', checkAdminPermission, upload.single('picture'), addService, addPicture);
   router.get('/getAll', fetchAllServices);
   return router;
 };

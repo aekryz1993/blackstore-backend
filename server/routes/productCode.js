@@ -5,10 +5,10 @@ import { addProductCode, getProductCodes, addMultiProductCode } from "../control
 
 const router = express.Router();
 
-const productCodeRouter = () => {
+const productCodeRouter = (checkAdminPermission) => {
 
-  router.post('/add', addProductCode);
-  router.post('/addMulti', upload.single('excel'), readExcel, addMultiProductCode);
+  router.post('/add', checkAdminPermission, addProductCode);
+  router.post('/addMulti', checkAdminPermission, upload.single('excel'), readExcel, addMultiProductCode);
   router.get('/get', getProductCodes);
 
   return router;

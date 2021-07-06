@@ -7,11 +7,11 @@ import { addWallet, updateCredit } from '../controllers/wallet';
 
 const router = express.Router();
 
-const usersRouter = () => {
+const usersRouter = (checkAdminPermission, ) => {
 
-  router.post('/add', upload.single('picture'), addUser, addWallet, addPicture);
-  router.get('/getusers', getAllUsers)
-  router.put('/updateCredit', updateCredit)
+  router.post('/add', checkAdminPermission, upload.single('picture'), addUser, addWallet, addPicture);
+  router.get('/getusers', checkAdminPermission, getAllUsers)
+  router.put('/updateCredit', checkAdminPermission, updateCredit)
 
   return router;
 

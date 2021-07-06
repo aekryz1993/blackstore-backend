@@ -8,11 +8,11 @@ import { addProductCategory, fetchProductCategoriessByService, updateMultiPrices
 
 const router = express.Router();
 
-const productCategoryRouter = () => {
-  router.post('/add', upload.single('picture'), addProductCategory, addPicture);
+const productCategoryRouter = (checkAdminPermission) => {
+  router.post('/add', checkAdminPermission, upload.single('picture'), addProductCategory, addPicture);
   router.get('/get', fetchProductCategoriessByService);
-  router.put('/updatePrice', updatePriceProductCategory);
-  router.put('/updateMiltiPrices', uploadExcel.single('excel'), readExcel, updateMultiPricesProductCategory);
+  router.put('/updatePrice', checkAdminPermission, updatePriceProductCategory);
+  router.put('/updateMiltiPrices', checkAdminPermission, uploadExcel.single('excel'), readExcel, updateMultiPricesProductCategory);
   return router;
 };
 

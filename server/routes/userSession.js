@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { checkActivePermission, checkAdminPermission } from '../controllers/middleware/user';
+import { checkAdminPermission } from '../controllers/middleware/user';
 import servicesRouter from './services';
 import usersRouter from './users'
 import productCategoryRouter from './productCategory'
@@ -12,15 +12,11 @@ const router = express.Router();
 
 const userSessionRouter = () => {
 
-  router.get('/', (req, res) => {
-    res.send('User Session');
-  });
-
-  router.use('/users', checkAdminPermission, usersRouter());
-  router.use('/services', checkAdminPermission, checkActivePermission, servicesRouter());
-  router.use('/productCategory', checkAdminPermission, checkActivePermission, productCategoryRouter());
-  router.use('/productID', checkActivePermission, productIDRouter(checkAdminPermission));
-  router.use('/productCode', checkAdminPermission, checkActivePermission, productCodeRouter());
+  router.use('/users', usersRouter(checkAdminPermission));
+  router.use('/services', servicesRouter(checkAdminPermission));
+  router.use('/productCategory', productCategoryRouter(checkAdminPermission));
+  router.use('/productID', productIDRouter(checkAdminPermission));
+  router.use('/productCode', productCodeRouter(checkAdminPermission));
   router.get('/logout', logout);
 
   return router;
