@@ -51,14 +51,10 @@ export const updatePriceProductCategory = (req, res) => {
 
 export const updateMultiPricesProductCategory = (req, res) => {
    (async () => {
-      const body = req.body
+      const {ServiceId, serviceName} = req.body
       const prices = req.dataObj
       try {
-         const service = await findServiceById(body.ServiceId)
-         if (service === null) {
-            return res.status(401).json(serviceNotExist(body.serviceName))
-         }
-         const message = await savePrices(prices, service.dataValues)
+         const message = await savePrices(prices, ServiceId, serviceName)
          return res.status(200).json(message)
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
