@@ -1,12 +1,14 @@
 import models from '../associations'
 
 export const createService = (body) => {
-    const { label } = body
-
+    const { label, category } = body
     return new Promise(async (resolve, reject) => {
         try {
             const [service, isNewService] = await models.Service.findOrCreate({
-                where: { label: label },
+                where: { 
+                    label,
+                    category,
+                },
                 defaults: body
             })
 
@@ -17,11 +19,14 @@ export const createService = (body) => {
     })
 }
 
-export const findService = (serviceName) => {
+export const findService = (serviceName, serviceCategory) => {
     return new Promise(async (resolve, reject) => {
         try {
             const service = await models.Service.findOne({
-                where: {label: serviceName}
+                where: {
+                    label: serviceName,
+                    category: serviceCategory,
+                }
             })
             resolve(service)
         } catch (err) {

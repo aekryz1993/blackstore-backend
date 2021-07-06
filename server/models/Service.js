@@ -13,7 +13,6 @@ Service.init({
     label: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
     },
     category: {
         type: DataTypes.ENUM,

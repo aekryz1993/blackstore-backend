@@ -102,3 +102,18 @@ export const treatedRequestProductID = (req, res) => {
       }
    })()
 }
+
+export const fetchProductIDsByService = (req, res) => {
+   (async () => {
+      const {ServiceId, serviceName} = req.body
+      try {
+         const service = await findServiceById(ServiceId)
+         if (service === null) {
+            return res.status(401).json(serviceNotExist(serviceName))
+         }
+         return res.status(200).json(service.ProductID)
+      } catch (err) {
+         return res.json(serverErrorMessage(err.message));
+      }
+   })()
+}
