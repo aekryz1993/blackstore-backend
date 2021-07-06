@@ -3,6 +3,7 @@ import { countUsers, createUser, findAllUsers } from '../models/query/user'
 import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist } from '../utils/messages/user'
 import { paginateData } from './helper';
+import { saveUsers } from './middleware/user';
 
 export const addUser = (req, res, next) => {
     (async () => {
@@ -25,6 +26,18 @@ export const addUser = (req, res, next) => {
         return res.json(serverErrorMessage(err.message));
       }
     })()
+}
+
+export const addMultiUser = (req, res) => {
+  (async () => {
+    const users = req.dataObj
+    try {
+      const message = await saveUsers(users)
+      return res.status(201).json({message})
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })()
 }
 
 export const getAllUsers = (req, res) => {

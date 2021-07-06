@@ -33,7 +33,7 @@ export const savePrices = (prices, ServiceId, serviceName) => {
                 notExist
             })
         } else {
-            resolve({message: 'تم تحديث بعض الأسعار بنجاح'})
+            resolve({message: 'تم تحديث كل الأسعار بنجاح'})
         }
     }) 
 }
