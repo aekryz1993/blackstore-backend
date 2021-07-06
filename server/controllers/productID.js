@@ -105,7 +105,7 @@ export const treatedRequestProductID = (req, res) => {
 
 export const fetchProductIDsByService = (req, res) => {
    (async () => {
-      const {ServiceId, serviceName} = req.body
+      const {ServiceId, serviceName} = req.query
       try {
          const service = await findServiceById(ServiceId)
          if (service === null) {

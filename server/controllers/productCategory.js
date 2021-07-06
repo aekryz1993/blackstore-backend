@@ -72,3 +72,18 @@ export const updateMultiPricesProductCategory = (req, res) => {
       }
    })()
 }
+
+export const fetchProductCategoriessByService = (req, res) => {
+   (async () => {
+      const {ServiceId, serviceName} = req.query
+      try {
+         const service = await findServiceById(ServiceId)
+         if (service === null) {
+            return res.status(401).json(serviceNotExist(serviceName))
+         }
+         return res.status(200).json(service.ProductCategories)
+      } catch (err) {
+         return res.json(serverErrorMessage(err.message));
+      }
+   })()
+}

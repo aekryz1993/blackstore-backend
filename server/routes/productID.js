@@ -4,7 +4,7 @@ import { addPicture } from '../controllers/image';
 import upload from '../controllers/middleware/image';
 import {
   addProductID,
-  fetchAllRequestsProductID,
+  // fetchAllRequestsProductID,
   fetchProductIDsByService,
   sendRequestProductID,
   treatedRequestProductID
@@ -20,7 +20,7 @@ const productIDRouter = (checkAdminPermission) => {
 
   router.post('/send', sendRequestProductID);
 
-  router.get('/requestsID', fetchAllRequestsProductID);
+  // router.get('/requestsID', fetchAllRequestsProductID);
 
   router.put('/treatRequest', checkAdminPermission, treatedRequestProductID);
 
