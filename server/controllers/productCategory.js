@@ -41,9 +41,20 @@ export const updatePriceProductCategory = (req, res) => {
    (async () => {
       const body = req.body
       try {
-         const message = await updatePrice(body)
-         res.status(200).json({message})
+         const service = await findServiceById(body.ServiceId)
+         if (service === null) {
+            return res.status(401).json(serviceNotExist(body.serviceName))
+         }
+         const productCategory = service.ProductCategories.filter(
+             ProductCategorieItem => ProductCategorieItem.dataValues.id === body.id
+         )
+         if (productCategory.length !== 0) {
+            const message = await updatePrice({id: body.id, priceCoin: body.priceCoin, pricePoint: body.pricePoint})
+            return res.status(200).json({message})
+         } 
+         return res.status(401).json(serviceNotExist('this category doesn\'t exist'))
       } catch (err) {
+         console.log(err)
          return res.json(serverErrorMessage(err.message));
       }
    })()

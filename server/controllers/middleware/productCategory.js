@@ -18,7 +18,6 @@ export const savePrices = (prices, ServiceId, serviceName) => {
                     ProductCategorieItem => ProductCategorieItem.dataValues.label === label
                 )
                 if (productCategory.length !== 0) {
-                    console.log(service.ProductCategories[0].dataValues.label == label)
                     await updatePrice({id: productCategory[0].dataValues.id, priceCoin, pricePoint})
                 } else {
                     notExist = [...notExist, label]
