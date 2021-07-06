@@ -53,9 +53,10 @@ export const addMultiProductCode = (req, res) => {
 
 export const getProductCodes = (req, res) => {
    (async () => {
-      const body = req.body
+      const categoryId = req.query.categoryId
+      const quantity = req.query.quantity
       try {
-         const productCodes = await findAllProductCodes(body.quantity)
+         const productCodes = await findAllProductCodes(quantity, categoryId)
          res.status(200).json(productCodes)
       } catch (err) {
          return res.json(serverErrorMessage(err.message));

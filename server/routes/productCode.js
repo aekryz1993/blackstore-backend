@@ -9,7 +9,7 @@ const productCodeRouter = () => {
 
   router.post('/add', addProductCode);
   router.post('/addMulti', upload.single('excel'), readExcel, addMultiProductCode);
-  router.post('/get', getProductCodes);
+  router.get('/get', getProductCodes);
 
   return router;
 

@@ -24,11 +24,14 @@ export const findProductCode = (code) => {
     })
 }
 
-export const findAllProductCodes = (quantity) => {
+export const findAllProductCodes = (quantity, categoryId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const productCodes = await models.ProductCode.findAll({
-                limit: quantity
+                where: {
+                    ProductCategoryId: categoryId
+                },
+                limit: quantity,
             })
             resolve(productCodes)
         } catch (err) {
