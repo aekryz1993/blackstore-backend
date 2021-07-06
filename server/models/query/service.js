@@ -42,3 +42,16 @@ export const findServiceById = (id) => {
         }
     })
 }
+
+export const findAllServices = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const services = await models.Service.findAll({
+                include: [models.ProductCategory, models.ProductID],
+            })
+            resolve(services)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
