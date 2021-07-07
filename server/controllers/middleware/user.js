@@ -1,6 +1,11 @@
+import path from "path"
+import { createPicture } from "../../models/query/image"
+
 import { createUser } from "../../models/query/user"
 import { createWallet } from "../../models/query/wallet"
 import { forbiddenActivePremission, forbiddenAdminPremission, forbiddenSessionPremission } from "../../utils/messages/user"
+
+const CURRENT_WORKING_DIR = process.cwd();
 
 export const checkAdminPermission = (req, res, next) => {
     const _isAdmin = req.user.dataValues.isAdmin
@@ -17,9 +22,10 @@ export const checkActivePermission = (req, res, next) => {
 }
 
 export const checkSessionPermission = (req, res, next) => {
-    const {id} = req.body
-    const isCurrentUser = req.user.dataValues.id === id
-    
+    const {id} = req.query
+    const isCurrentUser = req.user.id === id
+    console.log(req.body)
+    console.log(req.user.id)
     if (!isCurrentUser) res.status(403).json(forbiddenSessionPremission())
     next() 
 }
@@ -43,6 +49,13 @@ export const saveUsers = (users) => {
                 } else {
                     const UserId = user.dataValues.id
                     await createWallet({credit, UserId})
+                    const imageBody = {
+                        type: 'image/png',
+                        name: `default.png`,
+                        url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/users/default.png`),
+                        UserId,
+                    }
+                    await createPicture(imageBody)
                 }
             }
         } catch (error) {

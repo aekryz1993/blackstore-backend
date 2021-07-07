@@ -1,3 +1,5 @@
+import fs from "fs"
+
 import { createProductCategory, updatePrice } from "../models/query/productCategory";
 import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
@@ -5,6 +7,7 @@ import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg } from '../utils/messages/productCategory'
 import { unlink } from 'fs';
 import { savePrices } from "./middleware/productCategory";
+import { findImage } from "../models/query/image";
 
 export const addProductCategory = (req, res, next) => {
    (async () => {
@@ -86,4 +89,27 @@ export const fetchProductCategoriessByService = (req, res) => {
          return res.json(serverErrorMessage(err.message));
       }
    })()
+}
+
+export const updateCategoryPicture = (req, res, next) => {
+    (async () => {
+      try {
+        const {id, label} = req.body
+        const image = await findImage(id)
+        const currentImageUrl = image.dataValues.url
+        await image.destroy()
+        if (!currentImageUrl.endsWith('default.png')) {
+          fs.unlink(currentImageUrl, (err) => {
+            if (err) throw err
+          })
+        }
+        req.body.associatedModelId = id
+        req.body.associatedModel = 'ProductCategoryId'
+        req.body.label = label
+
+        next()
+      } catch (err) {
+        return res.json(serverErrorMessage(err.message));
+      }
+    })()
 }

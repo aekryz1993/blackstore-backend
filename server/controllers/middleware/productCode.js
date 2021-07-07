@@ -1,7 +1,12 @@
-import { createProductCategory, findProductCategory, findProductCategoryById } from "../../models/query/productCategory";
+import path from "path"
+
+import { createPicture } from "../../models/query/image";
+import { createProductCategory, findProductCategory } from "../../models/query/productCategory";
 import { createProductCode } from "../../models/query/productCode";
 import { findServiceById } from "../../models/query/service";
 import { serviceNotExist } from "../../utils/messages/service";
+
+const CURRENT_WORKING_DIR = process.cwd();
 
 export const saveCodes = (codes, serviceName, ServiceId) => {
     return new Promise(async (resolve, reject) => {
@@ -26,6 +31,13 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
                     if (productCategoryInService === 0) {
                         category = await createProductCategory(body)
                         category = category.productCategory
+                        const imageBody = {
+                            type: 'image/png',
+                            name: `default.png`,
+                            url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/prodectCategory/default.png`),
+                            ProductCategoryId: category.dataValues.id,
+                        }
+                        await createPicture(imageBody)
                     } else {
                         productCategoryName = category.dataValues.label
                         ProductCategoryId = category.dataValues.id
@@ -33,6 +45,13 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
                 } else {
                     category = await createProductCategory(body)
                     category = category.productCategory
+                    const imageBody = {
+                        type: 'image/png',
+                        name: `default.png`,
+                        url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/prodectCategory/default.png`),
+                        ProductCategoryId: category.dataValues.id,
+                    }
+                    await createPicture(imageBody)
                 }
                 if (category.ProductCodes) {
                     codeInCategory = category.ProductCodes.filter(

@@ -1,6 +1,6 @@
-// import fs from "fs";
+import fs from "fs";
 
-// import { createPicture } from "../models/query/image";
+import { findImage } from "../models/query/image";
 import { createService, findAllServices } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist } from '../utils/messages/service'
@@ -33,4 +33,31 @@ export const fetchAllServices = (req, res) => {
       return res.json(serverErrorMessage(err.message));
     }
   })()
+}
+
+export const updateServicePicture = (req, res, next) => {
+    (async () => {
+      try {
+        const {id, label} = req.body
+        const image = await findImage(id)
+        if (image) {
+          const currentImageUrl = image.dataValues.url
+          await image.destroy()
+          if (!currentImageUrl.endsWith('default.png')) {
+            fs.unlink(currentImageUrl, (err) => {
+              if (err) throw err
+            })
+          }
+          req.body.associatedModelId = id
+          req.body.associatedModel = 'ServiceId'
+          req.body.label = label
+
+          next()
+        } else {
+          throw 'error'
+        }
+      } catch (err) {
+        return res.json(serverErrorMessage(err.message));
+      }
+    })()
 }

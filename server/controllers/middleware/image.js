@@ -8,6 +8,7 @@ const imageDist = {
     'productID': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/productID'),
     'services': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/services'),
     'users': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/users'),
+    'userSession': path.resolve(CURRENT_WORKING_DIR, 'resources/static/assets/pictures/users'),
 }
 
 const checkFolder = (file) => new Promise((resolve, reject) => {
