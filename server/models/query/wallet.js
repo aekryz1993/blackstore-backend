@@ -11,11 +11,24 @@ export const createWallet = (body) => {
     })
 }
 
-export const updateWallet = ({credit, id}) => {
+export const updateWallet = ({UserId, newCredit}) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const wallet = await models.Wallet.update({ credit }, {
-                where: {id}
+            const wallet = await models.Wallet.update({ credit: newCredit }, {
+                where: {UserId}
+              })
+            resolve(wallet)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+export const findWallet = (UserId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const wallet = await models.Wallet.findOne({
+                where: {UserId}
               })
             resolve(wallet)
         } catch (err) {
