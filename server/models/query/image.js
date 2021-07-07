@@ -16,7 +16,7 @@ export const createPicture = (body) => {
 export const findImage = (userIdentifier) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await models.Image.findOne({
+            const image = await models.Image.findOne({
                 where: {
                     [Op.or]: [
                         { UserId: userIdentifier },
@@ -26,7 +26,7 @@ export const findImage = (userIdentifier) => {
                     ]
                 }
             })
-            resolve(user)
+            resolve(image)
         } catch (err) {
             reject(err)
         }

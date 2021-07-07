@@ -1,6 +1,6 @@
 import { createUser } from "../../models/query/user"
 import { createWallet } from "../../models/query/wallet"
-import { forbiddenActivePremission, forbiddenAdminPremission } from "../../utils/messages/user"
+import { forbiddenActivePremission, forbiddenAdminPremission, forbiddenSessionPremission } from "../../utils/messages/user"
 
 export const checkAdminPermission = (req, res, next) => {
     const _isAdmin = req.user.dataValues.isAdmin
@@ -13,6 +13,14 @@ export const checkActivePermission = (req, res, next) => {
     const _isActive = req.user.dataValues.isActive
     
     if (!_isActive) res.status(403).json(forbiddenActivePremission())
+    next() 
+}
+
+export const checkSessionPermission = (req, res, next) => {
+    const {id} = req.body
+    const isCurrentUser = req.user.dataValues.id === id
+    
+    if (!isCurrentUser) res.status(403).json(forbiddenSessionPremission())
     next() 
 }
 

@@ -1,3 +1,5 @@
+import fs from "fs"
+
 import { findImage } from '../models/query/image';
 import { countUsers, createUser, findAllUsers } from '../models/query/user'
 import { serverErrorMessage } from "../utils/messages";
@@ -64,6 +66,24 @@ export const getAllUsers = (req, res) => {
           totalUsers,
         })
 
+      } catch (err) {
+        return res.json(serverErrorMessage(err.message));
+      }
+    })()
+}
+
+export const updateProfilePicture = (req, res, next) => {
+    (async () => {
+      try {
+        const image = await findImage(req.user.id)
+        const currentImageUrl = image.dataValues.url
+        await image.destroy()
+        fs.unlink(currentImageUrl, (err) => {
+          if (err) throw err
+        })
+        req.body.associatedModelId = req.user.id
+        req.body.associatedModel = 'UserId'
+        next()
       } catch (err) {
         return res.json(serverErrorMessage(err.message));
       }
