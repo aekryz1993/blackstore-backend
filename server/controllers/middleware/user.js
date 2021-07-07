@@ -24,8 +24,6 @@ export const checkActivePermission = (req, res, next) => {
 export const checkSessionPermission = (req, res, next) => {
     const {id} = req.query
     const isCurrentUser = req.user.id === id
-    console.log(req.body)
-    console.log(req.user.id)
     if (!isCurrentUser) res.status(403).json(forbiddenSessionPremission())
     next() 
 }

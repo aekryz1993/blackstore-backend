@@ -6,7 +6,6 @@ export const savePrices = (prices, ServiceId, serviceName) => {
     return new Promise(async (resolve, reject) => {
         let notExist = []
         try {
-            console.log(prices)
             for (let i in prices) {
                 const priceCoin = prices[i]["price_coin"]
                 const pricePoint = prices[i]["price_point"]

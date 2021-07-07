@@ -1,3 +1,5 @@
+import fs from "fs"
+
 import { createProductID, findProductIDById } from "../models/query/productID";
 import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
@@ -5,6 +7,7 @@ import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, requestSuccessfulySent } from '../utils/messages/productCategory'
 import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
 import { findUserById } from "../models/query/user";
+import { findImage } from "../models/query/image";
 
 export const addProductID = (req, res, next) => {
    (async () => {
@@ -111,9 +114,36 @@ export const fetchProductIDsByService = (req, res) => {
          if (service === null) {
             return res.status(401).json(serviceNotExist(serviceName))
          }
-         return res.status(200).json(service.ProductID)
+         return res.status(200).json(service.ProductIDs)
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }
+   })()
+}
+
+export const updateProductIDPicture = (req, res, next) => {
+   (async () => {
+     try {
+       const {id, label} = req.body
+       const image = await findImage(id)
+       if (image) {
+         const currentImageUrl = image.dataValues.url
+         await image.destroy()
+         if (!currentImageUrl.endsWith('default.png')) {
+           fs.unlink(currentImageUrl, (err) => {
+             if (err) throw err
+           })
+         }
+         req.body.associatedModelId = id
+         req.body.associatedModel = 'ProductIDId'
+         req.body.label = label
+
+         next()
+       } else {
+         throw 'error'
+       }
+     } catch (err) {
+       return res.json(serverErrorMessage(err.message));
+     }
    })()
 }
