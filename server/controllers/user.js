@@ -75,13 +75,16 @@ export const getAllUsers = (req, res) => {
 export const updateProfilePicture = (req, res, next) => {
     (async () => {
       try {
-        const image = await findImage(req.user.id)
+        const id = (req.route.path === '/updateUserPicture') ? req.body.id : req.user.id
+        const image = await findImage(id)
         const currentImageUrl = image.dataValues.url
         await image.destroy()
-        fs.unlink(currentImageUrl, (err) => {
-          if (err) throw err
-        })
-        req.body.associatedModelId = req.user.id
+        if (!currentImageUrl.endsWith('default.png')) {
+          fs.unlink(currentImageUrl, (err) => {
+            if (err) throw err
+          })
+        }
+        req.body.associatedModelId = id
         req.body.associatedModel = 'UserId'
         next()
       } catch (err) {
