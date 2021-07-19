@@ -35,6 +35,17 @@ export const findRequestsProductID = () => {
     })
 }
 
+export const findRequestProductIDById = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const requestsProductID = await models.RequestProductID.findByPk(id)
+            resolve(requestsProductID)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
 export const updateIsTreatedRequestProductID = (_id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -44,6 +55,7 @@ export const updateIsTreatedRequestProductID = (_id) => {
                     id: _id
                 }
             })
+            console.log(requestProductID)
             resolve(requestProductID)
         } catch (err) {
             reject(err)

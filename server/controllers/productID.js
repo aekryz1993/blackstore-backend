@@ -5,9 +5,10 @@ import { findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, requestSuccessfulySent } from '../utils/messages/productCategory'
-import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
+import { createRequestProductID, findRequestProductIDById, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
 import { findUserById } from "../models/query/user";
 import { findImage } from "../models/query/image";
+import { findWallet, updateWallet } from "../models/query/wallet";
 
 export const addProductID = (req, res, next) => {
    (async () => {
@@ -96,8 +97,16 @@ export const treatedRequestProductID = (req, res) => {
    (async () => {
       const body = req.body
       try {
-         await updateIsTreatedRequestProductID(body.requestIDid)
-
+         const isTreated = await updateIsTreatedRequestProductID(body.requestIDid)
+         if (!isTreated[0]) {
+            throw 'Operation failed'
+         }
+         // const requestId = await findRequestProductIDById(body.requestIDid)
+         // const UserId = requestId.UserId.id
+         // const productPrice = requestId.ProductIDId.pricePoint
+         // const wallet = await findWallet(UserId)
+         // const newCredit = wallet.dataValues.credit - productPrice
+         // await updateWallet({UserId, newCredit})
          return res.status(200).json(requestSuccessfulyTreated())
 
       } catch (err) {

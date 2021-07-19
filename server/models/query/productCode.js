@@ -29,11 +29,27 @@ export const findAllProductCodes = (quantity, categoryId) => {
         try {
             const productCodes = await models.ProductCode.findAll({
                 where: {
-                    ProductCategoryId: categoryId
+                    ProductCategoryId: categoryId,
+                    sold: false,
                 },
                 limit: quantity,
             })
             resolve(productCodes)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+export const updateProductCode = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await models.ProductCode.update({ sold: true }, {
+                where: {
+                    id
+                },
+            })
+            resolve('updated')
         } catch (err) {
             reject(err)
         }

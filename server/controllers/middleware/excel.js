@@ -2,6 +2,7 @@ import multer from "multer"
 import path from "path"
 import fs from "fs"
 import readXlsxFile from "read-excel-file/node"
+import { serverErrorMessage } from "../../utils/messages";
 
 const CURRENT_WORKING_DIR = process.cwd();
 const dir = path.resolve(CURRENT_WORKING_DIR, 'resources/temporary')
@@ -23,7 +24,7 @@ const arrayToObj = (_rows) => {
     })
 }
 
-export const readExcel = async (req, _, next) => {
+export const readExcel = async (req, res, next) => {
     try {
         const targetFile = req.file.path
         const rows = await readXlsxFile(targetFile)

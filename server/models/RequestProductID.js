@@ -10,10 +10,6 @@ RequestProductID.init({
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
    },
-   userId: {
-      type: DataTypes.STRING,
-      allowNull: false
-   },
    isTreated: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

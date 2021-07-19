@@ -31,6 +31,7 @@ export const checkSessionPermission = (req, res, next) => {
 export const saveUsers = (users) => {
     return new Promise(async (resolve, reject) => {
         let exist = []
+        let notExist = false
         try {
             for (let i in users) {
                 const firstname = users[i]["nom"]
@@ -43,8 +44,9 @@ export const saveUsers = (users) => {
 
                 const {user, isNewUser} = await createUser({firstname, lastname, username, password, email, phone})
                 if (!isNewUser) {
-                    exist = {...exist, username}
+                    exist = [...exist, username]
                 } else {
+                    notExist = true
                     const UserId = user.dataValues.id
                     await createWallet({credit, UserId})
                     const imageBody = {
@@ -59,6 +61,9 @@ export const saveUsers = (users) => {
         } catch (error) {
             console.log(error)
             reject(error.message)
+        }
+        if (!notExist) {
+            reject({message: 'جميع العملاء تم إضافتهم مسبقا'})
         }
         if (exist.length !== 0) {
             resolve({

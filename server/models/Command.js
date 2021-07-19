@@ -2,32 +2,30 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 
 import sequelize from "../config/db.config";
 
-class ProductCode extends Model {}
+class Command extends Model { }
 
-ProductCode.init({
+Command.init({
     id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    code: {
+    category: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
-    Serial: {
-        type: DataTypes.STRING,
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
-    Date: {
-        type: DataTypes.STRING,
-    },
-    sold: {
+    isTreated: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
 }, {
     sequelize,
-    modelName: 'ProductCode',
-    tableName: 'ProductCode',
+    modelName: 'Command',
+    tableName: 'Command',
 })
 
-export default ProductCode
+export default Command

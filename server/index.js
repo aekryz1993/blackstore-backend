@@ -1,9 +1,8 @@
 import http from 'http';
 
 import app from './app';
-import { hostServer, baseUrl } from './config/server.config';
+import { hostServer } from './config/server.config';
 import { createAdmin } from './db/seed';
-import { initializeModels } from './models/associations';
 import sequelize from './config/db.config'
 
 const config = {

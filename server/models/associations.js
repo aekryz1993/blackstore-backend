@@ -6,6 +6,7 @@ import ProductCode from './ProductCode'
 import RequestProductID from './RequestProductID'
 import Image from './Image'
 import Wallet from './Wallet'
+import Command from './Command'
 
 Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
@@ -36,15 +37,17 @@ RequestProductID.belongsTo(ProductID, {
     }
 });
 
+Wallet.belongsTo(User)
+Command.belongsTo(User)
+
 User.hasMany(RequestProductID)
+User.hasMany(Command)
 
 Service.hasOne(Image)
 ProductCategory.hasOne(Image)
 ProductID.hasOne(Image)
 User.hasOne(Image)
 User.hasOne(Wallet)
-
-Wallet.belongsTo(User)
 
 export default {
     User,
@@ -55,4 +58,5 @@ export default {
     RequestProductID,
     Image,
     Wallet,
+    Command,
 }
