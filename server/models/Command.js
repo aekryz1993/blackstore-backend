@@ -16,7 +16,7 @@ Command.init({
     },
     quantity: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        defaultValue: 0,
     },
     isTreated: {
         type: DataTypes.BOOLEAN,
