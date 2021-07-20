@@ -18,7 +18,7 @@ const prodEnv = {
     username: 'root',
     password: 'password123',
     host: 'localhost',
-    dialect: 'mysql',
+    ssl: true,
     pool: {
         max: 5,
         min: 0,
@@ -31,6 +31,9 @@ const sequelize = new Sequelize(devEnv.database, devEnv.username, devEnv.passwor
     host: devEnv.host,
     dialect: 'postgres',
     logging: false,
+    dialectOptions: {
+        ssl: true
+    }
 });
 
 export default sequelize
