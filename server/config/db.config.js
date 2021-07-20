@@ -32,7 +32,10 @@ const sequelize = new Sequelize(devEnv.database, devEnv.username, devEnv.passwor
     dialect: 'postgres',
     logging: false,
     dialectOptions: {
-        ssl: true
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
     }
 });
 
