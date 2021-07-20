@@ -4,7 +4,7 @@
   "description": "Backend Application for Holesale Digital Services",
   "scripts": {
     "heroku-postbuild": "webpack --config ./tools/webpack.prod.js",
-    "start:prod": "node ./dist/main",
+    "start": "node ./dist/main",
     "test": "jest --watch"
   },
   "repository": {
