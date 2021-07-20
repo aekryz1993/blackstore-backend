@@ -5,7 +5,7 @@
   "scripts": {
     "start": "webpack --config ./tools/webpack.dev.js --watch",
     "build": "webpack --config ./tools/webpack.prod.js && node ./dist/main",
-    "heroku-postbuild": "webpack --config ./tools/webpack.prod.js && node ./dist/main",
+    "heroku-postbuild": "webpack --config ./tools/webpack.prod.js",
     "test": "jest --watch"
   },
   "repository": {
