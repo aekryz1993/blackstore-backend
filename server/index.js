@@ -46,7 +46,8 @@ const listen = (port, host) => {
     const result = await listen(process.env.PORT || 5000)
     // const result = await listen(process.env.PORT || config.port)
     console.log('Connection has been established successfully.');
-    console.log(`Host: ${config.host}\nPort: ${config.port}`);
+    console.log(`Host: ${config.host}\nPort: ${process.env.PORT}`);
+    // console.log(`Host: ${config.host}\nPort: ${config.port}`);
     console.log(result)
     await sequelize.sync()
     createAdmin()
