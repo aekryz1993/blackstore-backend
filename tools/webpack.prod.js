@@ -6,7 +6,7 @@ const commonConfig = require('./webpack.common'),
 const productionConfig = merge([
     commonConfig,
     { mode: 'production' },
-    parts.generateSourceMaps({ type: "source-map" })
+    // parts.generateSourceMaps({ type: "source-map" })
 ]);
 
 module.exports = productionConfig
