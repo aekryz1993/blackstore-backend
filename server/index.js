@@ -43,7 +43,7 @@ const listen = (port, host) => {
 
 (async () => {
   try {
-    const result = await listen(config.port, config.host)
+    const result = await listen(config.port)
     console.log('Connection has been established successfully.');
     console.log(`Host: ${config.host}\nPort: ${config.port}`);
     console.log(result)
