@@ -4,7 +4,7 @@
   "description": "Backend Application for Holesale Digital Services",
   "scripts": {
     "start": "webpack --config ./tools/webpack.dev.js --watch",
-    "build": "webpack --config ./tools/webpack.prod.js && node ./dist/main",
+    "build": "webpack --config ./tools/webpack.dev.js --watch",
     "test": "jest --watch"
   },
   "repository": {
