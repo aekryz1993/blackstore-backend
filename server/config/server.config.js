@@ -11,8 +11,8 @@ export const testHostServer = {
 };
 
 export const prodHostServer = {
-    host: fixPort(process.env.HOST) || 'localhost',
-    port: Number(process.env.PORT) || 3000
+    host: process.env.HOST || 'localhost',
+    port: fixPort(Number(process.env.PORT)) || 3000
 };
 
 export const hostServer = (app) => app.get('env') === 'development' ? devHostServer : prodHostServer;
