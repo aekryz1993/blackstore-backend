@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Backend Application for Holesale Digital Services",
   "scripts": {
-    "start": "webpack --config ./tools/webpack.dev.js --watch",
-    "build": "webpack --config ./tools/webpack.prod.js && node ./dist/main",
+    "start:dev": "webpack --config ./tools/webpack.dev.js --watch",
+    "build": "webpack --config ./tools/webpack.prod.js",
+    "start": "node ./dist/main",
     "test": "jest --watch"
   },
   "repository": {

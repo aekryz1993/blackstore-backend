@@ -10,49 +10,29 @@ const config = {
   port: hostServer(app)['port'],
 }
 
-const server = http.createServer(app)
-
 const listen = (port, host) => {
+  const server = http.createServer(app)
   return new Promise((resolve, reject) => {
     server.listen(port, host)
     server.on('listening', () => {
-      resolve('successfully connected')
+      resolve({message:'Connection has been established successfully.', port, host})
     })
     server.on('error', (err) => {
-      reject(err)
-      // switch (err.code) {
-      //   case 'EADDRINUSE':
-      //     reject(err.code)
-      //     // listen(config.port + 1, config.host)
-      //     break
-      //   case 'EACCES':
-      //     reject(err.code)
-      //     // listen(1024, config.host)
-      //     break
-      //   case 'ENOTFOUND' || 'EADDRNOTAVAIL' || 'EAI_AGAIN':
-      //     reject(err.code)
-      // }
-      // if (err.code === 'EADDRINUSE') listen(config.port + 1, config.host)
-      // else if (err.code === 'EACCES') listen(1024, config.host)
-      // else if (err.code === 'ENOTFOUND' || err.code === 'EADDRNOTAVAIL' || err.code === 'EAI_AGAIN') {
-      //   throw err
-      // }
+      server.close()
+      if (err.code === 'EADDRINUSE') resolve(listen(err.port + 1, config.host))
     });
   })
 }
 
 (async () => {
   try {
-    const result = await listen(process.env.PORT || config.port, config.host)
-    console.log('Connection has been established successfully.');
-    console.log(`Host: ${config.host}\nPort: ${config.port}`);
-    console.log(result)
+    const result = await listen(config.port, config.host)
+    console.log(result.message);
+    console.log(`Host: ${result.host}\nPort: ${result.port}`);
     await sequelize.sync()
     createAdmin()
   } catch (err) {
-    console.log(err)
-    if (err.code === '3D000') {
-    }
+    console.error(err)
   }
 })()
 
