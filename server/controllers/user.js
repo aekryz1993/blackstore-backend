@@ -95,7 +95,7 @@ export const updateProfilePicture = (req, res, next) => {
     })()
 }
 
-export const confirmPayment = (req, res, next) => {
+export const confirmPayment = (req, res) => {
     (async () => {
       try {
         const payment = await updatePaymentStatus(req.body.id)
@@ -115,6 +115,26 @@ export const confirmPayment = (req, res, next) => {
         await updateWallet({UserId, newCredit})
 
         return res.status(200).json({message: 'تم تحديث المحفظة بنجاح'})
+      } catch (err) {
+        return res.json(serverErrorMessage(err.message));
+      }
+    })()
+}
+
+export const fetchAliveCommands = (req, res) => {
+    (async () => {
+      try {
+        let commands = await findAliveCommands()
+
+        commands = commands.map((command) =>
+          Object.fromEntries(
+            Object.entries(command).filter(
+              ([key, _]) => key !== "id" && key !== "isTreated"
+            )
+          )
+        );
+
+        return res.status(200).json({message: 'Done!', commands})
       } catch (err) {
         return res.json(serverErrorMessage(err.message));
       }

@@ -3,7 +3,7 @@ import express from 'express'
 import { addPicture } from '../controllers/image';
 import uploadImage from '../controllers/middleware/image';
 import uploadExcel, { readExcel } from '../controllers/middleware/excel';
-import { addUser, getAllUsers, addMultiUser, updateProfilePicture, confirmPayment } from "../controllers/user";
+import { addUser, getAllUsers, addMultiUser, updateProfilePicture, confirmPayment, fetchAliveCommands } from "../controllers/user";
 import { addWallet, updateCredit } from '../controllers/wallet';
 import { addPayMethod, fetchNotConfirmedPayments, fetchPayMethodAddress } from '../controllers/payment';
 
@@ -20,6 +20,7 @@ const usersRouter = (checkAdminPermission, ) => {
   router.get('/payments', checkAdminPermission, fetchNotConfirmedPayments)
   router.post('/addPayMethod', checkAdminPermission, addPayMethod)
   router.get('/getPayMethodAddress', checkAdminPermission, fetchPayMethodAddress)
+  router.get('/getAliveCmnds', checkAdminPermission, fetchAliveCommands)
 
   return router;
 

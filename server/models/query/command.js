@@ -24,3 +24,16 @@ export const createCommand = ({ category, quantity, UserId }) => {
     }
   });
 };
+
+export const findAliveCommands = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const commands = await models.Command.find({
+        where: { isTreated: false },
+      });
+      resolve(commands);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
