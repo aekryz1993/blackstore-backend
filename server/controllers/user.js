@@ -1,7 +1,9 @@
 import fs from "fs"
 
 import { findImage } from '../models/query/image';
+import { updatePaymentStatus } from "../models/query/payment";
 import { countUsers, createUser, findAllUsers } from '../models/query/user'
+import { updateWallet } from "../models/query/wallet";
 import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist } from '../utils/messages/user'
 import { paginateData } from './helper';
@@ -87,6 +89,32 @@ export const updateProfilePicture = (req, res, next) => {
         req.body.associatedModelId = id
         req.body.associatedModel = 'UserId'
         next()
+      } catch (err) {
+        return res.json(serverErrorMessage(err.message));
+      }
+    })()
+}
+
+export const confirmPayment = (req, res, next) => {
+    (async () => {
+      try {
+        const payment = await updatePaymentStatus(req.body.id)
+        if (!payment) {
+          return res.status(401).json({message: 'there is not payment with that ID'})
+        }
+
+        const UserId = payment.dataValues.UserId
+        const amount = payment.dataValues.amount
+
+        const wallet = await findWallet(UserId)
+        if (!wallet) {
+          res.json(401).json({message: 'This wallet doesn\'t exist'})
+        }
+        const newCredit = wallet.dataValues.credit + amount
+
+        await updateWallet({UserId, newCredit})
+
+        return res.status(200).json({message: 'تم تحديث المحفظة بنجاح'})
       } catch (err) {
         return res.json(serverErrorMessage(err.message));
       }

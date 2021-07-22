@@ -7,6 +7,7 @@ import RequestProductID from './RequestProductID'
 import Image from './Image'
 import Wallet from './Wallet'
 import Command from './Command'
+import Payment from './Payment'
 
 Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
@@ -42,6 +43,7 @@ Command.belongsTo(User)
 
 User.hasMany(RequestProductID)
 User.hasMany(Command)
+User.hasMany(Payment)
 
 Service.hasOne(Image)
 ProductCategory.hasOne(Image)
@@ -59,4 +61,5 @@ export default {
     Image,
     Wallet,
     Command,
+    Payment,
 }

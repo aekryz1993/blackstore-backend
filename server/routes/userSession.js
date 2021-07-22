@@ -10,6 +10,7 @@ import { logout } from '../controllers/auth';
 import uploadImage from '../controllers/middleware/image';
 import { updateProfilePicture } from '../controllers/user';
 import { addPicture } from '../controllers/image';
+import { buyingCredit } from '../controllers/payment';
 
 const router = express.Router();
 
@@ -20,8 +21,9 @@ const userSessionRouter = () => {
   router.use('/productCategory', productCategoryRouter(checkAdminPermission));
   router.use('/productID', productIDRouter(checkAdminPermission));
   router.use('/productCode', productCodeRouter(checkAdminPermission));
-  router.get('/logout', logout);
+  router.post('/payment', checkSessionPermission, buyingCredit);
   router.put('/updateProfilePicture', checkSessionPermission, uploadImage.single('picture'), updateProfilePicture, addPicture);
+  router.get('/logout', checkSessionPermission, logout);
 
   return router;
 
