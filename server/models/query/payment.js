@@ -1,3 +1,5 @@
+import models from '../associations'
+
 export const findPayment = (codeID) => {
   return new Promise(async (resolve, reject) => {
     try {

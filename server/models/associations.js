@@ -8,6 +8,7 @@ import Image from './Image'
 import Wallet from './Wallet'
 import Command from './Command'
 import Payment from './Payment'
+import PayMethod from './PayMethod'
 
 Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
@@ -62,4 +63,5 @@ export default {
     Wallet,
     Command,
     Payment,
+    PayMethod,
 }

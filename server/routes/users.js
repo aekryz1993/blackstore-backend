@@ -5,7 +5,7 @@ import uploadImage from '../controllers/middleware/image';
 import uploadExcel, { readExcel } from '../controllers/middleware/excel';
 import { addUser, getAllUsers, addMultiUser, updateProfilePicture, confirmPayment } from "../controllers/user";
 import { addWallet, updateCredit } from '../controllers/wallet';
-import { fetchNotConfirmedPayments } from '../controllers/payment';
+import { addPayMethod, fetchNotConfirmedPayments, fetchPayMethodAddress } from '../controllers/payment';
 
 const router = express.Router();
 
@@ -18,6 +18,8 @@ const usersRouter = (checkAdminPermission, ) => {
   router.put('/updateUserPicture', checkAdminPermission, uploadImage.single('picture'), updateProfilePicture, addPicture)
   router.put('/confirmPayment', checkAdminPermission, confirmPayment)
   router.get('/payments', checkAdminPermission, fetchNotConfirmedPayments)
+  router.post('/addPayMethod', checkAdminPermission, addPayMethod)
+  router.get('/getPayMethodAddress', checkAdminPermission, fetchPayMethodAddress)
 
   return router;
 
