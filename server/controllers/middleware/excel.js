@@ -1,38 +1,22 @@
 import multer from "multer"
 import path from "path"
 import fs from "fs"
-import readXlsxFile from "read-excel-file/node"
+import xlsx from "xlsx"
 import { serverErrorMessage } from "../../utils/messages";
 
 const CURRENT_WORKING_DIR = process.cwd();
 const dir = path.resolve(CURRENT_WORKING_DIR, 'resources/temporary')
 
-const arrayToObj = (_rows) => {
-    let data = []
-    let obj = {}
-    return new Promise((resolve, reject) => {
-        _rows.forEach((col, idx) => {
-            if (idx !== 0) {
-                col.forEach((elem, idx) => {
-                    obj[_rows[0][idx]] = elem
-                })
-                data = [...data, obj]
-                obj = {}
-            }
-        })
-        resolve(data)
-    })
-}
-
 export const readExcel = async (req, res, next) => {
     try {
         const targetFile = req.file.path
-        const rows = await readXlsxFile(targetFile)
-        const dataObj = await arrayToObj(rows)
+        const file = xlsx.readFile(targetFile)
+        const sheet = file.Sheets[file.SheetNames[0]]
+        const rows = xlsx.utils.sheet_to_json(sheet)
         fs.unlink(targetFile, async (err) => {
             if (err) throw err
         })
-        req.dataObj = dataObj
+        req.dataObj = rows
         next()
     } catch (error) {
         return res.json(serverErrorMessage(error.message));
