@@ -1,35 +1,38 @@
 import fs from "fs"
 
 import { createProductID, findProductIDById } from "../models/query/productID";
-import { findServiceById } from "../models/query/service";
+import { findService, findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
-import { serviceNotExist } from '../utils/messages/service'
+import { serviceNotExist, successRegistration } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, requestSuccessfulySent } from '../utils/messages/productCategory'
-import { createRequestProductID, findRequestProductIDById, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
+import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
 import { findUserById } from "../models/query/user";
 import { findImage } from "../models/query/image";
-import { findWallet, updateWallet } from "../models/query/wallet";
+import { createPrice } from "../models/query/price";
 
-export const addProductID = (req, res, next) => {
+export const addProductID = (req, res) => {
    (async () => {
-      const body = req.body
+      const {serviceName, label, dollar, euro, dinnar} = req.body
       try {
-         const service = await findServiceById(body.ServiceId)
+         const service = await findService(serviceName, 'id')
          if (service === null) {
-            return res.status(401).json(serviceNotExist(body.serviceName))
+            return res.status(401).json(serviceNotExist(serviceName))
          }
 
-         const checkExistProductID = service.dataValues.ProductIDs.filter(ProductIDItem => ProductIDItem.dataValues.label === body.label)
+         const checkExistProductID = service.dataValues.ProductIDs.filter(ProductIDItem => ProductIDItem.dataValues.label === label)
          if (checkExistProductID.length !== 0) {
-            return res.status(409).json(productCategoryAlreadyExistMsg(body.label))
+            return res.status(409).json(productCategoryAlreadyExistMsg(label))
          }
 
-         const { productID } = await createProductID(body)
-         req.body.associatedModelId = productID.dataValues.id
-         req.body.associatedModel = 'ProductIDId'
-         req.body.label = productID.dataValues.label
-         return next()
-
+         const { productID } = await createProductID({label, ServiceId: service.dataValues.id})
+			const bodyPrice = {
+				dollar,
+				euro,
+				dinnar,
+				ProductIDId: productID.dataValues.id
+			}
+         await createPrice(bodyPrice);
+         return res.status(201).json(successRegistration(label))
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }
@@ -95,18 +98,11 @@ export const fetchAllRequestsProductID = (req, res) => {
 
 export const treatedRequestProductID = (req, res) => {
    (async () => {
-      const body = req.body
       try {
-         const isTreated = await updateIsTreatedRequestProductID(body.requestIDid)
+         const isTreated = await updateIsTreatedRequestProductID(req.params.id)
          if (!isTreated[0]) {
             throw 'Operation failed'
          }
-         // const requestId = await findRequestProductIDById(body.requestIDid)
-         // const UserId = requestId.UserId.id
-         // const productPrice = requestId.ProductIDId.pricePoint
-         // const wallet = await findWallet(UserId)
-         // const newCredit = wallet.dataValues.credit - productPrice
-         // await updateWallet({UserId, newCredit})
          return res.status(200).json(requestSuccessfulyTreated())
 
       } catch (err) {
@@ -127,32 +123,5 @@ export const fetchProductIDsByService = (req, res) => {
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }
-   })()
-}
-
-export const updateProductIDPicture = (req, res, next) => {
-   (async () => {
-     try {
-       const {id, label} = req.body
-       const image = await findImage(id)
-       if (image) {
-         const currentImageUrl = image.dataValues.url
-         await image.destroy()
-         if (!currentImageUrl.endsWith('default.png')) {
-           fs.unlink(currentImageUrl, (err) => {
-             if (err) throw err
-           })
-         }
-         req.body.associatedModelId = id
-         req.body.associatedModel = 'ProductIDId'
-         req.body.label = label
-
-         next()
-       } else {
-         throw 'error'
-       }
-     } catch (err) {
-       return res.json(serverErrorMessage(err.message));
-     }
    })()
 }
