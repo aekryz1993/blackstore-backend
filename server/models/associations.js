@@ -9,6 +9,8 @@ import Wallet from './Wallet'
 import Command from './Command'
 import Payment from './Payment'
 import PayMethod from './PayMethod'
+import Permission from './Permission'
+import Price from './Price'
 
 Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
@@ -41,6 +43,10 @@ RequestProductID.belongsTo(ProductID, {
 
 Wallet.belongsTo(User)
 Command.belongsTo(User)
+Permission.belongsTo(User)
+
+Price.belongsTo(ProductCategory)
+Price.belongsTo(ProductID)
 
 User.hasMany(RequestProductID)
 User.hasMany(Command)
@@ -48,9 +54,12 @@ User.hasMany(Payment)
 
 Service.hasOne(Image)
 ProductCategory.hasOne(Image)
+ProductCategory.hasOne(Price)
 ProductID.hasOne(Image)
+ProductID.hasOne(Price)
 User.hasOne(Image)
 User.hasOne(Wallet)
+User.hasOne(Permission)
 
 export default {
     User,
@@ -64,4 +73,6 @@ export default {
     Command,
     Payment,
     PayMethod,
+    Permission,
+    Price,
 }

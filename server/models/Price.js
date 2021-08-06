@@ -2,9 +2,9 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 
 import sequelize from "../config/db.config";
 
-class Wallet extends Model {}
+class Price extends Model {}
 
-Wallet.init({
+Price.init({
     id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -12,20 +12,20 @@ Wallet.init({
     },
     dollar: {
         type: DataTypes.FLOAT,
+        defaultValue: 0.00,
     },
     euro: {
         type: DataTypes.FLOAT,
-    },
-    usdt: {
-        type: DataTypes.FLOAT,
+        defaultValue: 0.00,
     },
     dinnar: {
         type: DataTypes.FLOAT,
+        defaultValue: 0.00,
     },
 }, {
     sequelize,
-    modelName: 'Wallet',
-    tableName: 'Wallet',
+    modelName: 'Price',
+    tableName: 'Price',
 })
 
-export default Wallet
+export default Price

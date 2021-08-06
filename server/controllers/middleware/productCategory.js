@@ -1,24 +1,28 @@
-import { updatePrice } from "../../models/query/productCategory"
-import { findServiceById } from "../../models/query/service"
+import { findPriceByProduct, updatePrice } from "../../models/query/price"
+import { findService } from "../../models/query/service"
 import { serviceNotExist } from "../../utils/messages/service"
 
-export const savePrices = (prices, ServiceId, serviceName) => {
+export const savePrices = (prices) => {
     return new Promise(async (resolve, reject) => {
         let notExist = []
         try {
             for (let i in prices) {
-                const priceCoin = prices[i]["price_coin"]
-                const pricePoint = prices[i]["price_point"]
+                const serviceName = prices[i]["service"]
                 const label = prices[i]["name"]
-                const service = await findServiceById(ServiceId)
+                const dinnar = prices[i]["dinnar"]
+                const euro = prices[i]["euro"]
+                const dollar = prices[i]["dollar"]
+                const service = await findService(serviceName, 'code')
                 if (service === null) {
                    return res.status(401).json(serviceNotExist(serviceName))
                 }
                 const productCategory = service.ProductCategories.filter(
                     ProductCategorieItem => ProductCategorieItem.dataValues.label === label
                 )
+                const price = await findPriceByProduct(productCategory[0].dataValues.id)
+
                 if (productCategory.length !== 0) {
-                    await updatePrice({id: productCategory[0].dataValues.id, priceCoin, pricePoint})
+                    await updatePrice({dinnar, euro, dollar}, price.dataValues.id)
                 } else {
                     notExist = [...notExist, label]
                 }

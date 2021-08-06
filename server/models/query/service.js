@@ -26,7 +26,8 @@ export const findService = (serviceName, serviceCategory) => {
                 where: {
                     label: serviceName,
                     category: serviceCategory,
-                }
+                },
+                include: [models.ProductCategory, models.ProductID],
             })
             resolve(service)
         } catch (err) {

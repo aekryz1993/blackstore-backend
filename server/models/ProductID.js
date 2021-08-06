@@ -17,12 +17,6 @@ ProductID.init({
     isAvailable: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
-    },
-    priceCoin: {
-        type: DataTypes.FLOAT,
-    },
-    pricePoint: {
-        type: DataTypes.FLOAT,
     }
 }, {
     sequelize,

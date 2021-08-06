@@ -1,39 +1,33 @@
-import fs from "fs"
-
-import { createProductCategory, updatePrice } from "../models/query/productCategory";
-import { findServiceById } from "../models/query/service";
+import { createProductCategory, findProductCategoryById } from "../models/query/productCategory";
+import { findService, findServiceById } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
-import { serviceNotExist } from '../utils/messages/service'
+import { serviceNotExist, successRegistration } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg } from '../utils/messages/productCategory'
-import { unlink } from 'fs';
 import { savePrices } from "./middleware/productCategory";
-import { findImage } from "../models/query/image";
+import { createPrice, updatePrice } from "../models/query/price";
 
-export const addProductCategory = (req, res, next) => {
+export const addProductCategory = (req, res) => {
    (async () => {
-      const body = req.body
+      const {label, serviceName, dollar, euro, dinnar} = req.body
       try {
-         const service = await findServiceById(body.ServiceId)
+         const service = await findService(serviceName, 'code')
          if (service === null) {
-            return res.status(401).json(serviceNotExist(body.serviceName))
+            return res.status(401).json(serviceNotExist(serviceName))
          }
          
-         const checkExistCategory = service.dataValues.ProductCategories.filter(ProductCategorieItem => ProductCategorieItem.dataValues.label === body.label)
+         const checkExistCategory = service.dataValues.ProductCategories.filter(ProductCategorieItem => ProductCategorieItem.dataValues.label === label)
          if (checkExistCategory.length !== 0) {
-            if (req.file) {
-               unlink(req.file.path, (err) => {
-                  if (err) throw err;
-               });
-            }
-            return res.status(409).json(productCategoryAlreadyExistMsg(body.label))
+            return res.status(409).json(productCategoryAlreadyExistMsg(label))
          }
-
-         const { productCategory } = await createProductCategory(body)
-         req.body.associatedModelId = productCategory.dataValues.id
-         req.body.associatedModel = 'ProductCategoryId'
-         req.body.label = productCategory.dataValues.label
-         return next()
-
+         const { productCategory } = await createProductCategory({label, ServiceId: service.dataValues.id})
+			const bodyPrice = {
+				dollar,
+				euro,
+				dinnar,
+				ProductCategoryId: productCategory.dataValues.id
+			}
+         await createPrice(bodyPrice);
+         return res.status(201).json(successRegistration(productCategory.dataValues.label))
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }
@@ -42,22 +36,22 @@ export const addProductCategory = (req, res, next) => {
 
 export const updatePriceProductCategory = (req, res) => {
    (async () => {
-      const body = req.body
+      const {dollar, euro, dinnar} = req.body
+
       try {
-         const service = await findServiceById(body.ServiceId)
-         if (service === null) {
-            return res.status(401).json(serviceNotExist(body.serviceName))
+         const product = await findProductCategoryById(req.params.id)
+         if (product === null) {
+            return res.status(401).json(serviceNotExist('this category doesn\'t exist'))
          }
-         const productCategory = service.ProductCategories.filter(
-             ProductCategorieItem => ProductCategorieItem.dataValues.id === body.id
-         )
-         if (productCategory.length !== 0) {
-            const message = await updatePrice({id: body.id, priceCoin: body.priceCoin, pricePoint: body.pricePoint})
-            return res.status(200).json({message})
-         } 
-         return res.status(401).json(serviceNotExist('this category doesn\'t exist'))
+         const price = product.Price.dataValues
+
+         const message = await updatePrice({
+            dollar,
+            euro,
+            dinnar,
+         }, price.id)
+         return res.status(200).json({message})
       } catch (err) {
-         console.log(err)
          return res.json(serverErrorMessage(err.message));
       }
    })()
@@ -65,10 +59,9 @@ export const updatePriceProductCategory = (req, res) => {
 
 export const updateMultiPricesProductCategory = (req, res) => {
    (async () => {
-      const {ServiceId, serviceName} = req.body
       const prices = req.dataObj
       try {
-         const message = await savePrices(prices, ServiceId, serviceName)
+         const message = await savePrices(prices)
          return res.status(200).json(message)
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
@@ -89,27 +82,4 @@ export const fetchProductCategoriessByService = (req, res) => {
          return res.json(serverErrorMessage(err.message));
       }
    })()
-}
-
-export const updateCategoryPicture = (req, res, next) => {
-    (async () => {
-      try {
-        const {id, label} = req.body
-        const image = await findImage(id)
-        const currentImageUrl = image.dataValues.url
-        await image.destroy()
-        if (!currentImageUrl.endsWith('default.png')) {
-          fs.unlink(currentImageUrl, (err) => {
-            if (err) throw err
-          })
-        }
-        req.body.associatedModelId = id
-        req.body.associatedModel = 'ProductCategoryId'
-        req.body.label = label
-
-        next()
-      } catch (err) {
-        return res.json(serverErrorMessage(err.message));
-      }
-    })()
 }

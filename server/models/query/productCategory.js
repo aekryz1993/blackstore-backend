@@ -4,7 +4,7 @@ export const createProductCategory = (body) => {
     return new Promise(async (resolve, reject) => {
         try {
             const productCategory = await models.ProductCategory.create(body, {
-                include: models.ProductCode
+                include: [models.ProductCode, models.Price]
             })
             resolve({ productCategory })
         } catch (err) {
@@ -18,7 +18,7 @@ export const findProductCategory = (label) => {
         try {
             const productCategory = await models.ProductCategory.findOne({
                 where: {label},
-                include: models.ProductCode
+                include: [models.ProductCode, models.Price]
             })
             resolve(productCategory)
         } catch (err) {
@@ -42,7 +42,7 @@ export const findProductCategoryById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const productCategory = await models.ProductCategory.findByPk(id, {
-                include: models.ProductCode,
+                include: [models.ProductCode, models.Price],
             })
             resolve(productCategory)
         } catch (err) {
