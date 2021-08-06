@@ -3,7 +3,7 @@ import {
   findAllProductCodes,
   updateProductCode,
 } from "../models/query/productCode";
-import { findServiceById } from "../models/query/service";
+import { findService } from "../models/query/service";
 import { findProductCategoryById } from "../models/query/productCategory";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from "../utils/messages/service";
@@ -18,39 +18,37 @@ import { createCommand } from "../models/query/command";
 
 export const addProductCode = (req, res) => {
   (async () => {
-    const body = req.body;
+    const {serviceName, productName, code, Date, Serial} = req.body;
     try {
-      const service = await findServiceById(body.ServiceId);
+      const service = await findService(serviceName, 'code');
       if (service === null) {
-        return res.status(401).json(serviceNotExist(body.serviceName));
+        return res.status(401).json(serviceNotExist(serviceName));
       }
-
       const productCategoryService =
         service.dataValues.ProductCategories.filter(
           (ProductCategorieItem) =>
-            ProductCategorieItem.dataValues.id === body.ProductCategoryId
+            ProductCategorieItem.dataValues.label === productName
         );
       if (productCategoryService.length === 0) {
         return res
           .status(401)
-          .json(productCategoryNotExistMsg(body.productCategoryName));
+          .json(productCategoryNotExistMsg(productName));
       }
 
-      const productCategoryById = await findProductCategoryById(
+      const productCategory = await findProductCategoryById(
         productCategoryService[0].dataValues.id
       );
 
       const isProductCodeExist =
-        productCategoryById.dataValues.ProductCodes.filter(
-          (_productCode) => _productCode.dataValues.code === body.code
+        productCategory.dataValues.ProductCodes.filter(
+          (_productCode) => _productCode.dataValues.code === code
         );
       if (isProductCodeExist.length !== 0) {
-        return res.status(409).json(productCategoryAlreadyExistMsg(body.code));
+        return res.status(409).json(productCategoryAlreadyExistMsg(code));
       }
 
-      const { productCode } = await createProductCode(body);
-      const { code } = productCode.dataValues;
-      return res.status(201).json(productCategorySuccessRegistrationMsg(code));
+      const { productCode } = await createProductCode({code, Date, Serial, ProductCategoryId: productCategoryService[0].dataValues.id});
+      return res.status(201).json(productCategorySuccessRegistrationMsg(productCode.dataValues.code));
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
