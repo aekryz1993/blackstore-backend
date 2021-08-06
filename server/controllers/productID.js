@@ -7,7 +7,6 @@ import { serviceNotExist, successRegistration } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, requestSuccessfulySent } from '../utils/messages/productCategory'
 import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
 import { findUserById } from "../models/query/user";
-import { findImage } from "../models/query/image";
 import { createPrice } from "../models/query/price";
 
 export const addProductID = (req, res) => {
@@ -42,6 +41,7 @@ export const addProductID = (req, res) => {
 export const sendRequestProductID = (req, res) => {
    (async () => {
       const body = { ...req.body, UserId: req.user.dataValues.id }
+      const currentcoin = req.params.currentcoin
       try {
          const productID = await findProductIDById(body.ProductIDId)
 

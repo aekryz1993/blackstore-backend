@@ -1,7 +1,6 @@
 import express from 'express'
 
 import {
-  // fetchAllRequestsProductID,
   fetchProductIDsByService,
   sendRequestProductID,
 } from "../../controllers/productID";
@@ -12,9 +11,7 @@ const productIDRouter = () => {
 
   router.get('/get', fetchProductIDsByService);
 
-  router.post('/send', sendRequestProductID);
-
-  // router.get('/requestsID', fetchAllRequestsProductID);
+  router.post('/send/:currentcoin', sendRequestProductID);
 
   return router;
 

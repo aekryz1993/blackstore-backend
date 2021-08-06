@@ -14,7 +14,7 @@ const usersRouter = () => {
   router.post('/add', uploadImage.single('picture'), addUser, addWallet, addPicture);
   router.post('/addMulti', uploadExcel.single('excel'), readExcel, addMultiUser);
   router.get('/getusers', getAllUsers)
-  router.put('/updateCredit', updateCredit)
+  router.put('/updateCredit/:userId', updateCredit)
   router.put('/updateUserPicture', uploadImage.single('picture'), updateProfilePicture, addPicture)
   router.put('/confirmPayment', confirmPayment)
   router.get('/payments', fetchNotConfirmedPayments)
