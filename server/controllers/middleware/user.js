@@ -3,30 +3,8 @@ import { createPicture } from "../../models/query/image"
 
 import { createUser } from "../../models/query/user"
 import { createWallet } from "../../models/query/wallet"
-import { forbiddenActivePremission, forbiddenAdminPremission, forbiddenSessionPremission } from "../../utils/messages/user"
 
 const CURRENT_WORKING_DIR = process.cwd();
-
-export const checkAdminPermission = (req, res, next) => {
-    const _isAdmin = req.user.dataValues.isAdmin
-    
-    if (!_isAdmin) res.status(403).json(forbiddenAdminPremission())
-    next() 
-}
-
-export const checkActivePermission = (req, res, next) => {
-    const _isActive = req.user.dataValues.isActive
-    
-    if (!_isActive) res.status(403).json(forbiddenActivePremission())
-    next() 
-}
-
-export const checkSessionPermission = (req, res, next) => {
-    const {id} = req.query
-    const isCurrentUser = req.user.id === id
-    if (!isCurrentUser) res.status(403).json(forbiddenSessionPremission())
-    next() 
-}
 
 export const saveUsers = (users) => {
     return new Promise(async (resolve, reject) => {
@@ -48,6 +26,7 @@ export const saveUsers = (users) => {
                 } else {
                     notExist = true
                     const UserId = user.dataValues.id
+                    await createPermission({UserId})
                     await createWallet({credit, UserId})
                     const imageBody = {
                         type: 'image/png',

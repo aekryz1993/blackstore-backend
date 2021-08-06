@@ -6,10 +6,6 @@ const router = express.Router();
 
 const authRouter = (passport) => {
 
-  router.get('/', (req, res) => {
-    res.send('LOG IN --------------- SIGN UP');
-  });
-
   router.post('/login', signIn(passport));
 
   return router;

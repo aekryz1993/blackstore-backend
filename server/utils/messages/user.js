@@ -24,7 +24,7 @@ export const forbiddenActivePremission = () => ({
     message: 'This function is forbidden for not active user',
 });
 
-export const forbiddenSessionPremission = () => ({
+export const forbiddenPremission = () => ({
     success: false,
     message: 'This function is forbidden for not current user',
 });

@@ -4,7 +4,7 @@ import session from 'cookie-session'
 import { localPassportStrategy, SESSION_SECRET_VALUE, expirySessionDate } from '../config/passport.config';
 import authRouter from './auth';
 import userSessionRouter from './userSession';
-import { checkActivePermission, checkAdminPermission } from '../controllers/middleware/user';
+import { checkActivePermission, checkAdminPermission } from '../controllers/middleware/permissions';
 import adminSessionRouter from './adminSession';
 
 const router = express.Router();

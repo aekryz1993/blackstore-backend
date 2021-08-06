@@ -2,6 +2,7 @@ import fs from "fs"
 
 import { findImage } from '../models/query/image';
 import { updatePaymentStatus } from "../models/query/payment";
+import { createPermission } from "../models/query/permission";
 import { countUsers, createUser, findAllUsers } from '../models/query/user'
 import { updateWallet } from "../models/query/wallet";
 import { serverErrorMessage } from "../utils/messages";
@@ -20,7 +21,7 @@ export const addUser = (req, res, next) => {
         if (!isNewUser) {
           return res.status(409).json(fieldAlreadyExist(username, email, phone));
         }
-
+        await createPermission({...body.permissions, UserId: user.dataValues.id})
         req.body.associatedModelId = user.dataValues.id
         req.body.associatedModel = 'UserId'
         req.body.username = user.dataValues.username

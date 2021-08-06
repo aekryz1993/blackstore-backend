@@ -1,4 +1,5 @@
 import express from 'express'
+import { checkPermission } from '../../controllers/middleware/permissions';
 
 import {
   addProductID,
@@ -9,7 +10,7 @@ const router = express.Router();
 
 const productIDRouter = () => {
 
-  router.post('/add', addProductID);
+  router.post('/add', checkPermission('addProduct'), addProductID);
 
   router.put('/treatRequest/:id', treatedRequestProductID);
 

@@ -10,31 +10,43 @@ Permission.init({
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    addUsers: {
+    addProduct: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    viewUsers: {
+    updateProductPrice: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    payments: {
+    updateProduct: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    payMethod: {
+    addUser: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    commands: {
+    viewUser: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    products: {
+    updateUser: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    treatRequest: {
+    updateCredit: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    addPayMethod: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    viewcmnd: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    confirmPayment: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },

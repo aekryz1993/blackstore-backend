@@ -1,6 +1,5 @@
 import express from 'express'
 
-import { checkSessionPermission } from '../controllers/middleware/user';
 import servicesRouter from './user/services';
 import productCategoryRouter from './user/productCategory'
 import productIDRouter from './user/productID'
@@ -19,9 +18,9 @@ const userSessionRouter = () => {
   router.use('/productCategory', productCategoryRouter());
   router.use('/productID', productIDRouter());
   router.use('/productCode', productCodeRouter());
-  router.post('/payment', checkSessionPermission, buyingCredit);
-  router.put('/updateProfilePicture', checkSessionPermission, uploadImage.single('picture'), updateProfilePicture, addPicture);
-  router.get('/logout', checkSessionPermission, logout);
+  router.post('/payment', buyingCredit);
+  router.put('/updateProfilePicture', uploadImage.single('picture'), updateProfilePicture, addPicture);
+  router.get('/logout', logout);
 
   return router;
 
