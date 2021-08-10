@@ -14,10 +14,9 @@ Payment.init({
         type: DataTypes.FLOAT,
         allowNull: false,
     },
-    codeID: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
+    // codeID: {
+    //     type: DataTypes.STRING,
+    // },
     confirmed: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -1,5 +1,6 @@
 import path from "path"
 import { createPicture } from "../../models/query/image"
+import { createPermission } from "../../models/query/permission";
 
 import { createUser } from "../../models/query/user"
 import { createWallet } from "../../models/query/wallet"

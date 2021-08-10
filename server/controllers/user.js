@@ -48,12 +48,11 @@ export const addMultiUser = (req, res) => {
 export const getAllUsers = (req, res) => {
     (async () => {
       try {
-        const { page } = req.query;
+        const { page } = req.params;
         const users = []
         const { offset, limit, totalPages, totalUsers, nextPage } = await paginateData(page, countUsers)
         
         const initAllUsers = await findAllUsers(limit, offset)
-        
         for (let user of initAllUsers) {
           user = user.dataValues
           let userInfo = Object.fromEntries(Object.entries(user).filter(([key, _]) => key !== 'password'))
@@ -99,7 +98,7 @@ export const updateProfilePicture = (req, res, next) => {
 export const confirmPayment = (req, res) => {
     (async () => {
       try {
-        const payment = await updatePaymentStatus(req.body.id)
+        const payment = await updatePaymentStatus(req.params.id)
         if (!payment) {
           return res.status(401).json({message: 'there is not payment with that ID'})
         }

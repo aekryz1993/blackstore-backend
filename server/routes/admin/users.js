@@ -14,10 +14,10 @@ const usersRouter = () => {
 
   router.post('/add', checkPermission('addUser'), uploadImage.single('picture'), addUser, addWallet, addPicture);
   router.post('/addMulti', checkPermission('addUser'), uploadExcel.single('excel'), readExcel, addMultiUser);
-  router.get('/getusers', checkPermission('viewUser'), getAllUsers)
+  router.get('/getusers/:page', checkPermission('viewUser'), getAllUsers)
   router.put('/updateCredit/:userId', checkPermission('updateCredit'), updateCredit)
   router.put('/updateUserPicture', checkPermission('updateUser'), uploadImage.single('picture'), updateProfilePicture, addPicture)
-  router.put('/confirmPayment', checkPermission('confirmPayment'), confirmPayment)
+  router.put('/confirmPayment/:id', checkPermission('confirmPayment'), confirmPayment)
   router.get('/payments', checkPermission('confirmPayment'), fetchNotConfirmedPayments)
   router.post('/addPayMethod', checkPermission('addPayMethod'), addPayMethod)
   router.get('/getAliveCmnds', checkPermission('viewcmnd'), fetchAliveCommands)

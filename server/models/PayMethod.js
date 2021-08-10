@@ -18,6 +18,10 @@ PayMethod.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
+    coin: {
+        type: DataTypes.ENUM,
+        values: ['euro', 'dinnar', 'dollar']
+    },
 }, {
     sequelize,
     modelName: 'PayMethod',

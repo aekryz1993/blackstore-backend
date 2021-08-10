@@ -18,7 +18,7 @@ const userSessionRouter = () => {
   router.use('/productCategory', productCategoryRouter());
   router.use('/productID', productIDRouter());
   router.use('/productCode', productCodeRouter());
-  router.post('/payment', buyingCredit);
+  router.post('/payment/:codeID', buyingCredit);
   router.put('/updateProfilePicture', uploadImage.single('picture'), updateProfilePicture, addPicture);
   router.get('/logout', logout);
 

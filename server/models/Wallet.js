@@ -16,9 +16,6 @@ Wallet.init({
     euro: {
         type: DataTypes.FLOAT,
     },
-    usdt: {
-        type: DataTypes.FLOAT,
-    },
     dinnar: {
         type: DataTypes.FLOAT,
     },
