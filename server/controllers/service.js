@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import { findImage } from "../models/query/image";
-import { createService, findAllServices } from "../models/query/service";
+import { createService, findServices } from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist } from '../utils/messages/service'
 
@@ -24,12 +24,13 @@ export const addService = (req, res, next) => {
   })()
 }
 
-export const fetchAllServices = (req, res) => {
+export const fetchServices = (req, res) => {
   (async () => {
     try {
-      const services = await findAllServices()
+      const services = await findServices(req.params.category)
       return res.json({services})
     } catch (err) {
+      console.error(err)
       return res.json(serverErrorMessage(err.message));
     }
   })()

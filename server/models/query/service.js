@@ -49,11 +49,13 @@ export const findServiceById = (id) => {
     })
 }
 
-export const findAllServices = () => {
+export const findServices = (category) => {
+    const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
             const services = await models.Service.findAll({
-                include: [models.ProductCategory, models.ProductID],
+                where: {category},
+                include: [includeModel, models.Image],
             })
             resolve(services)
         } catch (err) {

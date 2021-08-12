@@ -1,10 +1,10 @@
 import express from 'express'
-import { fetchAllServices } from "../../controllers/service";
+import { fetchServices } from "../../controllers/service";
 
 const router = express.Router();
 
 const servicesRouter = () => {
-  router.get('/getAll', fetchAllServices);
+  router.get('/getAll/:category', fetchServices);
   return router;
 };
 

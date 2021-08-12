@@ -3,7 +3,7 @@ import {
   findAllProductCodes,
   updateProductCode,
 } from "../models/query/productCode";
-import { findService } from "../models/query/service";
+import { findService, findServiceById } from "../models/query/service";
 import { findProductCategoryById } from "../models/query/productCategory";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from "../utils/messages/service";
