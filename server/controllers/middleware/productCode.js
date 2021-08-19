@@ -15,7 +15,7 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
                 const body = {label, serviceName, ServiceId}
                 let category = await findProductCategory(label)
                 if (category) {
-                    const service = await findServiceById(ServiceId)
+                    const service = await findServiceById(ServiceId, 'code')
                     if (service === null) {
                         reject(serviceNotExist(serviceName))
                     }

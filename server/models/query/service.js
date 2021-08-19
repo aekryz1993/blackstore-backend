@@ -19,15 +19,19 @@ export const createService = (body) => {
     })
 }
 
-export const findService = (serviceName, serviceCategory) => {
+export const findService = (serviceName, category) => {
+    const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
             const service = await models.Service.findOne({
                 where: {
                     label: serviceName,
-                    category: serviceCategory,
+                    category,
                 },
-                include: [models.ProductCategory, models.ProductID],
+                include: [
+                    {model: includeModel, include: models.Price},
+                    models.Image
+                ],
             })
             resolve(service)
         } catch (err) {
@@ -36,11 +40,15 @@ export const findService = (serviceName, serviceCategory) => {
     })
 }
 
-export const findServiceById = (id) => {
+export const findServiceById = (id, category) => {
+    const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
             const service = await models.Service.findByPk(id, {
-                include: [models.ProductCategory, models.ProductID],
+                include: [
+                    {model: includeModel, include: models.Price},
+                    models.Image
+                ],
             })
             resolve(service)
         } catch (err) {
@@ -55,7 +63,10 @@ export const findServices = (category) => {
         try {
             const services = await models.Service.findAll({
                 where: {category},
-                include: [includeModel, models.Image],
+                include: [
+                    {model: includeModel, include: models.Price},
+                    models.Image
+                ],
             })
             resolve(services)
         } catch (err) {

@@ -11,10 +11,10 @@ export const createWallet = (body) => {
     })
 }
 
-export const updateWallet = ({UserId, dollar, euro, dinnar}) => {
+export const updateWallet = ({UserId, newCredit, currency}) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const wallet = await models.Wallet.update({ dollar, euro, dinnar }, {
+            const wallet = await models.Wallet.update({[currency]: newCredit}, {
                 where: {UserId}
               })
             resolve(wallet)

@@ -74,32 +74,44 @@ export const addMultiProductCode = (req, res) => {
 
 export const getProductCodesByMultCategories = (req, res) => {
   (async () => {
-    let categories = []
-    req.query.categories.split('\\').forEach(category => {
-      categories.push(JSON.parse(category))
-    })
+    const {currency} = req.params;
+    const orders = JSON.parse(req.params.order);
     const currentUserId = req.user.id;
     try {
       const wallet = await findWallet(currentUserId);
       let amount = 0;
       let codes = {};
-      categories.forEach((category) => {
-        amount += category["price"] * category["quantity"];
+      orders.forEach((order) => {
+        amount += order["price"] * order["quantity"];
       });
-      if (wallet.dataValues.credit >= amount) {
-        categories.forEach(async (category) => {
-          const categoryId = category["id"];
-          const quantity = category["quantity"];
-          const label = category["label"];
+      console.log(wallet.dataValues[currency]);
+      if (wallet.dataValues[currency] > 0 && wallet.dataValues[currency] >= amount) {
+          for (const order of orders) {
+          const id = order["id"];
+          const quantity = order["quantity"];
+          const label = order["label"];
           if (quantity !== 0) {
             const productCodes = await findAllProductCodes(
               quantity,
-              categoryId
+              id
             );
-            codes[label] = productCodes;
+            codes[label] = productCodes.map((product) =>
+              Object.fromEntries(
+                Object.entries(product).filter(
+                  ([key, _]) => key === "dataValues"
+                )
+              )
+            );
+            codes[label] = codes[label].map((code) =>
+              Object.fromEntries(
+                Object.entries(code.dataValues).filter(
+                  ([key, _]) => key !== "sold" && key !== "createdAt" &&  key !== "updatedAt" &&  key !== "ProductCategoryId"
+                )
+              )
+            );
             productCodes.forEach(async product => {
               await updateProductCode(product.id)
-            })
+            }) 
             if (productCodes.length < quantity) {
               await createCommand({
                 category: label,
@@ -108,9 +120,9 @@ export const getProductCodesByMultCategories = (req, res) => {
               });
             }
           }
-        });
-        const newCredit = wallet.dataValues.credit - amount;
-        await updateWallet({ UserId: currentUserId, newCredit });
+        }
+        const newCredit = wallet.dataValues[currency] - amount;
+        await updateWallet({ UserId: currentUserId, newCredit, currency });
         return res.status(200).json({ codes });
       } else {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };

@@ -5,7 +5,7 @@ import { getProductCodesByMultCategories } from "../../controllers/productCode";
 const router = express.Router();
 
 const productCodeRouter = () => {
-  router.get('/get/:currentWallet', getProductCodesByMultCategories);
+  router.get('/get/:currency/:order', getProductCodesByMultCategories);
 
   return router;
 
