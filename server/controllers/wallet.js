@@ -1,4 +1,4 @@
-import { createWallet, findWallet, updateWallet } from "../models/query/wallet";
+import { createWallet, findWallet, updateAllWallets } from "../models/query/wallet";
 import { serverErrorMessage } from "../utils/messages";
 
 export const addWallet = (req, res, next) => {
@@ -26,12 +26,12 @@ export const updateCredit = (req, res) => {
 			const UserId = req.params.userId
 			const wallet = await findWallet(UserId)
 			if (!wallet) {
-				res.json(401).json({message: 'This wallet doesn\'t exist'})
+				res.status(401).json({message: 'This wallet doesn\'t exist'})
 			}
 			dollar = wallet.dataValues.dollar + parseFloat(dollar)
 			euro = wallet.dataValues.euro + parseFloat(euro)
 			dinnar = wallet.dataValues.dinnar + parseFloat(dinnar)
-            await updateWallet({UserId, dollar, euro, dinnar})
+            await updateAllWallets({UserId, dollar, euro, dinnar})
             return res.status(200).json({message: 'تم تحديث المحفظة بنجاح'})
 		} catch (err) {
 			return res.json(serverErrorMessage(err.message));

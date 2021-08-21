@@ -17,6 +17,20 @@ export const updateWallet = ({UserId, newCredit, currency}) => {
             const wallet = await models.Wallet.update({[currency]: newCredit}, {
                 where: {UserId}
               })
+            console.log(wallet)
+            resolve(wallet)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+export const updateAllWallets = ({UserId, dollar, euro, dinnar}) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const wallet = await models.Wallet.update({dollar, euro, dinnar}, {
+                where: {UserId}
+              })
             resolve(wallet)
         } catch (err) {
             reject(err)
