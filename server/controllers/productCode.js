@@ -120,7 +120,7 @@ export const getProductCodesByMultCategories = (req, res) => {
         }
         const newCredit = wallet.dataValues[currency] - amount;
         await updateWallet({ UserId: currentUserId, newCredit, currency });
-        return res.status(200).json({ codes, commands });
+        return res.status(200).json({ codes, commands, success: true });
       } else {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };
       }
