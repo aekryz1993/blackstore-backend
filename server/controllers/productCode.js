@@ -74,17 +74,13 @@ export const addMultiProductCode = (req, res) => {
 
 export const getProductCodesByMultCategories = (req, res) => {
   (async () => {
-    const {currency} = req.params;
+    const {currency, amount} = req.params;
     const orders = JSON.parse(req.params.order);
     const currentUserId = req.user.id;
     try {
       const wallet = await findWallet(currentUserId);
-      let amount = 0;
       let codes = {};
-      orders.forEach((order) => {
-        amount += order["price"] * order["quantity"];
-      });
-      console.log(wallet.dataValues[currency]);
+      let commands = [];
       if (wallet.dataValues[currency] > 0 && wallet.dataValues[currency] >= amount) {
           for (const order of orders) {
           const id = order["id"];
@@ -113,17 +109,18 @@ export const getProductCodesByMultCategories = (req, res) => {
               await updateProductCode(product.id)
             }) 
             if (productCodes.length < quantity) {
-              await createCommand({
+              const {newCommand} = await createCommand({
                 category: label,
                 quantity: quantity - productCodes.length,
                 UserId: currentUserId,
               });
+              commands = [...commands, newCommand];
             }
           }
         }
         const newCredit = wallet.dataValues[currency] - amount;
         await updateWallet({ UserId: currentUserId, newCredit, currency });
-        return res.status(200).json({ codes });
+        return res.status(200).json({ codes, commands });
       } else {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };
       }

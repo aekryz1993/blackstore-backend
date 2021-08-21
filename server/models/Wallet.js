@@ -12,12 +12,15 @@ Wallet.init({
     },
     dollar: {
         type: DataTypes.FLOAT,
+        defaultValue: 0.00,
     },
     euro: {
         type: DataTypes.FLOAT,
+        defaultValue: 0.00,
     },
     dinnar: {
         type: DataTypes.FLOAT,
+        defaultValue: 0.00,
     },
 }, {
     sequelize,

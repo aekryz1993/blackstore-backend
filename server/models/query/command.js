@@ -8,9 +8,12 @@ export const createCommand = ({ category, quantity, UserId }) => {
         default: { category },
       });
       if (created) {
-        await models.Command.update({UserId}, {
-            where: {id: command.id}
-        });
+        await models.Command.update(
+          { UserId },
+          {
+            where: { id: command.id },
+          }
+        );
       }
       await models.Command.update(
         { quantity: command.quantity + quantity },
@@ -18,7 +21,7 @@ export const createCommand = ({ category, quantity, UserId }) => {
           where: { category },
         }
       );
-      resolve(command);
+      resolve({ command, newCommand: { category, quantity } });
     } catch (err) {
       reject(err);
     }
