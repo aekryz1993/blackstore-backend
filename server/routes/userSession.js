@@ -3,6 +3,7 @@ import express from 'express'
 import servicesRouter from './user/services';
 import productCategoryRouter from './user/productCategory'
 import productIDRouter from './user/productID'
+import walletRouter from './user/wallet';
 import productCodeRouter from './user/productCode'
 import { logout } from '../controllers/auth';
 import uploadImage from '../controllers/middleware/image';
@@ -15,6 +16,7 @@ const router = express.Router();
 const userSessionRouter = () => {
 
   router.use('/services', servicesRouter());
+  router.use('/wallet', walletRouter());
   router.use('/productCategory', productCategoryRouter());
   router.use('/productID', productIDRouter());
   router.use('/productCode', productCodeRouter());

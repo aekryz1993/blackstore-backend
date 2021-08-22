@@ -17,7 +17,6 @@ export const updateWallet = ({UserId, newCredit, currency}) => {
             const wallet = await models.Wallet.update({[currency]: newCredit}, {
                 where: {UserId}
               })
-            console.log(wallet)
             resolve(wallet)
         } catch (err) {
             reject(err)

@@ -38,3 +38,20 @@ export const updateCredit = (req, res) => {
 		}
 	})()
 }
+
+export const fetchCurrentCredit = (req, res) => {
+	(async () => {
+		try {
+			const {id} = req.user.dataValues
+
+			const wallet = await findWallet(id)
+			if (!wallet) {
+				res.status(401).json({message: 'This wallet doesn\'t exist'})
+			}
+			const {dollar, euro, dinnar} = wallet.dataValues
+            return res.status(200).json({dollar, euro, dinnar})
+		} catch (err) {
+			return res.json(serverErrorMessage(err.message));
+		}
+	})()
+}
