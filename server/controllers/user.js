@@ -77,7 +77,7 @@ export const getAllUsers = (req, res) => {
 export const updateProfilePicture = (req, res, next) => {
     (async () => {
       try {
-        const id = (req.route.path === '/updateUserPicture') ? req.body.id : req.user.id
+        const id = (req.params.userId) ? req.params.userId : req.user.id
         const image = await findImage(id)
         const currentImageUrl = image.dataValues.url
         await image.destroy()

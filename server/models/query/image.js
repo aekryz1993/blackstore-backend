@@ -21,8 +21,6 @@ export const findImage = (userIdentifier) => {
                     [Op.or]: [
                         { UserId: userIdentifier },
                         { ServiceId: userIdentifier },
-                        { ProductCategoryId: userIdentifier },
-                        { ProductIDId: userIdentifier },
                     ]
                 }
             })

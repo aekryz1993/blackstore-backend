@@ -35,7 +35,14 @@ export const writeExcel = (data, serviceName) =>
       const wb = { Sheets: { CODES: ws }, SheetNames: ["CODES"] };
       const destination = path.join(dir, `${serviceName}-${Date.now()}.xlsx`);
       xlsx.writeFile(wb, destination);
-      resolve(destination);
+      resolve(destination
+        .split("/")
+        .slice(
+          destination
+            .split("/")
+            .findIndex((ele) => ele === "resources") + 1
+        )
+        .join("/"));
     } catch (error) {
       reject(error);
     }
