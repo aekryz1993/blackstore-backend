@@ -15,6 +15,8 @@ import {
 import { saveCodes } from "./middleware/productCode";
 import { findWallet, updateWallet } from "../models/query/wallet";
 import { createCommand } from "../models/query/command";
+import { writeExcel } from "./middleware/excel";
+import { dataFormat } from "../helpers/excel";
 
 export const addProductCode = (req, res) => {
   (async () => {
@@ -74,7 +76,7 @@ export const addMultiProductCode = (req, res) => {
 
 export const getProductCodesByMultCategories = (req, res) => {
   (async () => {
-    const {currency, amount} = req.params;
+    const {currency, amount, serviceName} = req.params;
     const orders = JSON.parse(req.params.order);
     const currentUserId = req.user.id;
     try {
@@ -120,7 +122,9 @@ export const getProductCodesByMultCategories = (req, res) => {
         }
         const newCredit = wallet.dataValues[currency] - amount;
         await updateWallet({ UserId: currentUserId, newCredit, currency });
-        return res.status(200).json({ codes, commands, success: true, message: 'تمت العملية بنجاح' });
+        codes = dataFormat(codes);
+        const savedFile = await writeExcel(codes, serviceName)
+        return res.status(200).json({ codes, commands, savedFile, success: true, message: 'تمت العملية بنجاح' });
       } else {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };
       }

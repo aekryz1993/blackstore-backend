@@ -14,7 +14,7 @@ export const savePrices = (prices) => {
                 const dollar = prices[i]["dollar"]
                 const service = await findService(serviceName, 'code')
                 if (service === null) {
-                   return res.status(401).json(serviceNotExist(serviceName))
+                   throw serviceNotExist(serviceName)
                 }
                 const productCategory = service.ProductCategories.filter(
                     ProductCategorieItem => ProductCategorieItem.dataValues.label === label
