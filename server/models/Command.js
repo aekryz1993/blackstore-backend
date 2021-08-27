@@ -18,6 +18,10 @@ Command.init({
         type: DataTypes.INTEGER,
         defaultValue: 0,
     },
+    serviceName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     isTreated: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

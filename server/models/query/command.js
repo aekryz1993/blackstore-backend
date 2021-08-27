@@ -1,11 +1,12 @@
 import models from "../associations";
 
-export const createCommand = ({ category, quantity, UserId }) => {
+export const createCommand = ({ category, quantity, UserId, serviceName }) => {
   return new Promise(async (resolve, reject) => {
     try {
       const command = await models.Command.create({
         category,
         quantity,
+        serviceName,
         UserId,
       });
       resolve(command);

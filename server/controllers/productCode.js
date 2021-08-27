@@ -126,6 +126,7 @@ export const getProductCodesByMultCategories = (req, res) => {
               const newCommand = await createCommand({
                 category: label,
                 quantity: quantity - productCodes.length,
+                serviceName,
                 UserId: currentUserId,
               });
               commands = [...commands, newCommand];
