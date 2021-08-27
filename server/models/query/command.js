@@ -18,7 +18,7 @@ export const createCommand = ({ category, quantity, UserId }) => {
 export const findCommandsByUser = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const commands = await models.Command.find({
+      const commands = await models.Command.findAll({
         where: {
           UserId: userId,
         },

@@ -59,7 +59,7 @@ export const updateProductCode = (id, currentUserId) => {
 export const findSoldProductCodesByUser = (currentUserId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const productCodes = await models.ProductCode.find({
+            const productCodes = await models.ProductCode.findAll({
                 where: {
                     sold: true,
                     UserId: currentUserId,

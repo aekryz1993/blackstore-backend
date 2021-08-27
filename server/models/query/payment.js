@@ -42,7 +42,7 @@ export const createPayment = (body) => {
 export const getNotConfirmedPayments = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const payments = await models.Payment.find({
+            const payments = await models.Payment.findAll({
                 where: {confirmed: false}
             })
             resolve(payments)
@@ -55,7 +55,7 @@ export const getNotConfirmedPayments = () => {
 export const getConfirmedPayments = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const payments = await models.Payment.find({
+            const payments = await models.Payment.findAll({
                 where: {confirmed: true}
             })
             resolve(payments)
