@@ -2,7 +2,6 @@ export const styleExcel = (data) => {
   let wscols = [];
   let wsrows = [];
   let maxlen = {};
-
   for (const property in data) {
     for (const [k, v] of Object.entries(data[property])) {
       if (!(k in maxlen)) {

@@ -1,11 +1,13 @@
 import express from 'express'
 
-import { getProductCodesByMultCategories } from "../../controllers/productCode";
+import { getCommandssByUser, getProductCodesByMultCategories, getSoldProductCodesByUser } from "../../controllers/productCode";
 
 const router = express.Router();
 
 const productCodeRouter = () => {
-  router.get('/get/:currency/:amount/:order/:serviceName', getProductCodesByMultCategories);
+  router.get('/get/availableCodes/:currency/:amount/:order/:serviceName', getProductCodesByMultCategories);
+  router.get('/get/soldCodes', getSoldProductCodesByUser);
+  router.get('/get/commands', getCommandssByUser);
 
   return router;
 

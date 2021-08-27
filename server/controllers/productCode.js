@@ -1,6 +1,7 @@
 import {
   createProductCode,
   findAllProductCodes,
+  findSoldProductCodesByUser,
   updateProductCode,
 } from "../models/query/productCode";
 import { findService, findServiceById } from "../models/query/service";
@@ -14,7 +15,7 @@ import {
 } from "../utils/messages/productCategory";
 import { saveCodes } from "./middleware/productCode";
 import { findWallet, updateWallet } from "../models/query/wallet";
-import { createCommand } from "../models/query/command";
+import { createCommand, findCommandsByUser } from "../models/query/command";
 import { writeExcel } from "./middleware/excel";
 import { dataFormat } from "../helpers/excel";
 
@@ -103,15 +104,15 @@ export const getProductCodesByMultCategories = (req, res) => {
             codes[label] = codes[label].map((code) =>
               Object.fromEntries(
                 Object.entries(code.dataValues).filter(
-                  ([key, _]) => key !== "sold" && key !== "createdAt" &&  key !== "updatedAt" &&  key !== "ProductCategoryId"
+                  ([key, _]) => key !== "sold" && key !== "createdAt" &&  key !== "updatedAt" &&  key !== "ProductCategoryId" &&  key !== "UserId"
                 )
               )
             );
             productCodes.forEach(async product => {
-              await updateProductCode(product.id)
+              await updateProductCode(product.id, currentUserId)
             }) 
             if (productCodes.length < quantity) {
-              const {newCommand} = await createCommand({
+              const newCommand = await createCommand({
                 category: label,
                 quantity: quantity - productCodes.length,
                 UserId: currentUserId,
@@ -128,6 +129,30 @@ export const getProductCodesByMultCategories = (req, res) => {
       } else {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };
       }
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
+
+export const getSoldProductCodesByUser = (req, res) => {
+  (async () => {
+    const currentUserId = req.user.id;
+    try {
+        const productCodes = await findSoldProductCodesByUser(currentUserId)
+        return res.status(200).json({productCodes});
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
+
+export const getCommandssByUser = (req, res) => {
+  (async () => {
+    const currentUserId = req.user.id;
+    try {
+        const commands = await findCommandsByUser(currentUserId)
+        return res.status(200).json({commands});
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

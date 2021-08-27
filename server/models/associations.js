@@ -27,6 +27,7 @@ ProductCode.belongsTo(ProductCategory, {
         allowNull: false
     }
 });
+ProductCode.belongsTo(User);
 
 ProductID.belongsTo(Service, {
     foreignKey: {
@@ -51,6 +52,7 @@ Price.belongsTo(ProductID)
 User.hasMany(RequestProductID)
 User.hasMany(Command)
 User.hasMany(Payment)
+User.hasMany(ProductCode)
 
 Service.hasOne(Image)
 ProductCategory.hasOne(Price)

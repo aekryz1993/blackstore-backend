@@ -105,3 +105,4 @@ dist
 
 # assets
 resources/static/assets/pictures/*
+resources/temporary/*

@@ -41,15 +41,31 @@ export const findAllProductCodes = (quantity, categoryId) => {
     })
 }
 
-export const updateProductCode = (id) => {
+export const updateProductCode = (id, currentUserId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await models.ProductCode.update({ sold: true }, {
+            await models.ProductCode.update({ sold: true, UserId: currentUserId }, {
                 where: {
                     id
                 },
             })
             resolve('updated')
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
+export const findSoldProductCodesByUser = (currentUserId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const productCodes = await models.ProductCode.find({
+                where: {
+                    sold: true,
+                    UserId: currentUserId,
+                },
+            })
+            resolve(productCodes)
         } catch (err) {
             reject(err)
         }
