@@ -21,9 +21,9 @@ import { dataFormat } from "../helpers/excel";
 
 export const addProductCode = (req, res) => {
   (async () => {
-    const {serviceName, productName, code, Date, Serial} = req.body;
+    const { serviceName, productName, code, Date, Serial } = req.body;
     try {
-      const service = await findService(serviceName, 'code');
+      const service = await findService(serviceName, "code");
       if (service === null) {
         return res.status(401).json(serviceNotExist(serviceName));
       }
@@ -33,25 +33,31 @@ export const addProductCode = (req, res) => {
             ProductCategorieItem.dataValues.label === productName
         );
       if (productCategoryService.length === 0) {
-        return res
-          .status(401)
-          .json(productCategoryNotExistMsg(productName));
+        return res.status(401).json(productCategoryNotExistMsg(productName));
       }
 
       const productCategory = await findProductCategoryById(
         productCategoryService[0].dataValues.id
       );
 
-      const isProductCodeExist =
-        productCategory.dataValues.ProductCodes.filter(
-          (_productCode) => _productCode.dataValues.code === code
-        );
+      const isProductCodeExist = productCategory.dataValues.ProductCodes.filter(
+        (_productCode) => _productCode.dataValues.code === code
+      );
       if (isProductCodeExist.length !== 0) {
         return res.status(409).json(productCategoryAlreadyExistMsg(code));
       }
 
-      const { productCode } = await createProductCode({code, Date, Serial, ProductCategoryId: productCategoryService[0].dataValues.id});
-      return res.status(201).json(productCategorySuccessRegistrationMsg(productCode.dataValues.code));
+      const { productCode } = await createProductCode({
+        code,
+        Date,
+        Serial,
+        ProductCategoryId: productCategoryService[0].dataValues.id,
+      });
+      return res
+        .status(201)
+        .json(
+          productCategorySuccessRegistrationMsg(productCode.dataValues.code)
+        );
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
@@ -77,23 +83,23 @@ export const addMultiProductCode = (req, res) => {
 
 export const getProductCodesByMultCategories = (req, res) => {
   (async () => {
-    const {currency, amount, serviceName} = req.params;
+    const { currency, amount, serviceName } = req.params;
     const orders = JSON.parse(req.params.order);
     const currentUserId = req.user.id;
     try {
       const wallet = await findWallet(currentUserId);
       let codes = {};
       let commands = [];
-      if (wallet.dataValues[currency] > 0 && wallet.dataValues[currency] >= amount) {
-          for (const order of orders) {
+      if (
+        wallet.dataValues[currency] > 0 &&
+        wallet.dataValues[currency] >= amount
+      ) {
+        for (const order of orders) {
           const id = order["id"];
           const quantity = order["quantity"];
           const label = order["label"];
           if (quantity !== 0) {
-            const productCodes = await findAllProductCodes(
-              quantity,
-              id
-            );
+            const productCodes = await findAllProductCodes(quantity, id);
             codes[label] = productCodes.map((product) =>
               Object.fromEntries(
                 Object.entries(product).filter(
@@ -104,13 +110,18 @@ export const getProductCodesByMultCategories = (req, res) => {
             codes[label] = codes[label].map((code) =>
               Object.fromEntries(
                 Object.entries(code.dataValues).filter(
-                  ([key, _]) => key !== "sold" && key !== "createdAt" &&  key !== "updatedAt" &&  key !== "ProductCategoryId" &&  key !== "UserId"
+                  ([key, _]) =>
+                    key !== "sold" &&
+                    key !== "createdAt" &&
+                    key !== "updatedAt" &&
+                    key !== "ProductCategoryId" &&
+                    key !== "UserId"
                 )
               )
             );
-            productCodes.forEach(async product => {
-              await updateProductCode(product.id, currentUserId)
-            }) 
+            productCodes.forEach(async (product) => {
+              await updateProductCode(product.id, currentUserId);
+            });
             if (productCodes.length < quantity) {
               const newCommand = await createCommand({
                 category: label,
@@ -124,8 +135,16 @@ export const getProductCodesByMultCategories = (req, res) => {
         const newCredit = wallet.dataValues[currency] - amount;
         await updateWallet({ UserId: currentUserId, newCredit, currency });
         codes = dataFormat(codes);
-        const savedFile = await writeExcel(codes, serviceName)
-        return res.status(200).json({ codes, commands, savedFile, success: true, message: 'تمت العملية بنجاح' });
+        const savedFile = await writeExcel(codes, serviceName);
+        return res
+          .status(200)
+          .json({
+            codes,
+            commands,
+            savedFile,
+            success: true,
+            message: "تمت العملية بنجاح",
+          });
       } else {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };
       }
@@ -139,20 +158,24 @@ export const getSoldProductCodesByUser = (req, res) => {
   (async () => {
     const currentUserId = req.user.id;
     try {
-        const productCodes = await findSoldProductCodesByUser(currentUserId)
-        return res.status(200).json({productCodes});
+      const productCodes = await findSoldProductCodesByUser(currentUserId);
+      return res.status(200).json({ productCodes });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
   })();
 };
 
-export const getCommandssByUser = (req, res) => {
+export const getCommandsByUser = (req, res) => {
   (async () => {
     const currentUserId = req.user.id;
     try {
-        const commands = await findCommandsByUser(currentUserId)
-        return res.status(200).json({commands});
+      const commands = await findCommandsByUser(currentUserId);
+
+      const commandsTreated = commands.filter(command => command.treated) 
+      const commandsWaiting = commands.filter(command => !command.treated) 
+
+      return res.status(200).json({ commandsTreated, commandsWaiting });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
