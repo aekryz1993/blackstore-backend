@@ -50,7 +50,7 @@ export const getAllUsers = (req, res) => {
       try {
         const { page } = req.params;
         const users = []
-        const { offset, limit, totalPages, totalUsers, nextPage } = await paginateData(page, countUsers)
+        const { offset, limit, totalPages, totalItems, nextPage } = await paginateData(page, countUsers, 6)
         
         const initAllUsers = await findAllUsers(limit, offset)
         for (let user of initAllUsers) {
@@ -65,7 +65,7 @@ export const getAllUsers = (req, res) => {
           users,
           totalPages,
           nextPage,
-          totalUsers,
+          totalUsers: totalItems,
         })
 
       } catch (err) {

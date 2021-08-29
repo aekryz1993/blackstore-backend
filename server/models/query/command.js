@@ -16,17 +16,44 @@ export const createCommand = ({ category, quantity, UserId, serviceName }) => {
   });
 };
 
-export const findCommandsByUser = (userId) => {
+export const findCommandsByUser = (userId, limit, offset) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const commands = await models.Command.findAll({
+      const commandsTreated = await models.Command.findAll({
+        offset,
+        limit,
         where: {
           UserId: userId,
+          isTreated: true,
         },
       });
-      resolve(commands);
+      const commandsWaiting = await models.Command.findAll({
+        offset,
+        limit,
+        where: {
+          UserId: userId,
+          isTreated: false,
+        },
+      });
+      resolve({commandsTreated, commandsWaiting});
     } catch (err) {
       reject(err);
     }
   });
 };
+
+export const countCommands = ({userId, isTreated}) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const totalCommands = await models.Command.count({
+              where: {
+                UserId: userId,
+                isTreated,
+              },
+            })
+            resolve(totalCommands)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}

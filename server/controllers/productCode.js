@@ -15,9 +15,14 @@ import {
 } from "../utils/messages/productCategory";
 import { saveCodes } from "./middleware/productCode";
 import { findWallet, updateWallet } from "../models/query/wallet";
-import { createCommand, findCommandsByUser } from "../models/query/command";
+import {
+  countCommands,
+  createCommand,
+  findCommandsByUser,
+} from "../models/query/command";
 import { writeExcel } from "./middleware/excel";
 import { dataFormat } from "../helpers/excel";
+import { paginateData } from "./helper";
 
 export const addProductCode = (req, res) => {
   (async () => {
@@ -137,15 +142,13 @@ export const getProductCodesByMultCategories = (req, res) => {
         await updateWallet({ UserId: currentUserId, newCredit, currency });
         codes = dataFormat(codes);
         const savedFile = await writeExcel(codes, serviceName);
-        return res
-          .status(200)
-          .json({
-            codes,
-            commands,
-            savedFile,
-            success: true,
-            message: "تمت العملية بنجاح",
-          });
+        return res.status(200).json({
+          codes,
+          commands,
+          savedFile,
+          success: true,
+          message: "تمت العملية بنجاح",
+        });
       } else {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };
       }
@@ -170,13 +173,25 @@ export const getSoldProductCodesByUser = (req, res) => {
 export const getCommandsByUser = (req, res) => {
   (async () => {
     const currentUserId = req.user.id;
+    const { page, isTreated } = req.params;
     try {
-      const commands = await findCommandsByUser(currentUserId);
-
-      const commandsTreated = commands.filter(command => command.treated) 
-      const commandsWaiting = commands.filter(command => !command.treated) 
-
-      return res.status(200).json({ commandsTreated, commandsWaiting });
+      const { offset, limit, totalPages, totalItems, nextPage } =
+        await paginateData(page, countCommands, 7, {userId: currentUserId, isTreated});
+      const { commandsTreated, commandsWaiting } = await findCommandsByUser(
+        currentUserId,
+        limit,
+        offset
+      );
+      return res
+        .status(200)
+        .json({
+          commandsTreated,
+          commandsWaiting,
+          totalItems,
+          nextPage,
+          totalPages,
+          success: true,
+        });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

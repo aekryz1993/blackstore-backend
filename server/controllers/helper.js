@@ -36,17 +36,25 @@ export const loginRequest = (user, req, res) => {
   });
 };
 
-export const paginateData = async (page, countItems) => {
-  const limit = 6;
-  const offset = page ? limit * page : 0;
-  const totalUsers = await countItems();
-  const totalPages = Math.ceil(totalUsers / limit);
-  const nextPage = totalPages === Number(page) + 1 ? -1 : Number(page) + 1;
+export const paginateData = async (page, countItems, limit, extraData) => {
+  const totalItems = await countItems(extraData);
+  if (totalItems !== 0) {
+    const offset = page ? limit * page : 0;
+    const totalPages = Math.ceil(totalItems / limit);
+    const nextPage = totalPages === Number(page) + 1 ? 0 : Number(page) + 1;
+    return {
+      offset,
+      limit,
+      totalPages,
+      totalItems,
+      nextPage,
+    };
+  }
   return {
-    offset,
-    limit,
-    totalPages,
-    totalUsers,
-    nextPage,
-  };
+    offset: 0,
+    limit: 0,
+    totalPages: 0,
+    totalItems,
+    nextPage: 0,
+  }
 };
