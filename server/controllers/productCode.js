@@ -176,7 +176,7 @@ export const getCommandsByUser = (req, res) => {
     const { page, isTreated } = req.params;
     try {
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, countCommands, 7, {userId: currentUserId, isTreated});
+        await paginateData(page, countCommands, 7, false, {userId: currentUserId, isTreated});
       const { commandsTreated, commandsWaiting } = await findCommandsByUser(
         currentUserId,
         limit,

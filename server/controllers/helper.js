@@ -36,12 +36,13 @@ export const loginRequest = (user, req, res) => {
   });
 };
 
-export const paginateData = async (page, countItems, limit, extraData) => {
+export const paginateData = async (page, countItems, limit,  scorable, extraData) => {
   const totalItems = await countItems(extraData);
+  const afterLastPage = scorable ? -1 : 0
   if (totalItems !== 0) {
     const offset = page ? limit * page : 0;
     const totalPages = Math.ceil(totalItems / limit);
-    const nextPage = totalPages === Number(page) + 1 ? 0 : Number(page) + 1;
+    const nextPage = totalPages === Number(page) + 1 ? afterLastPage : Number(page) + 1;
     return {
       offset,
       limit,
