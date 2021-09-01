@@ -34,14 +34,28 @@ export const findCommandsByUser = (userId, limit, offset, isTreated) => {
   });
 };
 
-export const countCommands = ({ userId, isTreated }) => {
+export const findCommands = (limit, offset, isTreated) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const commands = await models.Command.findAll({
+        offset,
+        limit,
+        where: {
+          isTreated,
+        },
+      });
+      resolve(commands);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const countCommands = (props) => {
   return new Promise(async (resolve, reject) => {
     try {
       const totalCommands = await models.Command.count({
-        where: {
-          UserId: userId,
-          isTreated,
-        },
+        where: {...props},
       });
       resolve(totalCommands);
     } catch (err) {
