@@ -1,6 +1,7 @@
 import express from 'express'
 
-import { getCommandsByUser, getProductCodesByMultCategories, getSoldProductCodesByUser } from "../../controllers/productCode";
+import { getProductCodesByMultCategories, getSoldProductCodesByUser } from "../../controllers/productCode";
+import { getCommandsByUser } from "../../controllers/commands";
 
 const router = express.Router();
 

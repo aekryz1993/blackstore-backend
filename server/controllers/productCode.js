@@ -15,14 +15,9 @@ import {
 } from "../utils/messages/productCategory";
 import { saveCodes } from "./middleware/productCode";
 import { findWallet, updateWallet } from "../models/query/wallet";
-import {
-  countCommands,
-  createCommand,
-  findCommandsByUser,
-} from "../models/query/command";
+import { createCommand } from "../models/query/command";
 import { writeExcel } from "./middleware/excel";
 import { dataFormat } from "../helpers/excel";
-import { paginateData } from "./helper";
 
 export const addProductCode = (req, res) => {
   (async () => {
@@ -164,34 +159,6 @@ export const getSoldProductCodesByUser = (req, res) => {
     try {
       const productCodes = await findSoldProductCodesByUser(currentUserId);
       return res.status(200).json({ productCodes });
-    } catch (err) {
-      return res.json(serverErrorMessage(err.message));
-    }
-  })();
-};
-
-export const getCommandsByUser = (req, res) => {
-  (async () => {
-    const currentUserId = req.user.id;
-    const { page, isTreated } = req.params;
-    try {
-      const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, countCommands, 7, false, {userId: currentUserId, isTreated});
-      const { commandsTreated, commandsWaiting } = await findCommandsByUser(
-        currentUserId,
-        limit,
-        offset
-      );
-      return res
-        .status(200)
-        .json({
-          commandsTreated,
-          commandsWaiting,
-          totalItems,
-          nextPage,
-          totalPages,
-          success: true,
-        });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

@@ -56,8 +56,7 @@ export const getAllUsers = (req, res) => {
         for (let user of initAllUsers) {
           user = user.dataValues
           let userInfo = Object.fromEntries(Object.entries(user).filter(([key, _]) => key !== 'password'))
-          const image = await findImage(userInfo.id)
-          userInfo = {...userInfo, image: image.dataValues.url}
+          userInfo = {...userInfo, image: user.Image.dataValues.url}
           users.push(userInfo)
         }
         
