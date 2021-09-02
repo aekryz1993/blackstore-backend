@@ -20,7 +20,6 @@ const usersRouter = () => {
   router.put('/confirmPayment/:id', checkPermission('confirmPayment'), confirmPayment)
   router.get('/payments', checkPermission('confirmPayment'), fetchNotConfirmedPayments)
   router.post('/addPayMethod', checkPermission('addPayMethod'), addPayMethod)
-  router.get('/getAliveCmnds', checkPermission('viewcmnd'), fetchAliveCommands)
 
   return router;
 

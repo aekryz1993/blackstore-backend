@@ -1,4 +1,9 @@
-import { countCommands, findCommands, findCommandsByUser } from "../models/query/command";
+import {
+  countCommands,
+  findCommands,
+  findCommandsByUser,
+} from "../models/query/command";
+import { findUserById } from "../models/query/user";
 import { serverErrorMessage } from "../utils/messages";
 import { paginateData } from "./helper";
 
@@ -35,11 +40,29 @@ export const getCommands = (req, res) => {
   (async () => {
     const { page, isTreated } = req.params;
     try {
+      let commands = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
         await paginateData(page, countCommands, 7, false, {
           isTreated,
         });
-      const commands = await findCommands(limit, offset, isTreated);
+      const initiaCommands = await findCommands(limit, offset, isTreated);
+      for (let command of initiaCommands) {
+        let user = await findUserById(command.dataValues.UserId);
+        user = Object.fromEntries(
+          Object.entries(user.dataValues).filter(
+            ([key, _]) =>
+              key !== "password" &&
+              key !== "id" &&
+              key !== "isVerified" &&
+              key !== "isActive" &&
+              key !== "isAdmin" &&
+              key !== "createdAt" &&
+              key !== "updatedAt"
+          )
+        );
+        command.dataValues.user = user;
+        commands = [...commands, command]
+      }
       return res.status(200).json({
         commands,
         totalItems,

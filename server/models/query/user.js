@@ -80,22 +80,6 @@ export const findAllUsers = (limit, offset) => {
   });
 };
 
-export const findAllUsersWithCmnds = (limit, offset, isTreated) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const UsersWithCmnds = await models.User.findAll({
-        offset,
-        limit,
-        where: { isAdmin: false },
-        include: [models.Image, {model: models.Command, where: {isTreated}}],
-      });
-      resolve(UsersWithCmnds);
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
-
 export const findActiveUsers = () => {
   return new Promise(async (resolve, reject) => {
     try {

@@ -119,23 +119,3 @@ export const confirmPayment = (req, res) => {
       }
     })()
 }
-
-export const fetchAliveCommands = (req, res) => {
-    (async () => {
-      try {
-        let commands = await findAliveCommands()
-
-        commands = commands.map((command) =>
-          Object.fromEntries(
-            Object.entries(command).filter(
-              ([key, _]) => key !== "id" && key !== "isTreated"
-            )
-          )
-        );
-
-        return res.status(200).json({message: 'Done!', commands})
-      } catch (err) {
-        return res.json(serverErrorMessage(err.message));
-      }
-    })()
-}
