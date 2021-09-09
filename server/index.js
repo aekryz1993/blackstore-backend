@@ -1,9 +1,9 @@
-import http from 'http';
 
 import app from './app';
 import { hostServer } from './config/server.config';
 import { createAdmin } from './db/seed';
 import sequelize from './config/db.config'
+import http from "http";
 
 const config = {
   host: hostServer(app)['host'],
@@ -11,7 +11,9 @@ const config = {
 }
 
 const listen = (port, host) => {
-  const server = http.createServer(app)
+  const server = http.createServer(app);
+  const io = app.io;
+  io.attach(server);
   return new Promise((resolve, reject) => {
     server.listen(port, host)
     server.on('listening', () => {

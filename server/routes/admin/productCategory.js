@@ -10,7 +10,7 @@ const router = express.Router();
 const productCategoryRouter = () => {
   router.post('/add', checkPermission('addProduct'), addProductCategory);
   router.put('/updatePrice/:id', checkPermission('updateProductPrice'), updatePriceProductCategory);
-  router.put('/updateMiltiPrices', checkPermission('updateProductPrice'), uploadExcel.single('excel'), readExcel, updateMultiPricesProductCategory);
+  router.put('/updateMiltiPrices', checkPermission('updateProductPrice'), uploadExcel(false), readExcel, updateMultiPricesProductCategory);
   return router;
 };
 

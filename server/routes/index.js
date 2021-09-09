@@ -1,35 +1,64 @@
-import express from 'express'
-import session from 'cookie-session'
+import express from "express";
+import session from "cookie-session";
 
-import { localPassportStrategy, SESSION_SECRET_VALUE, expirySessionDate } from '../config/passport.config';
-import authRouter from './auth';
-import userSessionRouter from './userSession';
-import { checkActivePermission, checkAdminPermission } from '../controllers/middleware/permissions';
-import adminSessionRouter from './adminSession';
+import {
+  localPassportStrategy,
+  SESSION_SECRET_VALUE,
+  expirySessionDate,
+  ensureSocketAuthorized,
+} from "../config/passport.config";
+import authRouter from "./auth";
+import userSessionRouter from "./userSession";
+import {
+  checkActivePermission,
+  checkAdminPermission,
+} from "../controllers/middleware/permissions";
+import adminSessionRouter from "./adminSession";
 
 const router = express.Router();
 
-const apiRouter = (app, passport) => {
-    app.use(session({
-        name: 'session',
-        keys: [SESSION_SECRET_VALUE],
-        cookie: {
-            secure: true,
-            httpOnly: true,
-            expires: expirySessionDate,
-        }
-    }))
+const wrap = (middleware) => (socket, next) =>
+  middleware(socket.request, {}, next);
 
-    app.use(passport.initialize());
-    app.use(passport.session());
+const apiRouter = (app, passport, io) => {
+  const sessionMiddleware = session({
+    name: "session",
+    keys: [SESSION_SECRET_VALUE],
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      expires: expirySessionDate,
+    },
+  });
 
-    localPassportStrategy(passport);
+  app.use(sessionMiddleware);
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-    router.use('/auth', authRouter(passport));
-    router.use('/userSession', passport.authenticationMiddleware, checkActivePermission, userSessionRouter());
-    router.use('/adminSession', passport.authenticationMiddleware, checkActivePermission, checkAdminPermission, adminSessionRouter());
+  io.use(wrap(sessionMiddleware));
+  io.use(wrap(passport.initialize()));
+  io.use(wrap(passport.session()));
 
-    return router;
-}
+  localPassportStrategy(passport);
+
+  // ensureSocketAuthorized(io)
+
+  router.use("/auth", authRouter(passport));
+  router.use(
+    "/userSession",
+    passport.authenticationMiddleware,
+    checkActivePermission,
+    userSessionRouter(io)
+  );
+  router.use(
+    "/adminSession",
+    passport.authenticationMiddleware,
+    checkActivePermission,
+    checkAdminPermission,
+    adminSessionRouter(io)
+  );
+
+  return router;
+};
 
 export default apiRouter;

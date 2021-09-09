@@ -1,16 +1,36 @@
-import express from 'express'
+import express from "express";
 
-import upload, { readExcel } from '../../controllers/middleware/excel';
-import { checkPermission } from '../../controllers/middleware/permissions';
-import { addProductCode, addMultiProductCode } from "../../controllers/productCode";
-import { getCommands } from '../../controllers/commands';
+import uploadExcel, { readExcel } from "../../controllers/middleware/excel";
+import { checkPermission } from "../../controllers/middleware/permissions";
+import {
+  addProductCode,
+  addMultiProductCode,
+} from "../../controllers/productCode";
+import { createCodesFromCommand, getCommands } from "../../controllers/commands";
 
 const router = express.Router();
 
-const productCodeRouter = () => {
-  router.post('/add', checkPermission('addProduct'), addProductCode);
-  router.post('/addMulti', checkPermission('addProduct'), upload.single('excel'), readExcel, addMultiProductCode);
-  router.get('/getCommands/:page/:isTreated', checkPermission('viewcmnd'), getCommands);
+const productCodeRouter = (io) => {
+  router.post("/add", checkPermission("addProduct"), addProductCode);
+  router.post(
+    "/addMulti",
+    checkPermission("addProduct"),
+    uploadExcel(false),
+    readExcel,
+    addMultiProductCode
+  );
+  router.get(
+    "/getCommands/:page/:isTreated",
+    checkPermission("viewcmnd"),
+    getCommands
+  );
+  router.post(
+    "/sendCommand/:userId/:commandId/:categoryId",
+    checkPermission("viewcmnd"),
+    uploadExcel(false),
+    readExcel,
+    createCodesFromCommand(io),
+  );
   return router;
 };
 

@@ -1,6 +1,12 @@
 import models from "../associations";
 
-export const createCommand = ({ category, quantity, UserId, serviceName }) => {
+export const createCommand = ({
+  category,
+  quantity,
+  UserId,
+  serviceName,
+  ProductCategoryId,
+}) => {
   return new Promise(async (resolve, reject) => {
     try {
       const command = await models.Command.create({
@@ -8,6 +14,7 @@ export const createCommand = ({ category, quantity, UserId, serviceName }) => {
         quantity,
         serviceName,
         UserId,
+        ProductCategoryId,
       });
       resolve(command);
     } catch (err) {
@@ -55,9 +62,25 @@ export const countCommands = (props) => {
   return new Promise(async (resolve, reject) => {
     try {
       const totalCommands = await models.Command.count({
-        where: {...props},
+        where: { ...props },
       });
       resolve(totalCommands);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const updateCommandStatus = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const command = await models.Command.update(
+        { isTreated: true },
+        {
+          where: { id },
+        }
+      );
+      resolve(command);
     } catch (err) {
       reject(err);
     }

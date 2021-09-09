@@ -47,10 +47,12 @@
     "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "passport.socketio": "^3.7.0",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.5.0",
     "sharp": "^0.28.3",
+    "socket.io": "^4.2.0",
     "xlsx": "^0.17.0"
   },
   "jest": {

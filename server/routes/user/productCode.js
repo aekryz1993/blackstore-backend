@@ -1,13 +1,12 @@
 import express from 'express'
 
-import { getProductCodesByMultCategories, getSoldProductCodesByUser } from "../../controllers/productCode";
+import { getProductCodesByMultCategories } from "../../controllers/productCode";
 import { getCommandsByUser } from "../../controllers/commands";
 
 const router = express.Router();
 
-const productCodeRouter = () => {
-  router.get('/get/availableCodes/:currency/:amount/:order/:serviceName', getProductCodesByMultCategories);
-  router.get('/get/soldCodes', getSoldProductCodesByUser);
+const productCodeRouter = (io) => {
+  router.get('/get/availableCodes/:currency/:amount/:order/:serviceName', getProductCodesByMultCategories(io));
   router.get('/get/commands/:page/:isTreated', getCommandsByUser);
   return router;
 };

@@ -26,6 +26,10 @@ Command.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    seen: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
 }, {
     sequelize,
     modelName: 'Command',

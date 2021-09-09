@@ -2,7 +2,9 @@ import {
   countCommands,
   findCommands,
   findCommandsByUser,
+  updateCommandStatus,
 } from "../models/query/command";
+import { createProductCode } from "../models/query/productCode";
 import { findUserById } from "../models/query/user";
 import { serverErrorMessage } from "../utils/messages";
 import { paginateData } from "./helper";
@@ -48,19 +50,10 @@ export const getCommands = (req, res) => {
       const initiaCommands = await findCommands(limit, offset, isTreated);
       for (let command of initiaCommands) {
         let user = await findUserById(command.dataValues.UserId);
-        user = Object.fromEntries(
-          Object.entries(user.dataValues).filter(
-            ([key, _]) =>
-              key !== "password" &&
-              key !== "id" &&
-              key !== "isVerified" &&
-              key !== "isActive" &&
-              key !== "isAdmin" &&
-              key !== "createdAt" &&
-              key !== "updatedAt"
-          )
-        );
-        command.dataValues.user = user;
+        user = user.dataValues
+        command.dataValues.user = `${user.firstname} ${user.lastname}`;
+        command.dataValues.email = user.email;
+        command.dataValues.phone = user.phone;
         commands = [...commands, command]
       }
       return res.status(200).json({
@@ -70,6 +63,34 @@ export const getCommands = (req, res) => {
         totalPages,
         success: true,
       });
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
+
+export const createCodesFromCommand = (io) => (req, res, next) => {
+  (async () => {
+    const { userId, commandId, categoryId } = req.params;
+    const codes = req.dataObj;
+    try {
+      if (!codes) {
+        return res.status(400).json({ message: "You should upload a file" });
+      }
+      for (let i in codes) {
+        await createProductCode({
+          code: String(codes[i]["PIN/Code"]),
+          Serial: String(codes[i]["Serial"]),
+          Date: String(codes[i]["Date"]),
+          sold: true,
+          ProductCategoryId: categoryId,
+          UserId: userId,
+          CommandId: commandId,
+        });
+      }
+      const command = await updateCommandStatus(commandId)
+      io.to(userId).emit('send_command', command)
+      return res.status(201).json({success: true, message: 'Command has been successfully sent'});
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

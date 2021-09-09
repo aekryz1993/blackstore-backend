@@ -5,7 +5,7 @@ import {
   updateProductCode,
 } from "../models/query/productCode";
 import { findService, findServiceById } from "../models/query/service";
-import { findProductCategoryById } from "../models/query/productCategory";
+import { findProductCategory, findProductCategoryById } from "../models/query/productCategory";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist } from "../utils/messages/service";
 import {
@@ -18,6 +18,7 @@ import { findWallet, updateWallet } from "../models/query/wallet";
 import { createCommand } from "../models/query/command";
 import { writeExcel } from "./middleware/excel";
 import { dataFormat } from "../helpers/excel";
+import { findAdmins } from "../models/query/user";
 
 export const addProductCode = (req, res) => {
   (async () => {
@@ -69,6 +70,9 @@ export const addMultiProductCode = (req, res) => {
     const body = req.body;
     const codes = req.dataObj;
     try {
+      if (!codes) {
+        return res.status(400).json({ message: "You should upload a file" });
+      }
       const service = await findServiceById(body.ServiceId);
       if (service === null) {
         throw serviceNotExist(body.serviceName);
@@ -81,12 +85,13 @@ export const addMultiProductCode = (req, res) => {
   })();
 };
 
-export const getProductCodesByMultCategories = (req, res) => {
+export const getProductCodesByMultCategories = (orderCommandNamespace) => (req, res) => {
   (async () => {
     const { currency, amount, serviceName } = req.params;
     const orders = JSON.parse(req.params.order);
     const currentUserId = req.user.id;
     try {
+      const admins = await findAdmins();
       const wallet = await findWallet(currentUserId);
       let codes = {};
       let commands = [];
@@ -115,6 +120,7 @@ export const getProductCodesByMultCategories = (req, res) => {
                     key !== "createdAt" &&
                     key !== "updatedAt" &&
                     key !== "ProductCategoryId" &&
+                    key !== "CommandId" &&
                     key !== "UserId"
                 )
               )
@@ -122,13 +128,17 @@ export const getProductCodesByMultCategories = (req, res) => {
             productCodes.forEach(async (product) => {
               await updateProductCode(product.id, currentUserId);
             });
+            const productCategory = await findProductCategory(label);
+            console.log((productCategory.dataValues.id))
             if (productCodes.length < quantity) {
               const newCommand = await createCommand({
                 category: label,
                 quantity: quantity - productCodes.length,
                 serviceName,
                 UserId: currentUserId,
+                ProductCategoryId: productCategory.dataValues.id,
               });
+              admins.forEach(admin => orderCommandNamespace.to(admin.dataValues.id).emit('send_command_order', newCommand));
               commands = [...commands, newCommand];
             }
           }
@@ -148,19 +158,7 @@ export const getProductCodesByMultCategories = (req, res) => {
         throw { message: "رصيدك غير كاف لإجراء هذه العملية" };
       }
     } catch (err) {
-      return res.json(serverErrorMessage(err.message));
-    }
-  })();
-};
-
-export const getSoldProductCodesByUser = (req, res) => {
-  (async () => {
-    const currentUserId = req.user.id;
-    try {
-      const productCodes = await findSoldProductCodesByUser(currentUserId);
-      return res.status(200).json({ productCodes });
-    } catch (err) {
-      return res.json(serverErrorMessage(err.message));
+      return res.status(401).json(serverErrorMessage(err.message));
     }
   })();
 };

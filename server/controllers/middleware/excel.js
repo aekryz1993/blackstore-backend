@@ -6,10 +6,15 @@ import { serverErrorMessage } from "../../utils/messages";
 import { styleExcel } from "../../helpers/excel";
 
 const CURRENT_WORKING_DIR = process.cwd();
-const dir = path.resolve(CURRENT_WORKING_DIR, "resources/temporary");
+const tempDir = path.resolve(CURRENT_WORKING_DIR, "resources/temporary");
+const dirToSave = path.resolve(CURRENT_WORKING_DIR, "resources/static/assets/excel/codes");
 
 export const readExcel = async (req, res, next) => {
   try {
+    if (!req.file) {
+      req.dataObj = null;
+      // next();
+    }
     const targetFile = req.file.path;
     const file = xlsx.readFile(targetFile);
     const sheet = file.Sheets[file.SheetNames[0]];
@@ -20,7 +25,7 @@ export const readExcel = async (req, res, next) => {
     req.dataObj = rows;
     next();
   } catch (error) {
-    return res.json(serverErrorMessage(error.message));
+    throw error
   }
 };
 
@@ -33,7 +38,7 @@ export const writeExcel = (data, serviceName) =>
       ws["!cols"] = wscols;
       ws["!rows"] = wsrows;
       const wb = { Sheets: { CODES: ws }, SheetNames: ["CODES"] };
-      const destination = path.join(dir, `${serviceName}-${Date.now()}.xlsx`);
+      const destination = path.join(tempDir, `${serviceName}-${Date.now()}.xlsx`);
       xlsx.writeFile(wb, destination);
       resolve(destination
         .split("/")
@@ -84,9 +89,10 @@ const createDir = (file) =>
     });
   });
 
-const storage = multer.diskStorage({
+const storage = (isStorage) => multer.diskStorage({
   destination: async (req, file, cb) => {
     try {
+      const dir = isStorage ? dirToSave : tempDir
       const notExist = await checkFolder(dir);
 
       if (notExist) {
@@ -103,6 +109,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const uploadExcel = multer({ storage: storage, fileFilter: excelFilter });
+const uploadExcel = (isStorage) => multer({ storage: storage(isStorage), fileFilter: excelFilter });
 
-export default uploadExcel;
+const uploadExcelHelper = (isStorage) => {
+  const upload = uploadExcel(isStorage);
+  return upload.single("file")
+};
+
+export default uploadExcelHelper;

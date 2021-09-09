@@ -44,7 +44,11 @@ RequestProductID.belongsTo(ProductID, {
 
 Wallet.belongsTo(User)
 Command.belongsTo(User)
+Command.belongsTo(ProductCategory)
 Permission.belongsTo(User)
+Command.hasMany(ProductCode)
+ProductCategory.hasMany(Command)
+ProductCode.belongsTo(Command)
 
 Price.belongsTo(ProductCategory)
 Price.belongsTo(ProductID)
