@@ -1,6 +1,6 @@
 import models from "../associations";
 
-export const createCommand = ({
+const create = ({
   category,
   quantity,
   UserId,
@@ -23,7 +23,7 @@ export const createCommand = ({
   });
 };
 
-export const findCommandsByUser = (userId, limit, offset, isTreated) => {
+const findByUser = (userId, limit, offset, isTreated) => {
   return new Promise(async (resolve, reject) => {
     try {
       const commands = await models.Command.findAll({
@@ -41,7 +41,7 @@ export const findCommandsByUser = (userId, limit, offset, isTreated) => {
   });
 };
 
-export const findCommands = (limit, offset, isTreated) => {
+const findIsTreated = (limit, offset, isTreated) => {
   return new Promise(async (resolve, reject) => {
     try {
       const commands = await models.Command.findAll({
@@ -58,7 +58,7 @@ export const findCommands = (limit, offset, isTreated) => {
   });
 };
 
-export const countCommands = (props) => {
+const count = (props) => {
   return new Promise(async (resolve, reject) => {
     try {
       const totalCommands = await models.Command.count({
@@ -71,7 +71,7 @@ export const countCommands = (props) => {
   });
 };
 
-export const updateCommandStatus = (id) => {
+const updateIsTreated = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       const command = await models.Command.update(
@@ -85,4 +85,12 @@ export const updateCommandStatus = (id) => {
       reject(err);
     }
   });
+};
+
+export default {
+  create,
+  findByUser,
+  findIsTreated,
+  count,
+  updateIsTreated,
 };

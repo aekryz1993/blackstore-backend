@@ -2,7 +2,7 @@ import path from "path"
 import sharp from "sharp"
 import fs from "fs"
 
-import { createPicture } from "../models/query/image";
+import imageQueries from "../models/query/image";
 import { serverErrorMessage } from "../utils/messages";
 import { successRegistration } from '../utils/messages/service'
 import { successRegistrationUser } from "../utils/messages/user";
@@ -19,7 +19,7 @@ export const addPicture = (req, res) => {
 				url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/${currentModel}/default.png`),
 				[req.body.associatedModel]: req.body.associatedModelId
 			}
-			await createPicture(body)
+			await imageQueries.create(body)
 			if (req.body.label) {
 				return res.status(201).json(successRegistration(req.body.label))
 			}
@@ -43,7 +43,7 @@ export const addPicture = (req, res) => {
 
 			return fs.unlink(req.file.path, async (err) => {
 				if (err) throw err
-				await createPicture(body)
+				await imageQueries.create(body)
 				if (req.body.label) {
 					return res.status(201).json(successRegistration(req.body.label))
 				}

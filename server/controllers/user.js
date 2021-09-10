@@ -1,10 +1,10 @@
 import fs from "fs";
 
-import { findImage } from "../models/query/image";
-import { updatePaymentStatus } from "../models/query/payment";
-import { createPermission } from "../models/query/permission";
-import { countUsers, createUser, findAllUsers } from "../models/query/user";
-import { updateWallet } from "../models/query/wallet";
+import imageQueries from "../models/query/image";
+import paymentQueries from "../models/query/payment";
+import permissionQueires from "../models/query/permission";
+import userQueries from "../models/query/user";
+import walletQueries from "../models/query/wallet";
 import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist } from "../utils/messages/user";
 import { paginateData } from "./helper";
@@ -14,14 +14,14 @@ export const addUser = (req, res, next) => {
   (async () => {
     const body = req.body;
     try {
-      const { user, isNewUser } = await createUser(body);
+      const { user, isNewUser } = await userQueries.create(body);
 
       const { username, email, phone } = user.dataValues;
 
       if (!isNewUser) {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
-      await createPermission({
+      await permissionQueires.create({
         ...body.permissions,
         UserId: user.dataValues.id,
       });
@@ -53,8 +53,8 @@ export const getAllUsers = () => (req, res) => {
       const { page } = req.params;
       const users = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, countUsers, 6, true);
-      const initAllUsers = await findAllUsers(limit, offset);
+        await paginateData(page, userQueries.count, 6, true);
+      const initAllUsers = await userQueries.findAll(limit, offset);
       for (let user of initAllUsers) {
         user = user.dataValues;
         let userInfo = Object.fromEntries(
@@ -80,7 +80,7 @@ export const updateProfilePicture = (req, res, next) => {
   (async () => {
     try {
       const id = req.params.userId ? req.params.userId : req.user.id;
-      const image = await findImage(id);
+      const image = await imageQueries.find(id);
       const currentImageUrl = image.dataValues.url;
       await image.destroy();
       if (!currentImageUrl.endsWith("default.png")) {
@@ -100,7 +100,7 @@ export const updateProfilePicture = (req, res, next) => {
 export const confirmPayment = (req, res) => {
   (async () => {
     try {
-      const payment = await updatePaymentStatus(req.params.id);
+      const payment = await paymentQueries.updateConfirmed(req.params.id);
       if (!payment) {
         return res
           .status(401)
@@ -116,7 +116,7 @@ export const confirmPayment = (req, res) => {
       }
       const newCredit = wallet.dataValues.credit + amount;
 
-      await updateWallet({ UserId, newCredit });
+      await walletQueries.update({ UserId, newCredit });
 
       return res.status(200).json({ message: "تم تحديث المحفظة بنجاح" });
     } catch (err) {

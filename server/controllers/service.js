@@ -1,7 +1,7 @@
 import fs from "fs";
 
-import { findImage } from "../models/query/image";
-import { createService, findServices } from "../models/query/service";
+import imageQueries from "../models/query/image";
+import serviceQueries from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
 import { fieldAlreadyExist } from '../utils/messages/service'
 
@@ -9,7 +9,7 @@ export const addService = (req, res, next) => {
   (async () => {
     const body = req.body
     try {
-      const { service, isNewService } = await createService(body)
+      const { service, isNewService } = await serviceQueries.create(body)
       const { label } = service.dataValues
       if (!isNewService) {
         return res.status(409).json(fieldAlreadyExist(label));
@@ -27,7 +27,7 @@ export const addService = (req, res, next) => {
 export const fetchServices = (req, res) => {
   (async () => {
     try {
-      const services = await findServices(req.params.category)
+      const services = await serviceQueries.find(req.params.category)
       return res.json({services})
     } catch (err) {
       console.error(err)
@@ -40,7 +40,7 @@ export const updateServicePicture = (req, res, next) => {
     (async () => {
       try {
         const {id, label} = req.body
-        const image = await findImage(id)
+        const image = await imageQueries.find(id)
         if (image) {
           const currentImageUrl = image.dataValues.url
           await image.destroy()

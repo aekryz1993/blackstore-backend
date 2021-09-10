@@ -1,4 +1,4 @@
-import { findPermission } from "../../models/query/permission";
+import permissionQueries from "../../models/query/permission";
 import { serverErrorMessage } from "../../utils/messages";
 import {
   forbiddenActivePremission,
@@ -21,10 +21,10 @@ export const checkActivePermission = (req, res, next) => {
 };
 
 export const checkPermission = (label) => (req, res, next) => {
-  (async() => {
+  (async () => {
     const userId = req.user.dataValues.id;
     try {
-      const permission = await findPermission(userId);
+      const permission = await permissionQueries.find(userId);
       if (!permission)
         res.status(403).json({ message: "permission doesn't exist" });
       if (!permission.dataValues[label])

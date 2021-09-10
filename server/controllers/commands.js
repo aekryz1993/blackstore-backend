@@ -1,11 +1,7 @@
-import {
-  countCommands,
-  findCommands,
-  findCommandsByUser,
-  updateCommandStatus,
-} from "../models/query/command";
-import { createProductCode } from "../models/query/productCode";
-import { findUserById } from "../models/query/user";
+import commandQueries from "../models/query/command";
+import notificationQueries from "../models/query/notification";
+import productCodeQueries from "../models/query/productCode";
+import userQueries from "../models/query/user";
 import { serverErrorMessage } from "../utils/messages";
 import { paginateData } from "./helper";
 
@@ -15,11 +11,11 @@ export const getCommandsByUser = (req, res) => {
     const { page, isTreated } = req.params;
     try {
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, countCommands, 7, false, {
+        await paginateData(page, commandQueries.count, 7, false, {
           UserId: currentUserId,
           isTreated,
         });
-      const commands = await findCommandsByUser(
+      const commands = await commandQueries.findByUser(
         currentUserId,
         limit,
         offset,
@@ -44,12 +40,12 @@ export const getCommands = (req, res) => {
     try {
       let commands = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, countCommands, 7, false, {
+        await paginateData(page, commandQueries.count, 7, false, {
           isTreated,
         });
-      const initiaCommands = await findCommands(limit, offset, isTreated);
+      const initiaCommands = await commandQueries.findIsTreated(limit, offset, isTreated);
       for (let command of initiaCommands) {
-        let user = await findUserById(command.dataValues.UserId);
+        let user = await userQueries.findById(command.dataValues.UserId);
         user = user.dataValues
         command.dataValues.user = `${user.firstname} ${user.lastname}`;
         command.dataValues.email = user.email;
@@ -78,7 +74,7 @@ export const createCodesFromCommand = (io) => (req, res, next) => {
         return res.status(400).json({ message: "You should upload a file" });
       }
       for (let i in codes) {
-        await createProductCode({
+        await productCodeQueries.create({
           code: String(codes[i]["PIN/Code"]),
           Serial: String(codes[i]["Serial"]),
           Date: String(codes[i]["Date"]),
@@ -88,8 +84,13 @@ export const createCodesFromCommand = (io) => (req, res, next) => {
           CommandId: commandId,
         });
       }
-      const command = await updateCommandStatus(commandId)
-      io.to(userId).emit('send_command', command)
+      await commandQueries.updateIsTreated(commandId)
+      const notification = await notificationQueries.create({
+        action: 'command has been sent',
+        UserId: userId,
+        CommandId: commandId,
+      })
+      io.to(userId).emit('send_command', {notification})
       return res.status(201).json({success: true, message: 'Command has been successfully sent'});
     } catch (err) {
       return res.json(serverErrorMessage(err.message));

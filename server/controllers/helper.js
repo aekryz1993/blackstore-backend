@@ -1,4 +1,4 @@
-import { findImage } from "../models/query/image";
+import imageQueries from "../models/query/image";
 import { serverErrorMessage } from "../utils/messages";
 
 export const loginRequest = (user, req, res) => {
@@ -7,15 +7,13 @@ export const loginRequest = (user, req, res) => {
       return res.json(serverErrorMessage(err.message));
     }
     if (req.isAuthenticated()) {
-      const isActive = user.dataValues.isActive;
-      const isAdmin = user.dataValues.isAdmin;
       const currentUser = Object.fromEntries(
         Object.entries(user.dataValues).filter(
           ([key, _]) =>
             key !== "password" && key !== "createdAt" && key !== "updatedAt"
         )
       );
-      const userImage = await findImage(currentUser.id);
+      const userImage = await imageQueries.find(currentUser.id);
 
       const profilePic = userImage.dataValues.url
         .split("/")

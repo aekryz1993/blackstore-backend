@@ -1,6 +1,6 @@
 import models from '../associations'
 
-export const createWallet = (body) => {
+const create = (body) => {
     return new Promise(async (resolve, reject) => {
         try {
             const wallet = await models.Wallet.create(body)
@@ -11,7 +11,7 @@ export const createWallet = (body) => {
     })
 }
 
-export const updateWallet = ({UserId, newCredit, currency}) => {
+const update = ({UserId, newCredit, currency}) => {
     return new Promise(async (resolve, reject) => {
         try {
             const wallet = await models.Wallet.update({[currency]: newCredit}, {
@@ -24,7 +24,7 @@ export const updateWallet = ({UserId, newCredit, currency}) => {
     })
 }
 
-export const updateAllWallets = ({UserId, dollar, euro, dinnar}) => {
+const updateAll = ({UserId, dollar, euro, dinnar}) => {
     return new Promise(async (resolve, reject) => {
         try {
             const wallet = await models.Wallet.update({dollar, euro, dinnar}, {
@@ -37,7 +37,7 @@ export const updateAllWallets = ({UserId, dollar, euro, dinnar}) => {
     })
 }
 
-export const findWallet = (UserId) => {
+const find = (UserId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const wallet = await models.Wallet.findOne({
@@ -49,3 +49,10 @@ export const findWallet = (UserId) => {
         }
     })
 }
+
+export default {
+  create,
+  update,
+  updateAll,
+  find,
+};

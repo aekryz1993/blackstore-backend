@@ -1,15 +1,15 @@
 import path from 'path'
 
-import { createPicture } from '../models/query/image'
-import { createPermission } from '../models/query/permission';
-import { createUser } from '../models/query/user'
+import imageQueries from '../models/query/image'
+import permissionQuaries from '../models/query/permission';
+import userQueries from '../models/query/user'
 
 const CURRENT_WORKING_DIR = process.cwd();
 
 export const createAdmin = () => {
     (async () => {
         try {
-            const {user, isNewUser} = await createUser(initUser)
+            const {user, isNewUser} = await userQueries.create(initUser)
             if (isNewUser) {
                 const UserId = user.dataValues.id
                 const metadata = {
@@ -18,8 +18,8 @@ export const createAdmin = () => {
                     url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/users/default.png`),
                     UserId
                 }
-                await createPicture(metadata)
-                await createPermission({...permission, UserId})
+                await imageQueries.create(metadata)
+                await permissionQuaries.create({...permission, UserId})
                 return
             }
             console.log('user already exist')

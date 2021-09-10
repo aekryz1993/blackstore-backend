@@ -11,6 +11,7 @@ import Payment from './Payment'
 import PayMethod from './PayMethod'
 import Permission from './Permission'
 import Price from './Price'
+import Notification from './Notification'
 
 Service.hasMany(ProductID)
 Service.hasMany(ProductCategory)
@@ -47,8 +48,11 @@ Command.belongsTo(User)
 Command.belongsTo(ProductCategory)
 Permission.belongsTo(User)
 Command.hasMany(ProductCode)
+Command.hasOne(Notification)
 ProductCategory.hasMany(Command)
 ProductCode.belongsTo(Command)
+Notification.belongsTo(User)
+Notification.belongsTo(Command)
 
 Price.belongsTo(ProductCategory)
 Price.belongsTo(ProductID)
@@ -57,6 +61,7 @@ User.hasMany(RequestProductID)
 User.hasMany(Command)
 User.hasMany(Payment)
 User.hasMany(ProductCode)
+User.hasMany(Notification)
 
 Service.hasOne(Image)
 ProductCategory.hasOne(Price)
@@ -83,4 +88,5 @@ export default {
     PayMethod,
     Permission,
     Price,
+    Notification,
 }

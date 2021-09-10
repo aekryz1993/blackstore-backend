@@ -1,6 +1,6 @@
 import models from "../associations";
 
-export const createPayMethod = (body) => {
+const create = (body) => {
   return new Promise(async (resolve, reject) => {
     try {
       const [payMethod, created] = await models.PayMethod.findOrCreate({
@@ -16,7 +16,7 @@ export const createPayMethod = (body) => {
   });
 };
 
-export const findPayMethod = (body) => {
+const find = (body) => {
   return new Promise(async (resolve, reject) => {
     try {
       const payMethod = await models.PayMethod.findOne({
@@ -27,4 +27,9 @@ export const findPayMethod = (body) => {
       reject(err);
     }
   });
+};
+
+export default {
+  create,
+  find,
 };

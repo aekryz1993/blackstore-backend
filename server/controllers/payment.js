@@ -1,11 +1,11 @@
-import { findPayment } from "../models/query/payment";
-import { createPayMethod } from "../models/query/peyMethod";
+import paymentQueries from "../models/query/payment";
+import { peyMethodQueries } from "../models/query/peyMethod";
 
 export const buyingCredit = (req, res) => {
   (async () => {
     const { amount, codeID } = req.body;
     try {
-      const existPayment = await findPayment(codeID);
+      const existPayment = await paymentQueries.find(codeID);
 
       if (existPayment) {
         return res
@@ -15,7 +15,7 @@ export const buyingCredit = (req, res) => {
 
       UserId = req.user.id;
 
-      await createPayment({ amount, codeID, UserID });
+      await paymentQueries.create({ amount, codeID, UserID });
 
       return res.status(201).json({
         message:
@@ -35,7 +35,7 @@ export const buyingCredit = (req, res) => {
 export const fetchNotConfirmedPayments = (req, res) => {
   (async () => {
     try {
-      let payments = await getNotConfirmedPayments();
+      let payments = await paymentQueries.getNotConfirmed();
 
       payments = payments.map((payment) =>
         Object.fromEntries(
@@ -57,7 +57,7 @@ export const fetchNotConfirmedPayments = (req, res) => {
 export const addPayMethod = (req, res) => {
   (async () => {
     try {
-      const { payMethod, created } = await createPayMethod(req.body);
+      const { payMethod, created } = await peyMethodQueries.create(req.body);
 
       if (!created) {
         return res
@@ -78,7 +78,7 @@ export const addPayMethod = (req, res) => {
 export const fetchPayMethodAddress = (req, res) => {
   (async () => {
     try {
-      const payMethod = await findPayMethod(req.body);
+      const payMethod = await peyMethodQueries.find(req.body);
 
       if (!payMethod) {
         return res.status(401).json({ message: "does not exist" });

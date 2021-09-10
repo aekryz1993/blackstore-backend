@@ -1,10 +1,7 @@
-import { createPrice } from "../../models/query/price";
-import {
-  createProductCategory,
-  findProductCategory,
-} from "../../models/query/productCategory";
-import { createProductCode } from "../../models/query/productCode";
-import { findServiceById } from "../../models/query/service";
+import priceQueries from "../../models/query/price";
+import productCategoryQueries from "../../models/query/productCategory";
+import productCodeQueries from "../../models/query/productCode";
+import serviceQueries from "../../models/query/service";
 import { serviceNotExist } from "../../utils/messages/service";
 
 export const saveCodes = (codes, serviceName, ServiceId) => {
@@ -16,9 +13,9 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
         let ProductCategoryId;
         const label = codes[i]["Product"];
         const body = { label, serviceName, ServiceId };
-        let category = await findProductCategory(label);
+        let category = await productCategoryQueries.find(label);
         if (category) {
-          const service = await findServiceById(ServiceId, "code");
+          const service = await serviceQueries.findById(ServiceId, "code");
           if (service === null) {
             reject(serviceNotExist(serviceName));
           }
@@ -30,17 +27,21 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
           );
 
           if (productCategoryInService === 0) {
-            category = await createProductCategory(body);
+            category = await productCategoryQueries.create(body);
             category = category.productCategory;
-            await createPrice({ ProductCategoryId: category.dataValues.id });
+            await priceQueries.create({
+              ProductCategoryId: category.dataValues.id,
+            });
           } else {
             productCategoryName = category.dataValues.label;
             ProductCategoryId = category.dataValues.id;
           }
         } else {
-          category = await createProductCategory(body);
+          category = await productCategoryQueries.create(body);
           category = category.productCategory;
-          await createPrice({ ProductCategoryId: category.dataValues.id });
+          await priceQueries.create({
+            ProductCategoryId: category.dataValues.id,
+          });
         }
         if (category.ProductCodes) {
           codeInCategory = category.ProductCodes.filter(
@@ -50,7 +51,7 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
         }
 
         if (codeInCategory.length === 0) {
-          await createProductCode({
+          await productCodeQueries.create({
             code: String(codes[i]["PIN/Code"]),
             Serial: String(codes[i]["Serial"]),
             Date: String(codes[i]["Date"]),

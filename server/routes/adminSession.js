@@ -11,8 +11,11 @@ const router = express.Router();
 const adminSessionRouter = (io) => {
   const treatedCommandNamespace = io.of("/treatedCommands");
   treatedCommandNamespace.on("connection", async (socket) => {
-    const clients = await findActiveUsers()
-    clients.forEach(client => socket.join(client.dataValues.id));
+    socket.on('send_userId', userId => {
+      socket.join(userId)
+    })
+    // const clients = await findActiveUsers()
+    // clients.forEach(client => socket.join(client.dataValues.id));
   });
   router.use("/users", usersRouter());
   router.use("/services", servicesRouter());

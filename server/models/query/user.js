@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 
 import models from "../associations";
 
-export const createUser = (body) => {
+const create = (body) => {
   const { username, email, phone } = body;
 
   return new Promise(async (resolve, reject) => {
@@ -21,7 +21,7 @@ export const createUser = (body) => {
   });
 };
 
-export const findUser = (userIdentifier) => {
+const find = (userIdentifier) => {
   return new Promise(async (resolve, reject) => {
     try {
       const user = await models.User.findOne({
@@ -40,7 +40,7 @@ export const findUser = (userIdentifier) => {
   });
 };
 
-export const findUserById = (id) => {
+const findById = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       const user = await models.User.findByPk(id);
@@ -51,7 +51,7 @@ export const findUserById = (id) => {
   });
 };
 
-export const countUsers = () => {
+const count = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.count({
@@ -64,7 +64,7 @@ export const countUsers = () => {
   });
 };
 
-export const findAllUsers = (limit, offset) => {
+const findAll = (limit, offset) => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.findAll({
@@ -80,7 +80,7 @@ export const findAllUsers = (limit, offset) => {
   });
 };
 
-export const findActiveUsers = () => {
+const findActive = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.findAll({
@@ -95,7 +95,7 @@ export const findActiveUsers = () => {
   });
 };
 
-export const findNotActiveUsers = () => {
+const findNotActive = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.findAll({
@@ -110,7 +110,7 @@ export const findNotActiveUsers = () => {
   });
 };
 
-export const findAdmins = () => {
+const findAdmins = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.findAll({
@@ -123,4 +123,15 @@ export const findAdmins = () => {
       reject(err);
     }
   });
+};
+
+export default {
+  create,
+  find,
+  findById,
+  count,
+  findAll,
+  findActive,
+  findNotActive,
+  findAdmins,
 };

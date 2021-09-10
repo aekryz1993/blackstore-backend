@@ -2,34 +2,26 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 
 import sequelize from "../config/db.config";
 
-class Command extends Model { }
+class Notification extends Model { }
 
-Command.init({
+Notification.init({
     id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    category: {
+    action: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    quantity: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-    },
-    serviceName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    isTreated: {
+    seen: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
 }, {
     sequelize,
-    modelName: 'Command',
-    tableName: 'Command',
+    modelName: 'Notification',
+    tableName: 'Notification',
 })
 
-export default Command
+export default Notification

@@ -1,6 +1,6 @@
 import models from '../associations'
 
-export const createService = (body) => {
+const create = (body) => {
     const { label, category } = body
     return new Promise(async (resolve, reject) => {
         try {
@@ -19,7 +19,7 @@ export const createService = (body) => {
     })
 }
 
-export const findService = (serviceName, category) => {
+const find = (serviceName, category) => {
     const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
@@ -40,7 +40,7 @@ export const findService = (serviceName, category) => {
     })
 }
 
-export const findServiceById = (id, category) => {
+const findById = (id, category) => {
     const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
@@ -57,7 +57,7 @@ export const findServiceById = (id, category) => {
     })
 }
 
-export const findServices = (category) => {
+const find = (category) => {
     const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
@@ -74,3 +74,10 @@ export const findServices = (category) => {
         }
     })
 }
+
+export default {
+  create,
+  find,
+  findById,
+  find,
+};

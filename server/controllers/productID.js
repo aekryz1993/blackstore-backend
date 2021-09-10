@@ -1,19 +1,19 @@
 import fs from "fs"
 
-import { createProductID, findProductIDById } from "../models/query/productID";
-import { findService, findServiceById } from "../models/query/service";
+import productIDQueries from "../models/query/productID";
+import serviceQueries from "../models/query/service";
+import requestProductIDQueries from "../models/query/requestProductID";
+import userQueries from "../models/query/user";
+import priceQueries from "../models/query/price";
 import { serverErrorMessage } from "../utils/messages";
 import { serviceNotExist, successRegistration } from '../utils/messages/service'
 import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSuccessfulyTreated, requestSuccessfulySent } from '../utils/messages/productCategory'
-import { createRequestProductID, findRequestsProductID, updateIsTreatedRequestProductID } from "../models/query/RequestProductID";
-import { findUserById } from "../models/query/user";
-import { createPrice } from "../models/query/price";
 
 export const addProductID = (req, res) => {
    (async () => {
       const {serviceName, label, dollar, euro, dinnar} = req.body
       try {
-         const service = await findService(serviceName, 'id')
+         const service = await serviceQueries.find(serviceName, 'id')
          if (service === null) {
             return res.status(401).json(serviceNotExist(serviceName))
          }
@@ -23,14 +23,14 @@ export const addProductID = (req, res) => {
             return res.status(409).json(productCategoryAlreadyExistMsg(label))
          }
 
-         const { productID } = await createProductID({label, ServiceId: service.dataValues.id})
+         const { productID } = await productIDQueries.create({label, ServiceId: service.dataValues.id})
 			const bodyPrice = {
 				dollar,
 				euro,
 				dinnar,
 				ProductIDId: productID.dataValues.id
 			}
-         await createPrice(bodyPrice);
+         await priceQueries.create(bodyPrice);
          return res.status(201).json(successRegistration(label))
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
@@ -43,13 +43,13 @@ export const sendRequestProductID = (req, res) => {
       const body = { ...req.body, UserId: req.user.dataValues.id }
       const currentcoin = req.params.currentcoin
       try {
-         const productID = await findProductIDById(body.ProductIDId)
+         const productID = await productIDQueries.findById(body.ProductIDId)
 
          if (productID === null) {
             return res.status(401).json(productCategoryNotExistMsg(body.productIdLabel))
          }
 
-         await createRequestProductID(body)
+         await requestProductIDQueries.create(body)
 
          return res.status(201).json(requestSuccessfulySent())
 
@@ -62,15 +62,15 @@ export const sendRequestProductID = (req, res) => {
 export const fetchAllRequestsProductID = (req, res) => {
    (async () => {
       try {
-         const requestsProductID = await findRequestsProductID()
+         const requestsProductID = await requestProductIDQueries.find()
          const returnRequests = () => new Promise((resolve, reject) => {
             const requestsIDBody = []
             if (requestsProductID.length !== 0) {
                requestsProductID.map(async (requestID, idx) => {
                   try {
-                     const productID = await findProductIDById(requestID.dataValues.ProductIDId)
-                     const user = await findUserById(requestID.dataValues.UserId)
-                     const service = await findServiceById(productID.dataValues.ServiceId)
+                     const productID = await productIDQueries.findById(requestID.dataValues.ProductIDId)
+                     const user = await userQueries.findById(requestID.dataValues.UserId)
+                     const service = await serviceQueries.findById(productID.dataValues.ServiceId)
                      const RequestBody = {
                         ...requestID.dataValues,
                         productIDLabel: productID.dataValues.label,
@@ -99,7 +99,7 @@ export const fetchAllRequestsProductID = (req, res) => {
 export const treatedRequestProductID = (req, res) => {
    (async () => {
       try {
-         const isTreated = await updateIsTreatedRequestProductID(req.params.id)
+         const isTreated = await requestProductIDQueries.updateIsTreated(req.params.id)
          if (!isTreated[0]) {
             throw 'Operation failed'
          }
@@ -115,7 +115,7 @@ export const fetchProductIDsByService = (req, res) => {
    (async () => {
       const {ServiceId, serviceName} = req.query
       try {
-         const service = await findServiceById(ServiceId)
+         const service = await serviceQueries.findById(ServiceId)
          if (service === null) {
             return res.status(401).json(serviceNotExist(serviceName))
          }
