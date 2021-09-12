@@ -1,6 +1,6 @@
 import multer from "multer";
 import path from "path";
-import fs, { stat } from "fs";
+import fs from "fs";
 
 const CURRENT_WORKING_DIR = process.cwd();
 const imageDist = {

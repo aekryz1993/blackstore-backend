@@ -19,7 +19,7 @@ export const addProductCode = (req, res) => {
   (async () => {
     const { serviceName, productName, code, Date, Serial } = req.body;
     try {
-      const service = await serviceQueries.find(serviceName, "code");
+      const service = await serviceQueries.findByNameAndCategory(serviceName, "code");
       if (service === null) {
         return res.status(401).json(serviceNotExist(serviceName));
       }

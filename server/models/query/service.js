@@ -19,7 +19,7 @@ const create = (body) => {
     })
 }
 
-const find = (serviceName, category) => {
+const findByNameAndCategory = (serviceName, category) => {
     const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
@@ -57,7 +57,7 @@ const findById = (id, category) => {
     })
 }
 
-const find = (category) => {
+const findByCategory = (category) => {
     const includeModel = category === 'code' ? models.ProductCategory : models.ProductID
     return new Promise(async (resolve, reject) => {
         try {
@@ -77,7 +77,7 @@ const find = (category) => {
 
 export default {
   create,
-  find,
+  findByNameAndCategory,
   findById,
-  find,
+  findByCategory,
 };

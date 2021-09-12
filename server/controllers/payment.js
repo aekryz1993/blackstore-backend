@@ -1,5 +1,5 @@
 import paymentQueries from "../models/query/payment";
-import { peyMethodQueries } from "../models/query/peyMethod";
+import peyMethodQueries from "../models/query/peyMethod";
 
 export const buyingCredit = (req, res) => {
   (async () => {

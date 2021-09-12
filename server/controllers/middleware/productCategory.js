@@ -12,7 +12,7 @@ export const savePrices = (prices) => {
         const dinnar = prices[i]["dinnar"];
         const euro = prices[i]["euro"];
         const dollar = prices[i]["dollar"];
-        const service = await serviceQueries.find(serviceName, "code");
+        const service = await serviceQueries.findByNameAndCategory(serviceName, "code");
         if (service === null) {
           throw serviceNotExist(serviceName);
         }
