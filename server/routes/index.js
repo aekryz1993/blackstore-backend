@@ -5,7 +5,6 @@ import {
   localPassportStrategy,
   SESSION_SECRET_VALUE,
   expirySessionDate,
-  ensureSocketAuthorized,
 } from "../config/passport.config";
 import authRouter from "./auth";
 import userSessionRouter from "./userSession";

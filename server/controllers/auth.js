@@ -5,7 +5,7 @@ import { loginRequest } from "./helper";
 export const signIn = (passport) => (req, res) => {
     passport.authenticate('local', (error, user, info) => {
         if (error) {
-            return res.json(serverErrorMessage(err.message));
+            return res.json(serverErrorMessage(error.message));
         }
         if (!user) {
             return res.status(401).json(userNotExist(info));

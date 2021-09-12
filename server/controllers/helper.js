@@ -4,7 +4,7 @@ import { serverErrorMessage } from "../utils/messages";
 export const loginRequest = (user, req, res) => {
   req.login(user, async (error) => {
     if (error) {
-      return res.json(serverErrorMessage(err.message));
+      return res.json(serverErrorMessage(error.message));
     }
     if (req.isAuthenticated()) {
       const currentUser = Object.fromEntries(

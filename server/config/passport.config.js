@@ -5,7 +5,7 @@ import userQueries from "../models/query/user";
 const localStrategy = new LocalStrategy(
   async (userIdentifier, password, done) => {
     try {
-      const user = await userQueries.findUser(userIdentifier);
+      const user = await userQueries.find(userIdentifier);
       if (!user) {
         return done(null, false, {
           message: `غير مسجل ${userIdentifier}`,
@@ -40,7 +40,7 @@ export const localPassportStrategy = (passport) => {
 
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = await userQueries.findUserById(id);
+      const user = await userQueries.findById(id);
       done(null, user);
     } catch (error) {
       done(error);
