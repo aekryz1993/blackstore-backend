@@ -6,19 +6,21 @@ export const getNotifications = (redisClient) => (req, res) => {
     try {
       const userId = req.user.id;
       const notificationCount = await redisClient.get(userId);
-      const initNotifications = await notificationQueries.findByUser(userId);
+      const initNotifications = await notificationQueries.findByUser(userId, 30);
       const notifications = initNotifications.length
-        ? initNotifications.map((product) =>
-            Object.fromEntries(
-              Object.entries(notification).filter(
-                ([key, _]) => key === "dataValues"
-              )
-            )
-          )
+        ? initNotifications.map(notification => ({
+          id: notification.dataValues.id,
+          seen: notification.dataValues.seen,
+          action: notification.dataValues.action,
+          from: notification.dataValues.from,
+          product: notification.dataValues.Command.category,
+          quantity: notification.dataValues.Command.quantity,
+          date: notification.dataValues.Command.createdAt,
+        }))
         : [];
       res.status(200).json({
         notificationCount: parseInt(notificationCount),
-        notifications,
+        notifications: notifications.reverse(),
         success: true,
       });
     } catch (error) {

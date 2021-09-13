@@ -146,16 +146,14 @@ export const getProductCodesByMultCategories =
                     UserId: admin.dataValues.id,
                     CommandId: newCommand.dataValues.id,
                     action: "ordered",
+                    from: `${req.user.firstname} ${req.user.lastname}`,
                   });
-                  // notification = Object.fromEntries(
-                  //   Object.entries(notification).filter(
-                  //     ([key, _]) => key === "dataValues"
-                  //   )
-                  // );
                   if (index === 0) {
                     notification = {
-                      ...notification.dataValues,
-                      from: `${req.user.firstname} ${req.user.lastname}`,
+                      id: notification.dataValues.id,
+                      seen: notification.dataValues.seen,
+                      action: notification.dataValues.action,
+                      from: notification.dataValues.from,
                       product: label,
                       quantity: newCommand.dataValues.quantity,
                       date: newCommand.dataValues.createdAt,
@@ -164,17 +162,6 @@ export const getProductCodesByMultCategories =
                       ? (notifications = [...notifications, notification])
                       : (notifications = [notification]);
                   }
-                  // ? (notifications = {
-                  //     ...notifications,
-                  //     [admin.dataValues.id]: [
-                  //       ...notifications[admin.dataValues.id],
-                  //       notification,
-                  //     ],
-                  //   })
-                  // : (notifications = {
-                  //     ...notifications,
-                  //     [admin.dataValues.id]: [notification],
-                  //   });
                   const notificationCount = await redisClient.get(
                     admin.dataValues.id
                   );

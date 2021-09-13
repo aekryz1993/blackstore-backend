@@ -11,14 +11,28 @@ const create = (body) => {
   });
 };
 
-const findByUser = (UserId) => {
+const findByUser = (UserId, limit) => {
   return new Promise(async (resolve, reject) => {
     try {
       const notifications = await models.Notification.findAll({
+        limit,
         where: {UserId},
-        orders: ['createdAt', 'DESC']
+        include: [models.User, models.Command],
       });
-      resolve({notifications});
+      resolve(notifications);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+const count = (UserId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const numberOfNotifications = await models.Notification.count({
+        where: { UserId },
+      });
+      resolve(numberOfNotifications);
     } catch (err) {
       reject(err);
     }
@@ -28,4 +42,5 @@ const findByUser = (UserId) => {
 export default {
     create,
     findByUser,
+    count,
 }

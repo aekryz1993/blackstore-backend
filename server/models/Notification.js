@@ -14,6 +14,10 @@ Notification.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
+    from: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     seen: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
