@@ -155,7 +155,7 @@ export const getProductCodesByMultCategories =
                       action: notification.dataValues.action,
                       from: notification.dataValues.from,
                       product: label,
-                      quantity: newCommand.dataValues.quantity,
+                      quantity: `${newCommand.dataValues.quantity} codes`,
                       date: newCommand.dataValues.createdAt,
                     };
                     notifications.length !== 0

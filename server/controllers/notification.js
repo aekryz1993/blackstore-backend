@@ -14,7 +14,7 @@ export const getNotifications = (redisClient) => (req, res) => {
           action: notification.dataValues.action,
           from: notification.dataValues.from,
           product: notification.dataValues.Command.category,
-          quantity: notification.dataValues.Command.quantity,
+          quantity: `${notification.dataValues.Command.quantity} codes`,
           date: notification.dataValues.Command.createdAt,
         }))
         : [];
