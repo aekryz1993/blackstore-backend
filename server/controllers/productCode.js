@@ -95,6 +95,7 @@ export const getProductCodesByMultCategories =
         const wallet = await walletQueries.find(currentUserId);
         let codes = {};
         let commands = [];
+        let notifications = [];
         if (
           wallet.dataValues[currency] > 0 &&
           wallet.dataValues[currency] >= amount
@@ -140,32 +141,63 @@ export const getProductCodesByMultCategories =
                   UserId: currentUserId,
                   ProductCategoryId: productCategory.dataValues.id,
                 });
-                admins.forEach(async (admin) => {
-                  const notification = await addNotification({
+                for (const [index, admin] of admins.entries()) {
+                  let notification = await addNotification({
                     UserId: admin.dataValues.id,
                     CommandId: newCommand.dataValues.id,
                     action: "ordered",
                   });
-                  const notifyCount = await redisClient.get(
-                    admin.dataValues.id
-                  );
-                  await redisClient.set(
-                    admin.dataValues.id,
-                    (parseInt(notifyCount) + 1).toString()
-                  );
-                  orderCommandNamespace
-                    .to(admin.dataValues.id)
-                    .emit("send_command_order", {
-                      notification,
+                  // notification = Object.fromEntries(
+                  //   Object.entries(notification).filter(
+                  //     ([key, _]) => key === "dataValues"
+                  //   )
+                  // );
+                  if (index === 0) {
+                    notification = {
+                      ...notification.dataValues,
                       from: `${req.user.firstname} ${req.user.lastname}`,
                       product: label,
                       quantity: newCommand.dataValues.quantity,
                       date: newCommand.dataValues.createdAt,
-                    });
-                });
+                    };
+                    notifications.length !== 0
+                      ? (notifications = [...notifications, notification])
+                      : (notifications = [notification]);
+                  }
+                  // ? (notifications = {
+                  //     ...notifications,
+                  //     [admin.dataValues.id]: [
+                  //       ...notifications[admin.dataValues.id],
+                  //       notification,
+                  //     ],
+                  //   })
+                  // : (notifications = {
+                  //     ...notifications,
+                  //     [admin.dataValues.id]: [notification],
+                  //   });
+                  const notificationCount = await redisClient.get(
+                    admin.dataValues.id
+                  );
+                  await redisClient.set(
+                    admin.dataValues.id,
+                    (parseInt(notificationCount) + 1).toString()
+                  );
+                }
                 commands = [...commands, newCommand];
               }
             }
+          }
+          for (const admin of admins) {
+            const notificationCount = await redisClient.get(
+              admin.dataValues.id
+            );
+            orderCommandNamespace
+              .to(admin.dataValues.id)
+              .emit(
+                "send_command_order",
+                notifications,
+                parseInt(notificationCount)
+              );
           }
           const newCredit = wallet.dataValues[currency] - amount;
           await walletQueries.update({
