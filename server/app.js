@@ -9,9 +9,11 @@ import { Server } from "socket.io";
 
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from "./config/passport.config";
 import apiRouter from "./routes";
+import redisConnect from "./config/redis";
 
 const app = express();
 const CURRENT_WORKING_DIR = process.cwd();
+export const redisClient = redisConnect();
 
 if (process.env.NODE_ENV === "development") {
   app.use(logger("dev"));
@@ -32,6 +34,6 @@ app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 const io = new Server()
 app.io = io;
 
-app.use("/api", apiRouter(app, passport, io));
+app.use("/api", apiRouter(app, passport, io, redisClient));
 
 export default app;

@@ -10,10 +10,10 @@ import { checkPermission } from '../../controllers/middleware/permissions';
 
 const router = express.Router();
 
-const usersRouter = () => {
+const usersRouter = (redisClient) => {
 
-  router.post('/add', checkPermission('addUser'), uploadImage.single('picture'), addUser, addWallet, addPicture);
-  router.post('/addMulti', checkPermission('addUser'), uploadExcel(false), readExcel, addMultiUser);
+  router.post('/add', checkPermission('addUser'), uploadImage.single('picture'), addUser(redisClient), addWallet, addPicture);
+  router.post('/addMulti', checkPermission('addUser'), uploadExcel(false), readExcel, addMultiUser(redisClient));
   router.get('/getusers/:page', checkPermission('viewUser'), getAllUsers())
   router.put('/updateCredit/:userId', checkPermission('updateCredit'), updateCredit)
   router.put('/updateUserPicture/:userId', checkPermission('updateUser'), uploadImage.single('picture'), updateProfilePicture, addPicture)

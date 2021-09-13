@@ -11,10 +11,11 @@ import { updateProfilePicture } from '../controllers/user';
 import { addPicture } from '../controllers/image';
 import { buyingCredit } from '../controllers/payment';
 import userQueries from '../models/query/user';
+import { getNotifications, resetNotificationsCount } from '../controllers/notification';
 
 const router = express.Router();
 
-const userSessionRouter = (io) => {
+const userSessionRouter = (io, redisClient) => {
   const orderCommandNamespace = io.of("/orderCommands");
   orderCommandNamespace.on("connection", async (socket) => {
     const admins = await userQueries.findAdmins()
@@ -24,9 +25,11 @@ const userSessionRouter = (io) => {
   router.use('/wallet', walletRouter());
   router.use('/productCategory', productCategoryRouter());
   router.use('/productID', productIDRouter());
-  router.use('/productCode', productCodeRouter(orderCommandNamespace));
+  router.use('/productCode', productCodeRouter(orderCommandNamespace, redisClient));
   router.post('/payment/:codeID', buyingCredit);
   router.put('/updateProfilePicture', uploadImage.single('picture'), updateProfilePicture, addPicture);
+  router.get('/getNotifications', getNotifications(redisClient));
+  router.put('/resetNotificationsCount', resetNotificationsCount(redisClient));
   router.get('/logout', logout);
 
   return router;

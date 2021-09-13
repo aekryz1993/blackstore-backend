@@ -6,11 +6,11 @@ import {
   addProductCode,
   addMultiProductCode,
 } from "../../controllers/productCode";
-import { createCodesFromCommand, getCommands } from "../../controllers/commands";
+import { treatCommand, getCommands } from "../../controllers/commands";
 
 const router = express.Router();
 
-const productCodeRouter = (io) => {
+const productCodeRouter = (io, redisClient) => {
   router.post("/add", checkPermission("addProduct"), addProductCode);
   router.post(
     "/addMulti",
@@ -29,7 +29,7 @@ const productCodeRouter = (io) => {
     checkPermission("viewcmnd"),
     uploadExcel(false),
     readExcel,
-    createCodesFromCommand(io),
+    treatCommand(io, redisClient),
   );
   return router;
 };

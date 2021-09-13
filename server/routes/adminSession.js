@@ -8,20 +8,18 @@ import usersRouter from "./admin/users";
 
 const router = express.Router();
 
-const adminSessionRouter = (io) => {
+const adminSessionRouter = (io, redisClient) => {
   const treatedCommandNamespace = io.of("/treatedCommands");
   treatedCommandNamespace.on("connection", async (socket) => {
     socket.on('send_userId', userId => {
       socket.join(userId)
     })
-    // const clients = await findActiveUsers()
-    // clients.forEach(client => socket.join(client.dataValues.id));
   });
-  router.use("/users", usersRouter());
+  router.use("/users", usersRouter(redisClient));
   router.use("/services", servicesRouter());
   router.use("/productCategory", productCategoryRouter());
   router.use("/productID", productIDRouter());
-  router.use("/productCode", productCodeRouter(treatedCommandNamespace));
+  router.use("/productCode", productCodeRouter(treatedCommandNamespace, redisClient));
 
   return router;
 };

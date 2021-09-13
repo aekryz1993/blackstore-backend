@@ -44,7 +44,7 @@ export const fetchCurrentCredit = (req, res) => {
 		try {
 			const {id} = req.user.dataValues
 
-			const wallet = await findWallet(id)
+			const wallet = await walletQueries.find(id)
 			if (!wallet) {
 				res.status(401).json({message: 'This wallet doesn\'t exist'})
 			}

@@ -43,14 +43,18 @@ export const getCommands = (req, res) => {
         await paginateData(page, commandQueries.count, 7, false, {
           isTreated,
         });
-      const initiaCommands = await commandQueries.findIsTreated(limit, offset, isTreated);
+      const initiaCommands = await commandQueries.findIsTreated(
+        limit,
+        offset,
+        isTreated
+      );
       for (let command of initiaCommands) {
         let user = await userQueries.findById(command.dataValues.UserId);
-        user = user.dataValues
+        user = user.dataValues;
         command.dataValues.user = `${user.firstname} ${user.lastname}`;
         command.dataValues.email = user.email;
         command.dataValues.phone = user.phone;
-        commands = [...commands, command]
+        commands = [...commands, command];
       }
       return res.status(200).json({
         commands,
@@ -65,7 +69,7 @@ export const getCommands = (req, res) => {
   })();
 };
 
-export const createCodesFromCommand = (io) => (req, res, next) => {
+export const treatCommand = (io, redisClient) => (req, res, next) => {
   (async () => {
     const { userId, commandId, categoryId } = req.params;
     const codes = req.dataObj;
@@ -84,14 +88,27 @@ export const createCodesFromCommand = (io) => (req, res, next) => {
           CommandId: commandId,
         });
       }
-      await commandQueries.updateIsTreated(commandId)
+      await commandQueries.updateIsTreated(commandId);
       const notification = await notificationQueries.create({
-        action: 'command has been sent',
+        action: "command has been sent",
         UserId: userId,
         CommandId: commandId,
-      })
-      io.to(userId).emit('send_command', {notification})
-      return res.status(201).json({success: true, message: 'Command has been successfully sent'});
+      });
+      const notifyCount = await redisClient.get(userId);
+      await redisClient.set(
+        userId,
+        (parseInt(notifyCount) + 1).toString()
+      );
+      io.to(userId).emit("send_command", {
+        notification,
+        from: `${req.user.firstname} ${req.user.lastname}`,
+        // product: label,
+        // quantity: newCommand.dataValues.quantity,
+        // date: newCommand.dataValues.createdAt,
+      });
+      return res
+        .status(201)
+        .json({ success: true, message: "Command has been successfully sent" });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

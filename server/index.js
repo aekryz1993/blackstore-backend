@@ -1,5 +1,5 @@
 
-import app from './app';
+import app, {redisClient} from './app';
 import { hostServer } from './config/server.config';
 import { createAdmin } from './db/seed';
 import sequelize from './config/db.config'
@@ -32,7 +32,7 @@ const listen = (port, host) => {
     console.log(result.message);
     console.log(`Host: ${result.host}\nPort: ${result.port}`);
     await sequelize.sync()
-    createAdmin()
+    createAdmin(redisClient)
   } catch (err) {
     console.error(err)
   }

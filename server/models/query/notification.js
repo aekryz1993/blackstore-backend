@@ -11,6 +11,21 @@ const create = (body) => {
   });
 };
 
+const findByUser = (UserId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const notifications = await models.Notification.findAll({
+        where: {UserId},
+        orders: ['createdAt', 'DESC']
+      });
+      resolve({notifications});
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 export default {
-    create
+    create,
+    findByUser,
 }

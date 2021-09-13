@@ -10,7 +10,7 @@ import { fieldAlreadyExist } from "../utils/messages/user";
 import { paginateData } from "./helper";
 import { saveUsers } from "./middleware/user";
 
-export const addUser = (req, res, next) => {
+export const addUser = (redisClient) => (req, res, next) => {
   (async () => {
     const body = req.body;
     try {
@@ -21,6 +21,7 @@ export const addUser = (req, res, next) => {
       if (!isNewUser) {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
+      await redisClient.set(user.dataValues.id, 0)
       await permissionQueires.create({
         ...body.permissions,
         UserId: user.dataValues.id,
@@ -35,11 +36,11 @@ export const addUser = (req, res, next) => {
   })();
 };
 
-export const addMultiUser = (req, res) => {
+export const addMultiUser = (redisClient) =>(req, res) => {
   (async () => {
     const users = req.dataObj;
     try {
-      const message = await saveUsers(users);
+      const message = await saveUsers(users, redisClient);
       return res.status(201).json({ message });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));

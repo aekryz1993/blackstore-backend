@@ -6,12 +6,13 @@ import userQueries from '../models/query/user'
 
 const CURRENT_WORKING_DIR = process.cwd();
 
-export const createAdmin = () => {
+export const createAdmin = (redisClient) => {
     (async () => {
         try {
             const {user, isNewUser} = await userQueries.create(initUser)
             if (isNewUser) {
                 const UserId = user.dataValues.id
+                await redisClient.set(UserId, "0")
                 const metadata = {
                     type: 'image/png',
                     name: `default.png`,
