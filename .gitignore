@@ -70,6 +70,7 @@ typings/
 
 # dotenv environment variables file
 .env
+.env2
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -106,3 +107,7 @@ dist
 # assets
 resources/static/assets/pictures/*
 resources/temporary/*
+
+# SSL
+cert.pem
+key.pem

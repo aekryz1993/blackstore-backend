@@ -4,13 +4,21 @@ import { hostServer } from './config/server.config';
 import { createAdmin } from './db/seed';
 import sequelize from './config/db.config'
 import http from "http";
+// import https from "https";
+// import fs from "fs";
 
 const config = {
   host: hostServer(app)['host'],
   port: hostServer(app)['port'],
 }
 
+// const options = {
+//   key: fs.readFileSync('key.pem'),
+//   cert: fs.readFileSync('cert.pem')
+// }
+
 const listen = (port, host) => {
+  // const server = https.createServer(options, app);
   const server = http.createServer(app);
   const io = app.io;
   io.attach(server);
@@ -32,6 +40,7 @@ const listen = (port, host) => {
     console.log(result.message);
     console.log(`Host: ${result.host}\nPort: ${result.port}`);
     await sequelize.sync()
+    await sequelize.authenticate();
     createAdmin(redisClient)
   } catch (err) {
     console.error(err)

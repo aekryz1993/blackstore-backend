@@ -9,7 +9,7 @@ import { logout } from '../controllers/auth';
 import uploadImage from '../controllers/middleware/image';
 import { updateProfilePicture } from '../controllers/user';
 import { addPicture } from '../controllers/image';
-import { buyingCredit } from '../controllers/payment';
+import { buyingCreditCoinbase } from '../controllers/payment';
 import userQueries from '../models/query/user';
 import { getNotifications, resetNotificationsCount } from '../controllers/notification';
 
@@ -26,7 +26,7 @@ const userSessionRouter = (io, redisClient) => {
   router.use('/productCategory', productCategoryRouter());
   router.use('/productID', productIDRouter());
   router.use('/productCode', productCodeRouter(orderCommandNamespace, redisClient));
-  router.post('/payment/:codeID', buyingCredit);
+  router.post('/payment/coinbase/:amount', buyingCreditCoinbase);
   router.put('/updateProfilePicture', uploadImage.single('picture'), updateProfilePicture, addPicture);
   router.get('/getNotifications', getNotifications(redisClient));
   router.put('/resetNotificationsCount', resetNotificationsCount(redisClient));

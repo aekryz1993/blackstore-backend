@@ -1,31 +1,36 @@
 import paymentQueries from "../models/query/payment";
 import peyMethodQueries from "../models/query/peyMethod";
 
-export const buyingCredit = (req, res) => {
+import epayment from '../config/e-payment'
+
+export const buyingCreditCoinbase = (req, res) => {
   (async () => {
-    const { amount, codeID } = req.body;
+    const { amount } = req.params;
+    const { id } = req.user;
+    const {Charge} = epayment().coinbaseResources;
     try {
-      const existPayment = await paymentQueries.find(codeID);
+      // const existPayment = await paymentQueries.find(codeID);
 
-      if (existPayment) {
-        return res
-          .status(401)
-          .json({ message: "هذه العملية تم إجراءها مسبقا" });
-      }
+      // if (existPayment) {
+      //   return res
+      //     .status(401)
+      //     .json({ message: "هذه العملية تم إجراءها مسبقا" });
+      // }
 
-      UserId = req.user.id;
+      // UserId = req.user.id;
 
-      await paymentQueries.create({ amount, codeID, UserID });
+      // await paymentQueries.create({ amount, codeID, UserID });
 
-      return res.status(201).json({
-        message:
-          "تم إجراء عملية الدفع بنجاح يرجى انتظار التأكيد من طرف مدير التطبيق",
-        payment: {
-          amount,
-          codeID,
-          user: req.user.username,
-        },
-      });
+      // return res.status(201).json({
+      //   message:
+      //     "تم إجراء عملية الدفع بنجاح يرجى انتظار التأكيد من طرف مدير التطبيق",
+      //   payment: {
+      //     amount,
+      //     codeID,
+      //     user: req.user.username,
+      //   },
+      // });
+      return res.status(200).json({id, amount})
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

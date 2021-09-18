@@ -23,6 +23,6 @@ module.exports = merge([
         },
     },
     parts.clean(),
-    parts.environmentVariables(),
+    // parts.environmentVariables(),
     // parts.loadJavaScript(),
 ])
