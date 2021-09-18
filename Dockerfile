@@ -1,18 +1,16 @@
 FROM node:14
 
-RUN mkdir -p /opt/app
+WORKDIR /app
 
-WORKDIR /opt/app
+COPY ./package.json ./
 
-RUN adduser app
+RUN npm i
 
 COPY . .
 
-RUN npm install
+# RUN chown -R app /opt/app
 
-RUN chown -R app /opt/app
-
-USER app
+# USER app
 
 # EXPOSE 3000
 

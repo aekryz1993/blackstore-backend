@@ -9,8 +9,8 @@ services:
     #   - "5432:5432"
     volumes:
       - bluestore-db:/var/lib/postgresql/data
-    networks:
-        - example-net
+    # networks:
+    #     - example-net
 
   redis:
     image: redis:alpine
@@ -19,16 +19,27 @@ services:
     #   - "6379:6379"
     volumes:
       - bluestore-redis:/var/lib/redis/key
-    networks:
-        - example-net
+    # networks:
+    #     - example-net
+  
+  nginx:
+    depends_on:
+      - bluestore
+    restart: always
+    build:
+      context: ./nginx
+    ports:
+      - "3050:80"
+    # networks:
+    #     - example-net
 
   bluestore:
     build:
       context: .
-    container_name: bluestore
-    hostname: bluestore
+    # container_name: bluestore
+    # hostname: bluestore
     environment:
-      PORT: 3000
+      # PORT: 3000
       REDIS_HOST: redis
       DB_HOST: postgres
       DB_SCHEMA: postgres
@@ -43,25 +54,13 @@ services:
       - redis
     # ports:
     #   - "3000:3000"
-    networks:
-        - example-net  
-  
-  nginx:
-    depends_on:
-      - bluestore
-    restart: always
-    build:
-      dockerfile: Dockerfile
-      context: ./nginx
-    ports:
-      - "3050:80"
-    networks:
-        - example-net
+    # networks:
+    #     - example-net  
 
 volumes:
   bluestore-db:
   bluestore-redis:
 
-networks:
-  example-net:
-    external: true
+# networks:
+#   example-net:
+#     external: true
