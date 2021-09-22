@@ -2,13 +2,15 @@ import { createClient } from "redis";
 
 export default function redisConnect() {
   const client = createClient({
+    // url: `rediss://${config.username}:${config.password}@${config.host}:${config.port}`,
     socket: {
-      url: `redis://${config.username}:${config.password}@${config.host}:${config.port}`,
+      url: `rediss://${config.username}:${config.password}@${config.host}:${config.port}`,
     },
     // host: config.host,
     // port: config.port,
     // username: config.username,
     // password: config.password,
+    // TLS: true
   });
   (async () => {
     try {

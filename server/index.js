@@ -16,7 +16,6 @@ const config = {
     io.attach(server);
     server.listen(config.port, () => {
       console.log('Connection has been established successfully on port ', config.port);
-      console.log(process.env.REDIS_HOST)
     });
     server.on("error", (err) => {
       throw err;
