@@ -5,9 +5,9 @@ import fs from "fs";
 const CURRENT_WORKING_DIR = process.cwd();
 
 const devEnv = {
-  database: process.env.DB_SCHEMA || "auth_api_dev",
+  database: process.env.DB_SCHEMA || "postgres",
   username: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || 123456,
+  password: process.env.DB_PASSWORD || "postgres",
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT || 5432,
   pool: {
@@ -41,11 +41,12 @@ const sequelize = new Sequelize(
     dialect: "postgres",
     logging: false,
     dialectOptions: {
-      ssl: {
-        ca: fs.readFileSync(path.resolve(CURRENT_WORKING_DIR, 'postgress_ssl.crt')),
-      },
+      // ssl: {
+      //   ca: fs.readFileSync(path.resolve(CURRENT_WORKING_DIR, 'postgress_ssl.crt')),
+      // },
+      ssl: process.env.DB_SSL == "true",
       // rejectUnauthorized: process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0",
-      rejectUnauthorized: true,
+      // rejectUnauthorized: true,
     },
     pool: devEnv.pool,
   }
