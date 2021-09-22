@@ -5,20 +5,7 @@ const devEnv = {
     username: process.env.DB_USER  || 'postgres',
     password: process.env.DB_PASSWORD || 123456,
     host: process.env.DB_HOST || 'localhost',
-    // pool: {
-    //     max: 5,
-    //     min: 0,
-    //     acquire: 30000,
-    //     idle: 10000
-    // }
-};
-
-const prodEnv = {
-    database: 'system_administration_dev',
-    username: 'root',
-    password: 'password123',
-    host: 'localhost',
-    ssl: true,
+    port: process.env.DB_PORT || 5432,
     pool: {
         max: 5,
         min: 0,
@@ -27,22 +14,30 @@ const prodEnv = {
     }
 };
 
-// const sequelize = new Sequelize(devEnv.database, devEnv.username, devEnv.password, {
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const prodEnv = {
+    database: 'system_administration_dev',
+    username: 'root',
+    password: 'password123',
+    host: 'localhost',
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
+};
+
+const sequelize = new Sequelize(devEnv.database, devEnv.username, devEnv.password, {
+    host: devEnv.host,
+    port: devEnv.port,
     dialect: 'postgres',
     logging: false,
-    // ssl: true,
-    // rejectUnauthorized: false,
     dialectOptions: {
         ssl: true,
-        rejectUnauthorized: process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0",
+        // rejectUnauthorized: process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0",
+        rejectUnauthorized: false,
     },
-    // pool: {
-    //     max: 5,
-    //     min: 0,
-    //     acquire: 30000,
-    //     idle: 10000
-    // }
+    pool: config.pool
 });
 // const sequelize = new Sequelize(devEnv.host, {
 //     dialect: 'postgres',
