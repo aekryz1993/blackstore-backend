@@ -11,8 +11,12 @@ export default function redisConnect() {
     // password: config.password,
   });
   (async () => {
-    client.on("error", (err) => console.log("Redis Client Error", err));
-    await client.connect();
+    try {
+      await client.connect();
+      client.on("error", (err) => console.log("Redis Client Error", err));
+    } catch (error) {
+      console.log("Redis Client Error", error)
+    }
   })();
   return client;
 }

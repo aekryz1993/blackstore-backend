@@ -1,26 +1,19 @@
 version: "3.9"
 services:
-  postgres:
+  herokuPostgresql:
     image: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    # ports:
-    #   - "5432:5432"
-    volumes:
-      - bluestore-db:/var/lib/postgresql/data
-    # networks:
-    #     - example-net
+    # environment: .postgres.env
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   volumes:
+  #     - bluestore-db:/var/lib/postgresql/data
 
-  redis:
-    image: redis:alpine
-    # command: ["redis-server", "--bind", "redis", "--port", "6379"]
-    # ports:
-    #   - "6379:6379"
-    volumes:
-      - bluestore-redis:/var/lib/redis/key
-    # networks:
-    #     - example-net
+  # redis:
+  #   image: redis:alpine
+  #   volumes:
+  #     - bluestore-redis:/var/lib/redis/key
+  # redis:
+  #   image: redis-14405.c1.us-west-2-2.ec2.cloud.redislabs.com
   
   nginx:
     depends_on:
@@ -28,39 +21,71 @@ services:
     restart: always
     build:
       context: ./nginx
-    ports:
-      - "3050:80"
-    # networks:
-    #     - example-net
+    # ports:
+    #   - "3050:80"
 
+  # bluestore:
+  #   build:
+  #     context: .
+  #   environment:
+  #     # PORT: 3000
+  #     REDIS_HOST: redis
+  #     DB_HOST: postgres
+  #     DB_SCHEMA: d1u7fngq9od0db
+  #     DB_USER: tmyowcionbpewx
+  #     DB_PASSWORD: fce45cba47799c0c14b10bb394e58de83e1720daae17963c3573168c2fd32093
+  #     REDIS_USER: default
+  #     REDIS_PASSWORD: 123456
+  #     REDIS_PORT: 6379
+  #     COINBASE_API_KEY: 0b427908-e03a-414b-a569-fa14db4cc601
+  #   depends_on:
+  #     - postgres
+  #     - redis
   bluestore:
     build:
       context: .
-    # container_name: bluestore
-    # hostname: bluestore
-    environment:
+    # environment:
       # PORT: 3000
-      REDIS_HOST: redis
-      DB_HOST: postgres
-      DB_SCHEMA: postgres
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      REDIS_USER: default
-      REDIS_PASSWORD: 123456
-      REDIS_PORT: 6379
-      COINBASE_API_KEY: 0b427908-e03a-414b-a569-fa14db4cc601
-    depends_on:
-      - postgres
-      - redis
-    # ports:
-    #   - "3000:3000"
-    # networks:
-    #     - example-net  
+      # REDIS_HOST: redis-14405.c1.us-west-2-2.ec2.cloud.redislabs.com
+      # DATABASE_URL: postgres://jtekvveegiyhcv:b87b1380aadc52a5e61ea40906be13182aaca52dc96b2747abf3305be6ebb9d8@herokuPostgresql:5432/db4q8a5e0bp1tt
+      # DB_SCHEMA: du9bmas6ral26
+      # DB_USER: gmpjtzkpscbcgr
+      # DB_PASSWORD: 772832db1aaff7b72924f53ca2ea6d6daee95264ab2618f8e26434956d82a9b3
+      # REDIS_USER: default
+      # REDIS_PASSWORD: 123456789
+      # REDIS_PORT: 14405
+      # COINBASE_API_KEY: 0b427908-e03a-414b-a569-fa14db4cc601
+    links:
+      - herokuPostgresql
+      # - redis
+      
+  # forms:
+  #   image: "mcr.microsoft.com/azure-cognitive-services/form-recognizer/layout"
+  #   environment:
+  #      eula: accept
+  #      billing: # < Your form recognizer billing URL >
+  #      apikey: # < Your form recognizer API key >
+  #      FormRecognizer__ComputerVisionApiKey: # < Your form recognizer API key >
+  #      FormRecognizer__ComputerVisionEndpointUri: # < Your form recognizer URI >
+  #   volumes:
+  #      - type: bind
+  #        source: E:\publicpreview\output
+  #        target: /output
+  #      - type: bind
+  #        source: E:\publicpreview\input
+  #        target: /input
+  #   ports:
+  #     - "5010:5000"
 
-volumes:
-  bluestore-db:
-  bluestore-redis:
+  # ocr:
+  #   image: "mcr.microsoft.com/azure-cognitive-services/vision/read:3.1-preview"
+  #   environment:
+  #     eula: accept
+  #     apikey: # < Your computer vision API key >
+  #     billing: # < Your computer vision billing URL >
+  #   ports:
+  #     - "5021:5000"
 
-# networks:
-#   example-net:
-#     external: true
+# volumes:
+#   bluestore-db:
+#   bluestore-redis:
