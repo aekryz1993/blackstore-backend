@@ -72,6 +72,8 @@ typings/
 .env
 .env2
 .env.test
+.redis.env
+.postgres.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -111,3 +113,4 @@ resources/temporary/*
 # SSL
 cert.pem
 key.pem
+ca-certificate.crt
