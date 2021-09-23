@@ -6,12 +6,12 @@ import cors from "cors";
 import passport from "passport";
 import path from "path";
 import { Server } from "socket.io";
-import { Webhook } from "coinbase-commerce-node";
+// import { Webhook } from "coinbase-commerce-node";
 
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from "./config/passport.config";
 import apiRouter from "./routes";
 import redisConnect from "./config/redis";
-import epayment from "./config/e-payment";
+// import epayment from "./config/e-payment";
 
 const app = express();
 const CURRENT_WORKING_DIR = process.cwd();
@@ -39,12 +39,12 @@ app.io = io;
 app.use("/api", apiRouter(app, passport, io, redisClient));
 app.get("/", function (req, res) {
   // const { Event } = epayment().coinbaseResources;
-  const signature = req.headers['x-cc-webhook-signature']
-  const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
-  const event = Webhook.verifySigHeader(req.rawBody, signature, sharedSecret);
-  if (event.type === 'charge:confirmed') {
-    console.log(event.type)
-  }
+  // const signature = req.headers['x-cc-webhook-signature']
+  // const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
+  // const event = Webhook.verifySigHeader(req.rawBody, signature, sharedSecret);
+  // if (event.type === 'charge:confirmed') {
+  //   console.log(event.type)
+  // }
   res.json({response: 'event.id'})
 });
 
