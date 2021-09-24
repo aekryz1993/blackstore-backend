@@ -31,6 +31,7 @@ app.use(
   })
 );
 app.use(express.static(path.join(CURRENT_WORKING_DIR, "resources")));
+app.use(express.static(path.join(CURRENT_WORKING_DIR, ".well-known")));
 app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 
 const io = new Server();
