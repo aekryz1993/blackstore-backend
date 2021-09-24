@@ -5,9 +5,9 @@ import fs from "fs";
 const CURRENT_WORKING_DIR = process.cwd();
 
 const devEnv = {
-  database: process.env.DB_SCHEMA || "postgres",
-  username: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || "postgres",
+  database: process.env.DB_SCHEMA || "system_administration_dev",
+  username: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || 123456,
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT || 5432,
   pool: {
