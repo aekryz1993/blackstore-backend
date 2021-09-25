@@ -112,7 +112,4 @@ resources/static/assets/pictures/*
 resources/temporary/*
 
 # SSL
-cert.pem
-key.pem
-ca-certificate.crt
-postgress_ssl.crt
+nginx/blackstoregb_com*
