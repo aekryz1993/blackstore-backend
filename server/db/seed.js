@@ -21,10 +21,10 @@ export const createAdmin = (redisClient) => {
                 }
                 await imageQueries.create(metadata)
                 await permissionQuaries.create({...permission, UserId})
-                console.log('admin user is created successfully')
+		        console.log('owner has been successfully created.')
                 return
             }
-            console.log('user already exist')
+            console.log('owner already exist.')
         } catch (err) {
             console.log(err.message)
         }

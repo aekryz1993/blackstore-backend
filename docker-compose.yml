@@ -24,15 +24,15 @@ services:
     build:
       context: ./nginx
     ports:
-      - "3050:80"
-      # - "443:443"
+      # - "3050:80"
+      - "80:80"
+      - "443:443"
 
   bluestore:
     build:
       context: .
     env_file: .env
     environment:
-      # PORT: 3000
       - REDIS_HOST:${REDIS_HOST}
       - DB_HOST:${DB_HOST}
       - DB_SCHEMA:${DB_SCHEMA}
