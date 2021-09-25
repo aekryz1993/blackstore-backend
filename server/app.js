@@ -49,15 +49,9 @@ app.get("/", function (req, res) {
   res.json({response: 'event.id'})
 });
 
-<<<<<<< HEAD
-app.post('/', (req, res) => {
-	console.log('coinbase')
-	res.send('coinbase')
-=======
 app.post("/", function (req, res) {
   const rawBody = req.rowBody;
   console.log(rowBody)
-  // const { Event } = epayment().coinbaseResources;
   const signature = req.headers['x-cc-webhook-signature']
   const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
   try {
@@ -69,10 +63,6 @@ app.post("/", function (req, res) {
   } catch (error) {
     res.status(400).send({message: error})
   }
-  // if (event.type === 'charge:confirmed') {
-  //   console.log(event.type)
-  // }
->>>>>>> 07d50c3b8d15d106a3682f9be717d6dbf6b5436d
 });
 
 export default app;
