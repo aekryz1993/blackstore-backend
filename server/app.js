@@ -49,4 +49,9 @@ app.get("/", function (req, res) {
   res.json({response: 'event.id'})
 });
 
+app.post('/', (req, res) => {
+	console.log('coinbase')
+	res.send('coinbase')
+});
+
 export default app;
