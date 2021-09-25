@@ -6,7 +6,7 @@ import cors from "cors";
 import passport from "passport";
 import path from "path";
 import { Server } from "socket.io";
-// import { Webhook } from "coinbase-commerce-node";
+import { Webhook } from "coinbase-commerce-node";
 
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from "./config/passport.config";
 import apiRouter from "./routes";
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({origin: '*'}));
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -47,6 +47,26 @@ app.get("/", function (req, res) {
   //   console.log(event.type)
   // }
   res.json({response: 'event.id'})
+});
+
+app.post("/", function (req, res) {
+  const rawBody = req.rowBody;
+  console.log(rowBody)
+  // const { Event } = epayment().coinbaseResources;
+  const signature = req.headers['x-cc-webhook-signature']
+  const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
+  try {
+    const event = Webhook.verifyEventBody(req.rawBody, signature, sharedSecret);
+    if (event.type === 'charge:confirmed') {
+      console.log('********************************Received**************************************')
+    }
+    res.json({response: event.id})
+  } catch (error) {
+    res.status(400).send({message: error})
+  }
+  // if (event.type === 'charge:confirmed') {
+  //   console.log(event.type)
+  // }
 });
 
 export default app;
