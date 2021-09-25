@@ -52,11 +52,10 @@ app.get("/", function (req, res) {
 app.post("/", function (req, res) {
   const rawBody = req.rowBody;
   console.log(rowBody)
-  // const { Event } = epayment().coinbaseResources;
   const signature = req.headers['x-cc-webhook-signature']
   const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
   try {
-    const event = Webhook.verifyEventBody(req.rawBody, signature, sharedSecret);
+    const event = Webhook.verifyEventBody(rawBody, signature, sharedSecret);
     if (event.type === 'charge:confirmed') {
       console.log('********************************Received**************************************')
     }
