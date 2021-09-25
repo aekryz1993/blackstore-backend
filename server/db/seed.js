@@ -10,8 +10,8 @@ export const createAdmin = (redisClient) => {
     (async () => {
         try {
             const {user, isNewUser} = await userQueries.create(initUser)
+            const UserId = user.dataValues.id
             if (isNewUser) {
-                const UserId = user.dataValues.id
                 await redisClient.set(UserId, "0")
                 const metadata = {
                     type: 'image/png',
@@ -21,6 +21,7 @@ export const createAdmin = (redisClient) => {
                 }
                 await imageQueries.create(metadata)
                 await permissionQuaries.create({...permission, UserId})
+                console.log('admin user is created successfully')
                 return
             }
             console.log('user already exist')
