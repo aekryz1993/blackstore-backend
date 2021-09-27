@@ -2,27 +2,11 @@ import paymentQueries from "../models/query/payment";
 import peyMethodQueries from "../models/query/peyMethod";
 import epayment from "../config/e-payment";
 
-export const rowBody = (req, res, next) => {
-  let data = '';
-  req.setEncoding('utf8');
-  req.on('data', chunk => {
-    data += chunk;
-  })
-  req.on('end', () => {
-    next();
-  })
-  req.on('error', () => {
-    console.log("Got error: " + e);
-    next();
-  })
-};
-
 export const webhookEvents = (Webhook) => (req, res) => {
-    console.log(req.rawBody)
     const signature = req.headers['x-cc-webhook-signature']
-    const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
+    const sharedSecret = process.env.sharedSecret
       try {
-        const event = Webhook.verifyEventBody(req.rawBody, signature, sharedSecret);
+        const event = Webhook.verifyEventBody(JSON.stringify(req.body), signature, sharedSecret);
         if (event.type === 'charge:pending') {
           console.log('********************************pending**************************************')
         }

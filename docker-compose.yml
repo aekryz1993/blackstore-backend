@@ -41,6 +41,7 @@ services:
       - REDIS_PASSWORD:${REDIS_PASSWORD}
       - REDIS_PORT:${REDIS_PORT}
       - COINBASE_API_KEY:${COINBASE_API_KEY}
+      - SHAREDSECRET:${SHAREDSECRET}
     depends_on:
       - postgres
       - redis

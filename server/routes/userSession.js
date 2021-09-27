@@ -9,13 +9,13 @@ import { logout } from '../controllers/auth';
 import uploadImage from '../controllers/middleware/image';
 import { updateProfilePicture } from '../controllers/user';
 import { addPicture } from '../controllers/image';
-import { buyingCreditCoinbase, webhookEvents, rowBody } from '../controllers/payment';
+import { buyingCreditCoinbase } from '../controllers/payment';
 import userQueries from '../models/query/user';
 import { getNotifications, resetNotificationsCount } from '../controllers/notification';
 
 const router = express.Router();
 
-const userSessionRouter = (io, redisClient, Webhook) => {
+const userSessionRouter = (io, redisClient) => {
   const orderCommandNamespace = io.of("/orderCommands");
   orderCommandNamespace.on("connection", async (socket) => {
     const admins = await userQueries.findAdmins()
@@ -27,7 +27,6 @@ const userSessionRouter = (io, redisClient, Webhook) => {
   router.use('/productID', productIDRouter());
   router.use('/productCode', productCodeRouter(orderCommandNamespace, redisClient));
   router.post('/payment/coinbase/:amount', buyingCreditCoinbase);
-  router.post('/payment/coinbase/listen', rowBody, webhookEvents(Webhook));
   router.put('/updateProfilePicture', uploadImage.single('picture'), updateProfilePicture, addPicture);
   router.get('/getNotifications', getNotifications(redisClient));
   router.put('/resetNotificationsCount', resetNotificationsCount(redisClient));

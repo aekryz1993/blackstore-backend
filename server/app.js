@@ -11,7 +11,6 @@ import { Webhook } from "coinbase-commerce-node";
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from "./config/passport.config";
 import apiRouter from "./routes";
 import redisConnect from "./config/redis";
-// import epayment from "./config/e-payment";
 
 const app = express();
 const CURRENT_WORKING_DIR = process.cwd();
@@ -38,33 +37,5 @@ const io = new Server();
 app.io = io;
 
 app.use("/api", apiRouter(app, passport, io, redisClient, Webhook));
-
-// app.get("/", function (req, res) {
-//   // const { Event } = epayment().coinbaseResources;
-//   // const signature = req.headers['x-cc-webhook-signature']
-//   // const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
-//   // const event = Webhook.verifySigHeader(req.rawBody, signature, sharedSecret);
-//   // if (event.type === 'charge:confirmed') {
-//   //   console.log(event.type)
-//   // }
-//   res.send('Welcome to Black Store GB.')
-// });
-
-
-// app.post("/", function (req, res) {
-//   console.log(req.rawBody)
-//   const signature = req.headers['x-cc-webhook-signature']
-//   const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
-//   try {
-//     const event = Webhook.verifyEventBody(req, signature, sharedSecret);
-//     if (event.type === 'charge:pending') {
-//       console.log('********************************pending**************************************')
-//     }
-//     res.json({response: event.id})
-//   } catch (error) {
-//     console.log('********************************ERROR**************************************')
-//     res.status(400).send({message: error})
-//   }
-// });
 
 export default app;

@@ -13,6 +13,7 @@ import {
   checkAdminPermission,
 } from "../controllers/middleware/permissions";
 import adminSessionRouter from "./adminSession";
+import { rowBody, webhookEvents } from "../controllers/payment";
 
 const router = express.Router();
 
@@ -56,7 +57,7 @@ const apiRouter = (app, passport, io, redisClient, Webhook) => {
     checkAdminPermission,
     adminSessionRouter(io, redisClient)
   );
-
+  router.post('/coinbase/webhook', webhookEvents(Webhook));
   return router;
 };
 
