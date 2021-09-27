@@ -38,4 +38,25 @@ app.io = io;
 
 app.use("/api", apiRouter(app, passport, io, redisClient, Webhook));
 
+app.get("/", function (req, res) {
+   res.send('Welcome to Black Store GB.')
+});
+
+// router.post("/", function (req, res) {
+//   const signature = req.headers['x-cc-webhook-signature']
+//   const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
+//   try {
+//     const event = Webhook.verifyEventBody(JSON.stringify(req.body), signature, sharedSecret);
+//     if (event.type === 'charge:pending') {
+//       console.log('********************************PENDING**************************************')
+//     }
+//     if (event.type === 'charge:created') {
+//       console.log('********************************CREATED**************************************')
+//     }
+//     res.status(200).json({response: event.id})
+//   } catch (error) {
+//     console.log(error.message)
+//     res.status(400).send({message: error.message})
+//   }
+// });
 export default app;

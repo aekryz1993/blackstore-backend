@@ -50,6 +50,7 @@ const apiRouter = (app, passport, io, redisClient, Webhook) => {
     checkActivePermission,
     userSessionRouter(io, redisClient, Webhook)
   );
+  router.post('/coinbase/webhook', rowBody, webhookEvents(Webhook));
   router.use(
     "/adminSession",
     passport.authenticationMiddleware,
