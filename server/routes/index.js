@@ -19,6 +19,23 @@ const router = express.Router();
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 
+//function rawBody(req, res, next) {
+        
+
+  //      let data = '';
+
+//        req.on('data', function (chunk) {
+//		console.log(chunk)
+  //              data += chunk;
+    //    });
+
+      //  req.on('end', function () {
+        //        req.rawBody = data;
+
+          //      next();
+        //});
+//}
+
 const apiRouter = (app, passport, io, redisClient) => {
   const sessionMiddleware = session({
     name: "session",
@@ -29,7 +46,7 @@ const apiRouter = (app, passport, io, redisClient) => {
       expires: expirySessionDate,
     },
   });
-
+ // app.use(rawBody)
   app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
