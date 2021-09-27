@@ -13,30 +13,14 @@ import {
   checkAdminPermission,
 } from "../controllers/middleware/permissions";
 import adminSessionRouter from "./adminSession";
+import { rowBody, webhookEvents } from "../controllers/payment";
 
 const router = express.Router();
 
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 
-//function rawBody(req, res, next) {
-        
-
-  //      let data = '';
-
-//        req.on('data', function (chunk) {
-//		console.log(chunk)
-  //              data += chunk;
-    //    });
-
-      //  req.on('end', function () {
-        //        req.rawBody = data;
-
-          //      next();
-        //});
-//}
-
-const apiRouter = (app, passport, io, redisClient) => {
+const apiRouter = (app, passport, io, redisClient, Webhook) => {
   const sessionMiddleware = session({
     name: "session",
     keys: [SESSION_SECRET_VALUE],
@@ -46,7 +30,7 @@ const apiRouter = (app, passport, io, redisClient) => {
       expires: expirySessionDate,
     },
   });
- // app.use(rawBody)
+
   app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
@@ -64,8 +48,9 @@ const apiRouter = (app, passport, io, redisClient) => {
     "/userSession",
     passport.authenticationMiddleware,
     checkActivePermission,
-    userSessionRouter(io, redisClient)
+    userSessionRouter(io, redisClient, Webhook)
   );
+  router.post('/coinbase/webhook', rowBody, webhookEvents(Webhook));
   router.use(
     "/adminSession",
     passport.authenticationMiddleware,
