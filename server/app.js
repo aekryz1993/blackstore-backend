@@ -54,7 +54,7 @@ const charge = {"data":{"addresses":{"ethereum":"0x3868887510d1d9c3ae205c6034dfa
 
 
 app.post("/", function (req, res) {
-  console.log(req)
+  console.log(req.rawBody)
   const signature = req.headers['x-cc-webhook-signature']
   const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
   try {
@@ -64,6 +64,7 @@ app.post("/", function (req, res) {
     }
     res.json({response: event.id})
   } catch (error) {
+    console.log('********************************ERROR**************************************')
     res.status(400).send({message: error})
   }
 });
