@@ -9,4 +9,5 @@ module.exports = merge([
     { mode: 'development' },
     parts.generateSourceMaps({ type: "eval" }),
     parts.NodemonPlugin({ verbose: true }),
+    parts.environmentVariables(),
 ]);

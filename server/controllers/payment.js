@@ -1,36 +1,27 @@
 import paymentQueries from "../models/query/payment";
 import peyMethodQueries from "../models/query/peyMethod";
-
-import epayment from '../config/e-payment'
+import epayment from "../config/e-payment";
 
 export const buyingCreditCoinbase = (req, res) => {
   (async () => {
     const { amount } = req.params;
     const { id } = req.user;
-    const {Charge} = epayment().coinbaseResources;
+    const { Charge } = epayment().resources;
+    const chargeData = {
+      name: "USD Wallet",
+      description: "Fill USD Wallet",
+      local_price: {
+        amount,
+        currency: "USD",
+      },
+      pricing_type: "fixed_price",
+      metadata: {
+        customer_id: id,
+      }
+    };
     try {
-      // const existPayment = await paymentQueries.find(codeID);
-
-      // if (existPayment) {
-      //   return res
-      //     .status(401)
-      //     .json({ message: "هذه العملية تم إجراءها مسبقا" });
-      // }
-
-      // UserId = req.user.id;
-
-      // await paymentQueries.create({ amount, codeID, UserID });
-
-      // return res.status(201).json({
-      //   message:
-      //     "تم إجراء عملية الدفع بنجاح يرجى انتظار التأكيد من طرف مدير التطبيق",
-      //   payment: {
-      //     amount,
-      //     codeID,
-      //     user: req.user.username,
-      //   },
-      // });
-      return res.status(200).json({id, amount})
+      const charge = await Charge.create(chargeData);
+      return res.status(200).json({success: true, data: charge});
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
