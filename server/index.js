@@ -14,7 +14,7 @@ const config = {
     const server = http.createServer(app);
     const io = app.io;
     io.attach(server);
-    server.listen(config.port || 5000, () => {
+    server.listen(config.port, () => {
       console.log('Connection has been established successfully on port ', config.port);
     });
     server.on("error", (err) => {
