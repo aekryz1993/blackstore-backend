@@ -19,7 +19,7 @@ const router = express.Router();
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 
-const apiRouter = (app, passport, io, redisClient) => {
+const apiRouter = (app, passport, io, redisClient, Webhook) => {
   const sessionMiddleware = session({
     name: "session",
     keys: [SESSION_SECRET_VALUE],
@@ -47,7 +47,7 @@ const apiRouter = (app, passport, io, redisClient) => {
     "/userSession",
     passport.authenticationMiddleware,
     checkActivePermission,
-    userSessionRouter(io, redisClient)
+    userSessionRouter(io, redisClient, Webhook)
   );
   router.use(
     "/adminSession",

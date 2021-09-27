@@ -2,6 +2,40 @@ import paymentQueries from "../models/query/payment";
 import peyMethodQueries from "../models/query/peyMethod";
 import epayment from "../config/e-payment";
 
+export const rowBody = (req, res, next) => {
+  let data = '';
+  req.setEncoding('utf8');
+  req.on('data', chunk => {
+    data += chunk;
+  })
+  req.on('end', () => {
+    next();
+  })
+  req.on('error', () => {
+    console.log("Got error: " + e);
+    next();
+  })
+};
+
+export const webhookEvents = (Webhook) => (req, res) => {
+    console.log(req.rawBody)
+    const signature = req.headers['x-cc-webhook-signature']
+    const sharedSecret = '5168e7c8-fa74-4fcb-8c29-afda754adfdf'
+      try {
+        const event = Webhook.verifyEventBody(req.rawBody, signature, sharedSecret);
+        if (event.type === 'charge:pending') {
+          console.log('********************************pending**************************************')
+        }
+        if (event.type === 'charge:created') {
+          console.log('********************************created**************************************')
+        }
+        res.json({response: event.id})
+      } catch (error) {
+        console.log('********************************ERROR**************************************')
+        res.status(400).send({message: error})
+      }
+}
+
 export const buyingCreditCoinbase = (req, res) => {
   (async () => {
     const { amount } = req.params;
@@ -17,11 +51,11 @@ export const buyingCreditCoinbase = (req, res) => {
       pricing_type: "fixed_price",
       metadata: {
         customer_id: id,
-      }
+      },
     };
     try {
       const charge = await Charge.create(chargeData);
-      return res.status(200).json({success: true, data: charge});
+      return res.status(200).json({ success: true, data: charge });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
