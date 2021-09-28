@@ -34,7 +34,7 @@ app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 const io = new Server();
 app.io = io;
 
-app.use("/api", apiRouter(app, passport, io, redisClient, Webhook));
+app.use("/api", apiRouter(app, passport, io, redisClient));
 
 app.get("/", function (req, res) {
    res.send('Welcome to Black Store GB.')
