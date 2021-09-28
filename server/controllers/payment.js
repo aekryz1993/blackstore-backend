@@ -1,10 +1,11 @@
 import paymentQueries from "../models/query/payment";
 import peyMethodQueries from "../models/query/peyMethod";
 import epayment from "../config/e-payment";
+import { Webhook } from "coinbase-commerce-node";
 
-export const webhookEvents = (Webhook) => (req, res) => {
+export const webhookEvents = (req, res) => {
     const signature = req.headers['x-cc-webhook-signature']
-    const sharedSecret = process.env.sharedSecret
+    const sharedSecret = process.env.SHAREDSECRET
       try {
         const event = Webhook.verifyEventBody(JSON.stringify(req.body), signature, sharedSecret);
         if (event.type === 'charge:pending') {
@@ -16,7 +17,8 @@ export const webhookEvents = (Webhook) => (req, res) => {
         res.json({response: event.id})
       } catch (error) {
         console.log('********************************ERROR**************************************')
-        res.status(400).send({message: error})
+        console.log(error)
+	res.status(400).send({message: error})
       }
 }
 
