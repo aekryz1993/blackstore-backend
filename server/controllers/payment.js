@@ -1,8 +1,9 @@
 import paymentQueries from "../models/query/payment";
 import peyMethodQueries from "../models/query/peyMethod";
 import epayment from "../config/e-payment";
+import { Webhook } from "coinbase-commerce-node";
 
-export const webhookEvents = (Webhook) => (req, res) => {
+export const webhookEvents = (req, res) => {
     const signature = req.headers['x-cc-webhook-signature']
     const sharedSecret = process.env.sharedSecret
       try {

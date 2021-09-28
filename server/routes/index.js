@@ -13,14 +13,14 @@ import {
   checkAdminPermission,
 } from "../controllers/middleware/permissions";
 import adminSessionRouter from "./adminSession";
-import { rowBody, webhookEvents } from "../controllers/payment";
+import { webhookEvents } from "../controllers/payment";
 
 const router = express.Router();
 
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 
-const apiRouter = (app, passport, io, redisClient, Webhook) => {
+const apiRouter = (app, passport, io, redisClient) => {
   const sessionMiddleware = session({
     name: "session",
     keys: [SESSION_SECRET_VALUE],
@@ -48,9 +48,8 @@ const apiRouter = (app, passport, io, redisClient, Webhook) => {
     "/userSession",
     passport.authenticationMiddleware,
     checkActivePermission,
-    userSessionRouter(io, redisClient, Webhook)
+    userSessionRouter(io, redisClient)
   );
-  router.post('/coinbase/webhook', rowBody, webhookEvents(Webhook));
   router.use(
     "/adminSession",
     passport.authenticationMiddleware,
@@ -58,7 +57,7 @@ const apiRouter = (app, passport, io, redisClient, Webhook) => {
     checkAdminPermission,
     adminSessionRouter(io, redisClient)
   );
-  router.post('/coinbase/webhook', webhookEvents(Webhook));
+  router.post('/coinbase/webhook', webhookEvents);
   return router;
 };
 
