@@ -41,7 +41,7 @@ export const buyingCreditCoinbase = (req, res) => {
     };
     try {
       const charge = await Charge.create(chargeData);
-      return res.status(200).json({ success: true, data: charge });
+      return res.status(200).json({ success: true, charge });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
