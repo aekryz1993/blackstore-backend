@@ -108,8 +108,9 @@ dist
 .tern-port
 
 # assets
-resources/static/assets/pictures/*
+# resources/static/assets/pictures/*
 resources/temporary/*
+certificate/
 
 # SSL
 nginx/blackstoregb_com*

@@ -27,8 +27,8 @@ app.use(
   express.urlencoded({ extended: false,
   })
 );
-app.use(express.static(path.join(CURRENT_WORKING_DIR, "resources")));
 app.use(express.static(path.join(CURRENT_WORKING_DIR, "certificate")));
+app.use(express.static(path.join(CURRENT_WORKING_DIR, "resources")));
 app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 
 const io = new Server();
