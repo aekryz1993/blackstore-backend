@@ -7,6 +7,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - bluestore-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   redis:
     image: redis:alpine
@@ -16,7 +18,9 @@ services:
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     volumes:
       - bluestore-redis:/var/lib/redis/key
-  
+    ports:
+      - "6379:6379"
+     
   nginx:
     depends_on:
       - bluestore
