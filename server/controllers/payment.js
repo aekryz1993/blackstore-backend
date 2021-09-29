@@ -14,11 +14,23 @@ export const webhookEvents = (req, res) => {
         if (event.type === 'charge:created') {
           console.log('********************************created**************************************')
         }
+        if (event.type === 'charge:failed') {
+          console.log('********************************failed**************************************')
+        }
+        if (event.type === 'charge:confirmed') {
+          console.log('********************************confirmed**************************************')
+        }
+        if (event.type === 'charge:resolved') {
+          console.log('********************************resolved**************************************')
+        }
+        if (event.type === 'charge:delayed') {
+          console.log('********************************delayed**************************************')
+        }
         res.json({response: event.id})
       } catch (error) {
         console.log('********************************ERROR**************************************')
         console.log(error)
-	res.status(400).send({message: error})
+	      res.status(400).send({message: error})
       }
 }
 
