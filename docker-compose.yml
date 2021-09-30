@@ -51,7 +51,7 @@ services:
       - redis
     volumes:
       - bluestore-storeage:/var/lib/resources
-      - ./resources/static/assets/pictures:/var/lib/resources
+      - ./resources/static/assets/pictures:/var/lib/defaults
 
 volumes:
   bluestore-db:
