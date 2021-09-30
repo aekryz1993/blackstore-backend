@@ -11,9 +11,13 @@ const router = express.Router();
 const adminSessionRouter = (io, redisClient) => {
   const treatedCommandNamespace = io.of("/treatedCommands");
   treatedCommandNamespace.on("connection", async (socket) => {
-    socket.on('send_userId', userId => {
-      socket.join(userId)
-    })
+    try {
+      socket.on('send_userId', userId => {
+        socket.join(userId)
+      })
+    } catch (error) {
+      console.log(error);
+    }
   });
   router.use("/users", usersRouter(redisClient));
   router.use("/services", servicesRouter());
