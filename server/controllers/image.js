@@ -32,7 +32,7 @@ export const addPicture = (req, res) => {
 			const image = await sharp(req.file.path)
 				.resize(100, 100)
 				.toFile(thumbnailtPath)
-				
+
 			const body = {
 				type: req.file.mimetype,
 				name: thumbnailName,

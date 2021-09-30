@@ -4,14 +4,6 @@ import fs from "fs";
 
 const CURRENT_WORKING_DIR = process.cwd();
 const imageDist = {
-  productCategory: path.resolve(
-    CURRENT_WORKING_DIR,
-    "resources/static/assets/pictures/prodectCategory"
-  ),
-  productID: path.resolve(
-    CURRENT_WORKING_DIR,
-    "resources/static/assets/pictures/productID"
-  ),
   services: path.resolve(
     CURRENT_WORKING_DIR,
     "resources/static/assets/pictures/services"
