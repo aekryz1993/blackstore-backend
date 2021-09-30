@@ -4,9 +4,8 @@
             "name": "blue-store-server",
             "script": "./dist/main.js",
             "merge_logs": true,
-            "max_restarts": 20,
             "instances": 4,
-            "max_memory_restart": "200M",
+            "exec_mode": "cluster",
             "env": {
                 "NODE_ENV": "production"
             }
