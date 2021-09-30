@@ -1,5 +1,3 @@
-import fs from "fs"
-
 import productIDQueries from "../models/query/productID";
 import serviceQueries from "../models/query/service";
 import requestProductIDQueries from "../models/query/requestProductID";

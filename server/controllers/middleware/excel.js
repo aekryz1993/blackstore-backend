@@ -4,9 +4,9 @@ import fs from "fs";
 import xlsx from "xlsx";
 import { styleExcel } from "../../helpers/excel";
 
-const CURRENT_WORKING_DIR = process.cwd();
-const tempDir = path.resolve(CURRENT_WORKING_DIR, "resources/temporary");
-const dirToSave = path.resolve(CURRENT_WORKING_DIR, "resources/static/assets/excel/codes");
+const STORAGE_DIR = process.env.NODE_ENV === "development" ? process.cwd() : "/var/lib";
+const tempDir = path.resolve(STORAGE_DIR, "resources/temporary");
+const dirToSave = path.resolve(STORAGE_DIR, "resources/static/assets/excel/codes");
 
 export const readExcel = async (req, res, next) => {
   try {

@@ -1,5 +1,4 @@
 import notificationQueries from "../../models/query/notification";
-import { serverErrorMessage } from "../../utils/messages";
 
 export const addNotification = (body) => {
   return new Promise(async (resolve, reject) => {

@@ -5,7 +5,7 @@ import permissionQueries from "../../models/query/permission";
 import userQueries from "../../models/query/user";
 import walletQueries from "../../models/query/wallet";
 
-const CURRENT_WORKING_DIR = process.cwd();
+const STORAGE_DIR = process.env.NODE_ENV === "development" ? process.cwd() : '/var/lib';
 
 export const saveUsers = (users, redisClient) => {
   return new Promise(async (resolve, reject) => {
@@ -41,7 +41,7 @@ export const saveUsers = (users, redisClient) => {
             type: "image/png",
             name: `default.png`,
             url: path.resolve(
-              CURRENT_WORKING_DIR,
+              STORAGE_DIR,
               `resource/static/assets/pictures/users/default.png`
             ),
             UserId,

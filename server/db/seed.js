@@ -4,7 +4,7 @@ import imageQueries from '../models/query/image'
 import permissionQuaries from '../models/query/permission';
 import userQueries from '../models/query/user'
 
-const CURRENT_WORKING_DIR = process.cwd();
+const STORAGE_DIR = process.env.NODE_ENV === "development" ? process.cwd() : '/var/lib';
 
 export const createAdmin = (redisClient) => {
     (async () => {
@@ -16,7 +16,7 @@ export const createAdmin = (redisClient) => {
                 const metadata = {
                     type: 'image/png',
                     name: `default.png`,
-                    url: path.resolve(CURRENT_WORKING_DIR, `resource/static/assets/pictures/users/default.png`),
+                    url: path.resolve(STORAGE_DIR, `resource/static/assets/pictures/users/default.png`),
                     UserId
                 }
                 await imageQueries.create(metadata)

@@ -2,18 +2,18 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const CURRENT_WORKING_DIR = process.cwd();
+const STORAGE_DIR = process.env.NODE_ENV === "development" ? process.cwd() : '/var/lib';
 const imageDist = {
   services: path.resolve(
-    CURRENT_WORKING_DIR,
+    STORAGE_DIR,
     "resources/static/assets/pictures/services"
   ),
   users: path.resolve(
-    CURRENT_WORKING_DIR,
+    STORAGE_DIR,
     "resources/static/assets/pictures/users"
   ),
   userSession: path.resolve(
-    CURRENT_WORKING_DIR,
+    STORAGE_DIR,
     "resources/static/assets/pictures/users"
   ),
 };
