@@ -49,11 +49,11 @@ services:
     depends_on:
       - postgres
       - redis
-    volumes:
-      - bluestore-storeage:/var/lib/resources
-      - ./resources/*:/var/lib/resources/
+    # volumes:
+    #   - bluestore-storeage:/var/lib/resources
+    #   - ./resources/*:/var/lib/resources/
 
 volumes:
   bluestore-db:
   bluestore-redis:
-  bluestore-storeage:
+  # bluestore-storeage:

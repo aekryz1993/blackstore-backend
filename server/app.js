@@ -12,8 +12,7 @@ import apiRouter from "./routes";
 import redisConnect from "./config/redis";
 
 const app = express();
-const STORAGE_DIR =
-  process.env.NODE_ENV === "development" ? process.cwd() : "/var/lib";
+const CURRENT_WORKING_DIR = process.cwd();
 export const redisClient = redisConnect();
 
 if (process.env.NODE_ENV === "development") {
@@ -22,10 +21,14 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use(helmet());
-app.use(cors({ origin: "*" }));
+app.use(cors({origin: '*'}));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(STORAGE_DIR, "resources")));
+app.use(
+  express.urlencoded({ extended: false,
+  })
+);
+app.use(express.static(path.join(CURRENT_WORKING_DIR, "certificate")));
+app.use(express.static(path.join(CURRENT_WORKING_DIR, "resources")));
 app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 
 const io = new Server();
@@ -34,7 +37,7 @@ app.io = io;
 app.use("/api", apiRouter(app, passport, io, redisClient));
 
 app.get("/", function (req, res) {
-  res.send("Welcome to Black Store GB.");
+   res.send('Welcome to Black Store GB.')
 });
 
 export default app;
