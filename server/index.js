@@ -3,8 +3,6 @@ import { hostServer } from "./config/server.config";
 import { createAdmin } from "./db/seed";
 import sequelize from "./config/db.config";
 import http from "http";
-import { createAdapter } from "socket.io/cluster-adapter";
-import { setupWorker } from "socket.io/sticky";
 
 const config = {
   host: hostServer(app)["host"],
@@ -16,8 +14,6 @@ const config = {
     const server = http.createServer(app);
     const io = app.io;
     io.attach(server);
-    io.adapter(createAdapter());
-    setupWorker(io);
     server.listen(config.port, () => {
       console.log('Connection has been established successfully on port ', config.port);
     });
