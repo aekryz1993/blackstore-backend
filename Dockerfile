@@ -12,4 +12,4 @@ COPY . .
 
 RUN npm run build
 
-CMD [ "npm", "run", "pm2" ]
+CMD [ "npm", "run", "start" ]
