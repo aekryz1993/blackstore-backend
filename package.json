@@ -4,9 +4,9 @@
   "description": "Backend Application for Holesale Digital Services",
   "scripts": {
     "pm2": "pm2 start processes.js",
-    "pm2:stop": "pm2 stop processes.js",
+    "pm2:stop": "pm2 stop processes.json",
     "pm2:list": "pm2 list",
-    "pm2:delete": "pm2 delete processes.js",
+    "pm2:delete": "pm2 delete processes.json",
     "start:dev": "webpack --env development --config ./tools/webpack.dev.js --watch",
     "build": "webpack --env production --config ./tools/webpack.prod.js",
     "start": "node ./dist/main",
