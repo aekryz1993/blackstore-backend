@@ -6,9 +6,9 @@ module.exports = {
             merge_logs: true,
             instances : "max",
             exec_mode: "cluster",
-            // env: {
-            //     NODE_ENV: "production"
-            // }
+            env: {
+                NODE_ENV: "production"
+            }
         }
     ]
 }
