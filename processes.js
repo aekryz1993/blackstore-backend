@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: "blue-store-server",
+	    name: "blue-store-server",
             script: "./dist/main.js",
             merge_logs: true,
             instances : "max",
