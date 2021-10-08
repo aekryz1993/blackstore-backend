@@ -31,6 +31,22 @@ const updateConfirmed = (id) => {
   });
 };
 
+const update = (id, status) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const payment = await models.Payment.findAndUpdate(
+        { status },
+        {
+          where: { id },
+        }
+      );
+      resolve(payment);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 const create = (body) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -72,6 +88,7 @@ export default {
   find,
   updateConfirmed,
   create,
+  update,
   getNotConfirmed,
   getConfirmed,
 };

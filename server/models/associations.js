@@ -70,8 +70,6 @@ User.hasOne(Image)
 User.hasOne(Wallet)
 User.hasOne(Permission)
 
-Payment.hasOne(Image)
-
 Payment.belongsTo(User)
 
 export default {

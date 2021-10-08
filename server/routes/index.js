@@ -57,7 +57,7 @@ const apiRouter = (app, passport, io, redisClient) => {
     checkAdminPermission,
     adminSessionRouter(io, redisClient)
   );
-  router.post('/coinbase/webhook', webhookEvents);
+  router.post('/coinbase/webhook', webhookEvents(io));
   return router;
 };
 

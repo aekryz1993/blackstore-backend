@@ -6,18 +6,14 @@ class Payment extends Model { }
 
 Payment.init({
     id: {
-        type: Sequelize.UUID,
-        primaryKey: true,
-        defaultValue: Sequelize.UUIDV4,
+        type: DataTypes.FLOAT,
+        allowNull: false,
     },
     amount: {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
-    // codeID: {
-    //     type: DataTypes.STRING,
-    // },
-    confirmed: {
+    status: {
         type: DataTypes.STRING,
         allowNull: false,
     },
