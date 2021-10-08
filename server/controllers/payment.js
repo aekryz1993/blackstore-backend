@@ -85,28 +85,6 @@ export const fetchCoinbaseCharges = (req, res) => {
   })();
 };
 
-export const fetchNotConfirmedPayments = (req, res) => {
-  (async () => {
-    try {
-      let payments = await paymentQueries.getNotConfirmed();
-
-      payments = payments.map((payment) =>
-        Object.fromEntries(
-          Object.entries(payment).filter(
-            ([key, _]) => key !== "id" && key !== "confirmed"
-          )
-        )
-      );
-
-      return res.status(201).json({
-        payments,
-      });
-    } catch (err) {
-      return res.json(serverErrorMessage(err.message));
-    }
-  })();
-};
-
 export const buyingCreditCoinbase = (req, res) => {
   (async () => {
     const { amount } = req.params;
