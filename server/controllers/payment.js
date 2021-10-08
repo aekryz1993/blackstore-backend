@@ -5,57 +5,59 @@ import epayment from "../config/e-payment";
 import { Webhook } from "coinbase-commerce-node";
 
 export const webhookEvents = (io) => (req, res) => {
-  const signature = req.headers["x-cc-webhook-signature"];
-  const sharedSecret = process.env.SHAREDSECRET;
-  try {
-    const event = Webhook.verifyEventBody(
-      JSON.stringify(req.body),
-      signature,
-      sharedSecret
-    );
+  (async () => {
+    const signature = req.headers["x-cc-webhook-signature"];
+    const sharedSecret = process.env.SHAREDSECRET;
+    try {
+      const event = Webhook.verifyEventBody(
+        JSON.stringify(req.body),
+        signature,
+        sharedSecret
+      );
 
-    const userId = event.data.metadata.customer_id;
-    const amount = event.data.pricing.local.amount;
-    const status = event.data.timeline[event.data.timeline.length - 1].status;
-    const chargeId = event.data.id;
+      const userId = event.data.metadata.customer_id;
+      const amount = event.data.pricing.local.amount;
+      const status = event.data.timeline[event.data.timeline.length - 1].status;
+      const chargeId = event.data.id;
 
-    const charge = {
-      id: chargeId,
-      status,
-      amount,
-    };
+      const charge = {
+        id: chargeId,
+        status,
+        amount,
+      };
 
-    const coinbaseWebHooksNamespace = io.of("/coinbaseWebHooksNamespace");
+      const coinbaseWebHooksNamespace = io.of("/coinbaseWebHooksNamespace");
 
-    if (status.toLowerCase() === "new") {
-      coinbaseWebHooksNamespace.on("connection", async (socket) => {
-        try {
-          socket.join(userId);
-        } catch (error) {
-          console.log(error);
-        }
-      });
-      coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
-    } else if (status.toLowerCase() === "completed") {
-      const wallet = await walletQueries.find(userId);
-      const newCredit = wallet.dataValues.dollar + parseFloat(amount);
-      await walletQueries.update({
-        UserId: userId,
-        newCredit,
-        currency: "dollar",
-      });
-      coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
-    } else {
-      coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
+      if (status.toLowerCase() === "new") {
+        coinbaseWebHooksNamespace.on("connection", async (socket) => {
+          try {
+            socket.join(userId);
+          } catch (error) {
+            console.log(error);
+          }
+        });
+        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
+      } else if (status.toLowerCase() === "completed") {
+        const wallet = await walletQueries.find(userId);
+        const newCredit = wallet.dataValues.dollar + parseFloat(amount);
+        await walletQueries.update({
+          UserId: userId,
+          newCredit,
+          currency: "dollar",
+        });
+        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
+      } else {
+        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
+      }
+      return res.json({ response: event.id });
+    } catch (error) {
+      console.log(
+        "********************************ERROR**************************************"
+      );
+      console.log(error);
+      return res.status(400).send({ message: error });
     }
-    return res.json({ response: event.id });
-  } catch (error) {
-    console.log(
-      "********************************ERROR**************************************"
-    );
-    console.log(error);
-    return res.status(400).send({ message: error });
-  }
+  })();
 };
 
 export const fetchCoinbaseCharges = (req, res) => {
