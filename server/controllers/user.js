@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 import imageQueries from "../models/query/image";
 import paymentQueries from "../models/query/payment";
@@ -26,7 +27,6 @@ export const addUser = (redisClient) => (req, res) => {
       if (!isNewUser) {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
-      console.log(redisClient)
       await redisClient.set(user.dataValues.id, '0')
       const imageBody = {
         type: "image/png",
