@@ -15,14 +15,18 @@ const CURRENT_WORKING_DIR = process.cwd();
 export const addUser = (redisClient) => (req, res) => {
   (async () => {
     const body = req.body;
+    const userBody = Object.fromEntries(
+      Object.entries(body).filter(([key, _]) => key !== "permissions")
+    );
     try {
-      const { user, isNewUser } = await userQueries.create(body);
+      const { user, isNewUser } = await userQueries.create(userBody);
 
       const { username, email, phone } = user.dataValues;
 
       if (!isNewUser) {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
+      console.log(redisClient)
       await redisClient.set(user.dataValues.id, 0)
       const imageBody = {
         type: "image/png",
@@ -41,6 +45,7 @@ export const addUser = (redisClient) => (req, res) => {
       await walletQueries.create({UserId: user.dataValues.id})
       return res.status(201).json(successRegistrationUser(user.dataValues.username));
     } catch (err) {
+      console.log(err);
       return res.json(serverErrorMessage(err.message));
     }
   })();
