@@ -45,7 +45,6 @@ export const addUser = (redisClient) => (req, res) => {
       await walletQueries.create({UserId: user.dataValues.id})
       return res.status(201).json(successRegistrationUser(user.dataValues.username));
     } catch (err) {
-      console.log(err);
       return res.json(serverErrorMessage(err.message));
     }
   })();
@@ -70,7 +69,7 @@ export const getAllUsers = () => (req, res) => {
       const users = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
         await paginateData(page, userQueries.count, 6, true);
-      const initAllUsers = await userQueries.findAll(limit, offset);
+      const initAllUsers = await userQueries.findAll(limit, offset, req.user.id);
       for (let user of initAllUsers) {
         user = user.dataValues;
         let userInfo = Object.fromEntries(
