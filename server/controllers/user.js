@@ -6,11 +6,13 @@ import permissionQueires from "../models/query/permission";
 import userQueries from "../models/query/user";
 import walletQueries from "../models/query/wallet";
 import { serverErrorMessage } from "../utils/messages";
-import { fieldAlreadyExist } from "../utils/messages/user";
+import { fieldAlreadyExist, successRegistrationUser } from "../utils/messages/user";
 import { paginateData } from "./helper";
 import { saveUsers } from "./middleware/user";
 
-export const addUser = (redisClient) => (req, res, next) => {
+const CURRENT_WORKING_DIR = process.cwd();
+
+export const addUser = (redisClient) => (req, res) => {
   (async () => {
     const body = req.body;
     try {
@@ -22,14 +24,22 @@ export const addUser = (redisClient) => (req, res, next) => {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
       await redisClient.set(user.dataValues.id, 0)
+      const imageBody = {
+        type: "image/png",
+        name: `default.png`,
+        url: path.resolve(
+          CURRENT_WORKING_DIR,
+          `resource/static/assets/pictures/users/default.png`
+        ),
+        UserId: user.dataValues.id,
+      };
+      await imageQueries.create(imageBody);
       await permissionQueires.create({
         ...body.permissions,
         UserId: user.dataValues.id,
       });
-      req.body.associatedModelId = user.dataValues.id;
-      req.body.associatedModel = "UserId";
-      req.body.username = user.dataValues.username;
-      return next();
+      await walletQueries.create({UserId: user.dataValues.id})
+      return res.status(201).json(successRegistrationUser(user.dataValues.username));
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

@@ -38,10 +38,10 @@ Permission.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    addPayMethod: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-    },
+    // addPayMethod: {
+    //     type: DataTypes.BOOLEAN,
+    //     defaultValue: false,
+    // },
     viewcmnd: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { addPicture } from '../../controllers/image';
-import uploadImage from '../../controllers/middleware/image';
+// import { addPicture } from '../../controllers/image';
+// import uploadImage from '../../controllers/middleware/image';
 import uploadExcel, { readExcel } from '../../controllers/middleware/excel';
 import { addUser, getAllUsers, addMultiUser, updateProfilePicture, confirmPayment } from "../../controllers/user";
 import { addWallet, updateCredit } from '../../controllers/wallet';
@@ -12,14 +12,15 @@ const router = express.Router();
 
 const usersRouter = (redisClient) => {
 
-  router.post('/add', checkPermission('addUser'), uploadImage.single('picture'), addUser(redisClient), addWallet, addPicture);
+  router.post('/add', checkPermission('addUser'), addUser(redisClient));
+  // router.post('/add', checkPermission('addUser'), uploadImage.single('picture'), addUser(redisClient), addWallet, addPicture);
   router.post('/addMulti', checkPermission('addUser'), uploadExcel(false), readExcel, addMultiUser(redisClient));
   router.get('/getusers/:page', checkPermission('viewUser'), getAllUsers())
   router.put('/updateCredit/:userId', checkPermission('updateCredit'), updateCredit)
   // router.put('/updateUserPicture/:userId', checkPermission('updateUser'), uploadImage.single('picture'), updateProfilePicture, addPicture)
   router.put('/confirmPayment/:id', checkPermission('confirmPayment'), confirmPayment)
   // router.get('/payments', checkPermission('confirmPayment'), fetchNotConfirmedPayments)
-  router.post('/addPayMethod', checkPermission('addPayMethod'), addPayMethod)
+  // router.post('/addPayMethod', checkPermission('addPayMethod'), addPayMethod)
 
   return router;
 
