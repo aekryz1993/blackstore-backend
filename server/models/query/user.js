@@ -64,13 +64,13 @@ const count = () => {
   });
 };
 
-const findAll = (limit, offset) => {
+const findAll = (limit, offset, id) => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.findAll({
         offset,
         limit,
-        where: { isAdmin: false },
+        where: { id: { [Op.not]: id } },
         include: [models.Image],
       });
       resolve(allUsers);
