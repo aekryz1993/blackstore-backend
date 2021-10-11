@@ -27,7 +27,7 @@ export const addUser = (redisClient) => (req, res) => {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
       console.log(redisClient)
-      await redisClient.set(user.dataValues.id, 0)
+      await redisClient.set(user.dataValues.id, '0')
       const imageBody = {
         type: "image/png",
         name: `default.png`,
