@@ -32,7 +32,7 @@ export const addUser = (redisClient) => (req, res) => {
           `resource/static/assets/pictures/users/default.png`
         ),
         UserId: user.dataValues.id,
-      };
+      }
       await imageQueries.create(imageBody);
       await permissionQueires.create({
         ...body.permissions,
