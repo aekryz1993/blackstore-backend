@@ -8,6 +8,11 @@ export const successRegistrationUser = (user) => ({
     message: `تم إضافة العميل ${user} بنجاح`
 })
 
+export const successUpdatedUser = (user) => ({
+    success: true,
+    message: `تم تحديث العميل ${user} بنجاح`
+})
+
 export const userNotExist = (info) => ({
     success: false,
     message: info ? info.message : 'Login failed',

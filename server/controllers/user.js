@@ -7,7 +7,7 @@ import permissionQueires from "../models/query/permission";
 import userQueries from "../models/query/user";
 import walletQueries from "../models/query/wallet";
 import { serverErrorMessage } from "../utils/messages";
-import { fieldAlreadyExist, successRegistrationUser } from "../utils/messages/user";
+import { fieldAlreadyExist, successRegistrationUser, successUpdatedUser } from "../utils/messages/user";
 import { paginateData } from "./helper";
 import { saveUsers } from "./middleware/user";
 
@@ -40,6 +40,19 @@ export const addUser = (redisClient) => (req, res) => {
       });
       await walletQueries.create({UserId: user.dataValues.id})
       return res.status(201).json(successRegistrationUser(user.dataValues.username));
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
+
+export const updateUser = () => (req, res) => {
+  (async () => {
+    const body = req.body
+    try {
+      await userQueries.update({body, UserId: req.params.id});
+
+      return res.status(201).json(successUpdatedUser(body.username));
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

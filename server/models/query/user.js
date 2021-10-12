@@ -21,6 +21,22 @@ const create = (body) => {
   });
 };
 
+const update = ({ body, id }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await models.User.update(body, {
+        where: {
+          id,
+        },
+      });
+
+      resolve(user);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 const find = (userIdentifier) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -127,6 +143,7 @@ const findAdmins = () => {
 
 export default {
   create,
+  update,
   find,
   findById,
   count,
