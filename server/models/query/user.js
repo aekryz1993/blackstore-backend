@@ -87,7 +87,7 @@ const findAll = (limit, offset, id) => {
         offset,
         limit,
         where: { id: { [Op.not]: id } },
-        include: [models.Image],
+        include: [models.Image, models.Permission, models.Wallet],
       });
       resolve(allUsers);
     } catch (err) {
