@@ -17,9 +17,9 @@ const usersRouter = (redisClient) => {
 
   router.post('/addMulti', checkPermission('addUser'), uploadExcel(false), readExcel, addMultiUser(redisClient));
 
-  router.get('/update/:id', checkPermission('updateUser'), updateUser())
+  router.put('/update/:id', checkPermission('updateUser'), updateUser())
 
-  router.get('/permissions/update/:userId', checkPermission('updatePermissions'), updatePermission())
+  router.put('/permissions/update/:userId', checkPermission('updatePermissions'), updatePermission())
 
   router.get('/getusers/:page', checkPermission('viewUser'), getAllUsers())
 
