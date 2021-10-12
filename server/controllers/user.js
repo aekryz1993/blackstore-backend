@@ -15,10 +15,7 @@ const CURRENT_WORKING_DIR = process.cwd();
 
 export const addUser = (redisClient) => (req, res) => {
   (async () => {
-    const body = req.body;
-    const userBody = Object.fromEntries(
-      Object.entries(body).filter(([key, _]) => key !== "permissions")
-    );
+    const userBody = req.body;
     try {
       const { user, isNewUser } = await userQueries.create(userBody);
 
@@ -39,7 +36,6 @@ export const addUser = (redisClient) => (req, res) => {
       }
       await imageQueries.create(imageBody);
       await permissionQueires.create({
-        ...body.permissions,
         UserId: user.dataValues.id,
       });
       await walletQueries.create({UserId: user.dataValues.id})
