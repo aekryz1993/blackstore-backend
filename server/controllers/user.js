@@ -33,7 +33,7 @@ export const addUser = (redisClient) => (req, res) => {
           `resource/static/assets/pictures/users/default.png`
         ),
         UserId: user.dataValues.id,
-      };
+      }
       await imageQueries.create(imageBody);
       await permissionQueires.create({
         UserId: user.dataValues.id,
@@ -48,7 +48,7 @@ export const addUser = (redisClient) => (req, res) => {
 
 export const updateUser = () => (req, res) => {
   (async () => {
-    const body = req.body
+    const body = req.body;
     try {
       await userQueries.update({body, id: req.params.id});
 
