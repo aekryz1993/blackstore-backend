@@ -89,6 +89,7 @@ export const getAllUsers = () => (req, res) => {
       }
 
       res.status(200).json({
+        success: true,
         users,
         totalPages,
         nextPage,
