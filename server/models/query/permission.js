@@ -13,6 +13,19 @@ const find = (UserId) => {
   });
 };
 
+const update = ({UserId, body}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const permission = await models.Permission.update(body, {
+        where: { UserId },
+      });
+      resolve(permission);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 const create = (body) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -26,5 +39,6 @@ const create = (body) => {
 
 export default {
   find,
+  update,
   create,
 };
