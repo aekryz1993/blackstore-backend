@@ -50,7 +50,7 @@ export const updateUser = () => (req, res) => {
   (async () => {
     const body = req.body
     try {
-      await userQueries.update({body, UserId: req.params.id});
+      await userQueries.update({body, id: req.params.id});
 
       return res.status(201).json(successUpdatedUser(body.username));
     } catch (err) {
