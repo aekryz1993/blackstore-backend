@@ -60,7 +60,9 @@ const find = (userIdentifier) => {
 const findById = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const user = await models.User.findByPk(id);
+      const user = await models.User.findByPk(id, {
+        include: [models.Image, models.Permission, models.Wallet],
+      });
       resolve(user);
     } catch (err) {
       reject(err);
