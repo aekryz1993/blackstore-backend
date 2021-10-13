@@ -32,7 +32,7 @@ export const updateCredit = (req, res) => {
 			euro = wallet.dataValues.euro + parseFloat(euro)
 			dinnar = wallet.dataValues.dinnar + parseFloat(dinnar)
             await walletQueries.updateAll({UserId, dollar, euro, dinnar})
-            return res.status(200).json({message: 'تم تحديث المحفظة بنجاح'})
+            return res.status(200).json({message: 'تم تحديث المحفظة بنجاح', success: true})
 		} catch (err) {
 			return res.json(serverErrorMessage(err.message));
 		}
