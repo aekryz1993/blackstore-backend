@@ -12,7 +12,6 @@ const create = (body) => {
           [Op.or]: [{ username: username }, { email: email }, { phone: phone }],
         },
         defaults: body,
-        include: [models.Image, models.Permission, models.Wallet],
       });
 
       resolve({ user, isNewUser });
@@ -49,6 +48,7 @@ const find = (userIdentifier) => {
             { phone: userIdentifier },
           ],
         },
+        include: [models.Image, models.Permission, models.Wallet],
       });
       resolve(user);
     } catch (err) {

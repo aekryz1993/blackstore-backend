@@ -39,7 +39,10 @@ export const addUser = (redisClient) => (req, res) => {
         UserId: user.dataValues.id,
       });
       await walletQueries.create({UserId: user.dataValues.id})
-      return res.status(201).json(successRegistrationUser(user.dataValues));
+
+      const thisUser = await userQueries.find(user.dataValues.id)
+
+      return res.status(201).json(successRegistrationUser(thisUser.dataValues));
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
