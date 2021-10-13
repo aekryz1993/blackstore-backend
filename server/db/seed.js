@@ -52,4 +52,5 @@ const permission = {
     addPayMethod: true,
     viewcmnd: true,
     confirmPayment: true,
+    updatePermissions: true,
 }

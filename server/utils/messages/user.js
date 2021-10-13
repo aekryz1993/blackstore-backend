@@ -5,7 +5,8 @@ export const fieldAlreadyExist = (username, email, phone) => ({
 
 export const successRegistrationUser = (user) => ({
     success: true,
-    message: `تم إضافة العميل ${user} بنجاح`
+    user,
+    message: `تم إضافة العميل ${user.username} بنجاح`
 })
 
 export const successUpdatedUser = (user) => ({
