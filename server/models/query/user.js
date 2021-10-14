@@ -70,11 +70,11 @@ const findById = (id) => {
   });
 };
 
-const count = () => {
+const count = (id) = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.count({
-        where: { isAdmin: false },
+        where: { id: { [Op.not]: id } },
       });
       resolve(allUsers);
     } catch (err) {

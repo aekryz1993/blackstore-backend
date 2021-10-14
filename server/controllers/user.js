@@ -80,7 +80,7 @@ export const getAllUsers = () => (req, res) => {
       const { page } = req.params;
       const users = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, userQueries.count, 6, true);
+        await paginateData(page, userQueries.count(req.user.id), 6, true);
       const initAllUsers = await userQueries.findAll(limit, offset, req.user.id);
       for (let user of initAllUsers) {
         user = user.dataValues;
