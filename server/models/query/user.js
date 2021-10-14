@@ -70,7 +70,7 @@ const findById = (id) => {
   });
 };
 
-const count = (id) = () => {
+const count = (id) => () => {
   return new Promise(async (resolve, reject) => {
     try {
       const allUsers = await models.User.count({
