@@ -3,62 +3,61 @@ import fs from "fs";
 import imageQueries from "../models/query/image";
 import serviceQueries from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
-import { fieldAlreadyExist } from '../utils/messages/service'
+import { fieldAlreadyExist } from "../utils/messages/service";
 
 export const addService = (req, res, next) => {
   (async () => {
-    const body = req.body
+    const body = req.body;
     try {
-      const { service, isNewService } = await serviceQueries.create(body)
-      const { label } = service.dataValues
+      const { service, isNewService } = await serviceQueries.create(body);
+      const { label } = service.dataValues;
       if (!isNewService) {
         return res.status(409).json(fieldAlreadyExist(label));
       }
-      req.body.associatedModelId = service.dataValues.id
-      req.body.associatedModel = 'ServiceId'
-      return next()
-
+      req.body.associatedModelId = service.dataValues.id;
+      req.body.associatedModel = "ServiceId";
+      return next();
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
-  })()
-}
+  })();
+};
 
 export const fetchServices = (req, res) => {
   (async () => {
     try {
-      const services = await serviceQueries.findByCategory(req.params.category)
-      return res.json({services})
+      const services = await serviceQueries.findByCategory(req.params.category);
+      return res.json({ services, success: true });
     } catch (err) {
-      console.error(err)
+      console.error(err);
       return res.json(serverErrorMessage(err.message));
     }
-  })()
-}
+  })();
+};
 
 export const updateServicePicture = (req, res, next) => {
-    (async () => {
-      try {
-        const {id, label} = req.body
-        const image = await imageQueries.find(id)
-        if (image) {
-          const currentImageUrl = image.dataValues.url
-          await image.destroy()
-          if (!currentImageUrl.endsWith('default.png')) {
-            fs.unlink(currentImageUrl, (err) => {
-              if (err) throw err
-            })
-          }
-          req.body.associatedModelId = id
-          req.body.associatedModel = 'ServiceId'
-          req.body.label = label
-
-          next()
-        } else {
-          throw 'error'
+  (async () => {
+    try {
+      const { id, label } = req.body;
+      const image = await imageQueries.find(id);
+      if (image) {
+        const currentImageUrl = image.dataValues.url;
+        await image.destroy();
+        if (!currentImageUrl.endsWith("default.png")) {
+          fs.unlink(currentImageUrl, (err) => {
+            if (err) throw err;
+          });
         }
-      } catch (err) {
-        return res.json(serverErrorMessage(err.message));
+        req.body.associatedModelId = id;
+        req.body.associatedModel = "ServiceId";
+        req.body.label = label;
+
+        next();
+      } else {
+        throw "error";
       }
-    })()
-}
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
