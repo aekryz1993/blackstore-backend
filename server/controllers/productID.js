@@ -9,7 +9,7 @@ import { productCategoryAlreadyExistMsg, productCategoryNotExistMsg, requestSucc
 
 export const addProductID = (req, res) => {
    (async () => {
-      const {serviceName, label, dollar, euro, dinnar} = req.body
+      const {serviceName, label, isAvailable, dollar, euro, dinnar} = req.body
       try {
          const service = await serviceQueries.findByNameAndCategory(serviceName, 'id')
          if (service === null) {
@@ -21,7 +21,7 @@ export const addProductID = (req, res) => {
             return res.status(409).json(productCategoryAlreadyExistMsg(label))
          }
 
-         const { productID } = await productIDQueries.create({label, ServiceId: service.dataValues.id})
+         const { productID } = await productIDQueries.create({label, isAvailable, ServiceId: service.dataValues.id})
 			const bodyPrice = {
 				dollar,
 				euro,

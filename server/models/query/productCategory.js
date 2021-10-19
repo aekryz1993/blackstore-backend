@@ -4,7 +4,7 @@ const create = (body) => {
   return new Promise(async (resolve, reject) => {
     try {
       const productCategory = await models.ProductCategory.create(body, {
-        include: [models.ProductCode, models.Price],
+        include: [models.Price],
       });
       resolve({ productCategory });
     } catch (err) {

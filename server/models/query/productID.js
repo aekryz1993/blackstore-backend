@@ -3,7 +3,9 @@ import models from "../associations";
 const create = (body) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const productID = await models.ProductID.create(body);
+      const productID = await models.ProductID.create(body, {
+        include: [models.Price],
+      });
       resolve({ productID });
     } catch (err) {
       reject(err);
