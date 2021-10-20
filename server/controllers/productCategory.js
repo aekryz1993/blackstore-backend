@@ -37,23 +37,23 @@ export const addProductCategory = (req, res) => {
    })()
 }
 
-export const updatePriceProductCategory = (req, res) => {
+export const updateProductCategory = (req, res) => {
    (async () => {
-      const {dollar, euro, dinnar} = req.body
+      const {dollar, euro, dinnar, label} = req.body
+      const {id} = req.params;
 
       try {
-         const product = await productCategoryQueries.findById(req.params.id)
-         if (product === null) {
-            return res.status(401).json(serviceNotExist('this category doesn\'t exist'))
-         }
-         const price = product.Price.dataValues
+         await productCategoryQueries.update({field: 'id', value: id, body: {label}})
 
          const message = await priceQueries.update({
             dollar,
             euro,
             dinnar,
-         }, price.id)
-         return res.status(200).json({message})
+         }, id)
+
+         const product = await productCategoryQueries.findById(id);
+
+         return res.status(200).json({message, product, success: true})
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }

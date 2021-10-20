@@ -39,6 +39,29 @@ export const addProductID = (req, res) => {
    })()
 }
 
+export const updateProductID = (req, res) => {
+   (async () => {
+      const {dollar, euro, dinnar, label, isAvailable} = req.body
+      const {id} = req.params;
+
+      try {
+         await productIDQueries.update({field: 'id', value: id, body: {label, isAvailable}})
+
+         const message = await priceQueries.update({
+            dollar,
+            euro,
+            dinnar,
+         }, id)
+
+         const product = await productIDQueries.findById(id);
+
+         return res.status(200).json({message, product, success: true})
+      } catch (err) {
+         return res.json(serverErrorMessage(err.message));
+      }
+   })()
+}
+
 export const sendRequestProductID = (req, res) => {
    (async () => {
       const body = { ...req.body, UserId: req.user.dataValues.id }

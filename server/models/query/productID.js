@@ -37,8 +37,22 @@ const findById = (id) => {
   });
 };
 
+const update = ({field, value, body}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await models.ProductID.update(body, {
+        where: {[field]: value},
+      });
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 export default {
   create,
   find,
   findById,
+  update
 };

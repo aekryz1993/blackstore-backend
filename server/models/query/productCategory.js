@@ -36,6 +36,19 @@ const findAll = () => {
   });
 };
 
+const update = ({field, value, body}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await models.ProductCategory.update(body, {
+        where: {[field]: value},
+      });
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 const findById = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -71,4 +84,5 @@ export default {
   findAll,
   findById,
   updatePrice,
+  update,
 };

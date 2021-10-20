@@ -14,13 +14,10 @@ const create = (body) => {
 const update = (body, id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const price = await models.Price.update(body, {
-        where: { id },
+      await models.Price.update(body, {
+        where: { [Op.or]: [{ ProductIDId: id }, { ProductCategoryId: id }] },
       });
-      if (price[0] === 0) {
-        reject({ message: "this product doesn't exist" });
-      }
-      resolve({ message: "تم تحديث السعر بنجاح" });
+      resolve({ message: "تم تحديث المنتج بنجاح" });
     } catch (err) {
       reject(err);
     }
