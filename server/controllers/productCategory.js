@@ -45,7 +45,7 @@ export const updateProductCategory = (req, res) => {
       try {
          await productCategoryQueries.update({field: 'id', value: id, body: {label}})
 
-         const message = await priceQueries.update({
+         const {message} = await priceQueries.update({
             dollar,
             euro,
             dinnar,

@@ -47,7 +47,7 @@ export const updateProductID = (req, res) => {
       try {
          await productIDQueries.update({field: 'id', value: id, body: {label, isAvailable}})
 
-         const message = await priceQueries.update({
+         const {message} = await priceQueries.update({
             dollar,
             euro,
             dinnar,
