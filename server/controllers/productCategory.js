@@ -27,7 +27,10 @@ export const addProductCategory = (req, res) => {
 				ProductCategoryId: productCategory.dataValues.id
 			}
          await priceQueries.create(bodyPrice);
-         return res.status(201).json(successRegistration(productCategory.dataValues))
+
+         const product = await productCategoryQueries.findById(productCategory.dataValues.id);
+
+         return res.status(201).json(successRegistration(product.dataValues))
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }

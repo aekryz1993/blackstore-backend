@@ -12,7 +12,6 @@ export const readExcel = async (req, res, next) => {
   try {
     if (!req.file) {
       req.dataObj = null;
-      // next();
     }
     const targetFile = req.file.path;
     const file = xlsx.readFile(targetFile);

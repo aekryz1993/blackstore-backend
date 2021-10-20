@@ -29,7 +29,10 @@ export const addProductID = (req, res) => {
 				ProductIDId: productID.dataValues.id
 			}
          await priceQueries.create(bodyPrice);
-         return res.status(201).json(successRegistration(productID.dataValues))
+
+         const product = await productIDQueries.findById(productID.dataValues.id);
+
+         return res.status(201).json(successRegistration(product.dataValues))
       } catch (err) {
          return res.json(serverErrorMessage(err.message));
       }
