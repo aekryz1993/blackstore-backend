@@ -1,3 +1,4 @@
+import { Op } from "sequelize/types";
 import models from "../associations";
 
 const create = (body) => {
