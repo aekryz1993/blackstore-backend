@@ -3,9 +3,10 @@ export const fieldAlreadyExist = (label) => ({
     message: `تم اضافتها مسبقا ${label}`
 });
 
-export const successRegistration = (label) => ({
+export const successRegistration = (product) => ({
     success: true,
-    message: `بنجاح ${label} تم اضافة خدمة`
+    product,
+    message: `بنجاح ${product.label} تم اضافة خدمة`
 })
 
 export const serviceNotExist = (label) => ({
