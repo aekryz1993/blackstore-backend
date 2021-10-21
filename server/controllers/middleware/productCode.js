@@ -68,7 +68,11 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
           });
         }
       }
-      resolve({ message: "تم إضافة الأكواد بنجاح", newCategories });
+      resolve({
+        message: "تم إضافة الأكواد بنجاح",
+        newCategories,
+        success: true,
+      });
     } catch (error) {
       console.log(error);
       reject(error);
