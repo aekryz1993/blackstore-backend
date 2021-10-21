@@ -11,6 +11,7 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
         let codeInCategory = [];
         let productCategoryName;
         let ProductCategoryId;
+        let newCategories = [];
         const label = codes[i]["Product"];
         const body = { label, serviceName, ServiceId };
         let category = await productCategoryQueries.find(label);
@@ -32,6 +33,10 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
             await priceQueries.create({
               ProductCategoryId: category.dataValues.id,
             });
+            const newcategory = await productCategoryQueries.findById(
+              category.dataValues.id
+            );
+            newCategories.push(newcategory);
           } else {
             productCategoryName = category.dataValues.label;
             ProductCategoryId = category.dataValues.id;
@@ -42,6 +47,10 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
           await priceQueries.create({
             ProductCategoryId: category.dataValues.id,
           });
+          const newcategory = await productCategoryQueries.findById(
+            category.dataValues.id
+          );
+          newCategories.push(newcategory);
         }
         if (category.ProductCodes) {
           codeInCategory = category.ProductCodes.filter(
@@ -59,7 +68,7 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
           });
         }
       }
-      resolve({ message: "تم إضافة الأكواد بنجاح" });
+      resolve({ message: "تم إضافة الأكواد بنجاح", newCategories });
     } catch (error) {
       console.log(error);
       reject(error);
