@@ -7,11 +7,11 @@ import { serviceNotExist } from "../../utils/messages/service";
 export const saveCodes = (codes, serviceName, ServiceId) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let newCategories = [];
       for (let i in codes) {
         let codeInCategory = [];
         let productCategoryName;
         let ProductCategoryId;
-        let newCategories = [];
         const label = codes[i]["Product"];
         const body = { label, serviceName, ServiceId };
         let category = await productCategoryQueries.find(label);
