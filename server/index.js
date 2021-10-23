@@ -17,6 +17,7 @@ const config = {
 
 (async () => {
   try {
+    const redisClient = redisConnect();
     const httpServer = http.createServer(app);
     const io = new Server(httpServer);
     //const io = app.io;
