@@ -5,8 +5,8 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    # restart: unless-stopped
-    restart: always
+    restart: unless-stopped
+    #restart: always
     volumes:
       - bluestore-db:/var/lib/postgresql/data
     ports:
@@ -51,11 +51,11 @@ services:
     depends_on:
       - postgres
       - redis
-    # volumes:
-    #   - bluestore-storeage:/var/lib/resources
-    #   - ./resources/static/*:/var/lib/resources/static
+    volumes:
+       - bluestore-storeage:/app/resources
 
 volumes:
   bluestore-db:
   bluestore-redis:
-  # bluestore-storeage:
+  bluestore-storeage:
+
