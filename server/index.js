@@ -1,4 +1,4 @@
-import app, { redisClient } from "./app";
+import app from "./app";
 import { hostServer } from "./config/server.config";
 import { createAdmin } from "./db/seed";
 import sequelize from "./config/db.config";
@@ -9,6 +9,8 @@ import { createAdapter } from "@socket.io/cluster-adapter";
 import { setupWorker } from "@socket.io/sticky";
 import { Server } from "socket.io";
 import redisConnect from "./config/redis";
+import SequelizeAdapter from "socket.io-adapter-sequelize";
+import { createAdapter as createRedisAdapter } from "@socket.io/redis-adapter";
 
 const config = {
   host: hostServer(app)["host"],
@@ -23,6 +25,9 @@ const config = {
     //const io = app.io;
     //io.attach(httpServer);
     io.adapter(createAdapter());
+    io.adapter(SequelizeAdapter(sequelize));
+    const subClient = redisClient.duplicate();
+    io.adapter(createRedisAdapter(redisClient, subClient));
     setupWorker(io);
 
     app.use("/api", apiRouter(app, passport, io, redisClient));
