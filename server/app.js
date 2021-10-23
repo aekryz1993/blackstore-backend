@@ -36,8 +36,6 @@ app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 const io = new Server();
 app.io = io;
 
-const io = new Server(httpServer);
-
 // io.adapter(createAdapter());
 
 
