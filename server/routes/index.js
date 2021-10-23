@@ -30,10 +30,11 @@ const apiRouter = (app, passport, io, redisClient, sequelize) => {
       expires: expirySessionDate,
     },
   });
-
-  await sequelize.sync();
-  await sequelize.authenticate();
-  createAdmin(redisClient);
+  (async () => {
+    await sequelize.sync();
+    await sequelize.authenticate();
+    createAdmin(redisClient);
+  })()
 
   app.use(sessionMiddleware);
   app.use(passport.initialize());
