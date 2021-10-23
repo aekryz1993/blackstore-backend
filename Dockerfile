@@ -1,6 +1,6 @@
 FROM node:14-alpine
 
-RUN npm install -g @socket.io/pm2
+# RUN npm install -g @socket.io/pm2
 
 WORKDIR /app
 

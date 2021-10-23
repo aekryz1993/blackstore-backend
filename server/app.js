@@ -6,8 +6,8 @@ import cors from "cors";
 import passport from "passport";
 import path from "path";
 import { Server } from "socket.io";
-const { createAdapter } = require("@socket.io/cluster-adapter");
-const { setupWorker } = require("@socket.io/sticky");
+// const { createAdapter } = require("@socket.io/cluster-adapter");
+// const { setupWorker } = require("@socket.io/sticky");
 
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from "./config/passport.config";
 import apiRouter from "./routes";
@@ -36,14 +36,14 @@ app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 const io = new Server();
 app.io = io;
 
-export const httpServer = http.createServer(app);
+// export const httpServer = http.createServer(app);
 
-const io = new Server(httpServer);
+// const io = new Server(httpServer);
 
-io.adapter(createAdapter());
+// io.adapter(createAdapter());
 
 
-setupWorker(io);
+// setupWorker(io);
 
 app.use("/api", apiRouter(app, passport, io, redisClient));
 
