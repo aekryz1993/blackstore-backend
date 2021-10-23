@@ -3,14 +3,10 @@ import logger from "morgan";
 import compression from "compression";
 import helmet from "helmet";
 import cors from "cors";
-// import passport from "passport";
 import path from "path";
 import { Server } from "socket.io";
-//const { createAdapter } = require("@socket.io/cluster-adapter");
-//const { setupWorker } = require("@socket.io/sticky");
 
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from "./config/passport.config";
-// import apiRouter from "./routes";
 import redisConnect from "./config/redis";
 
 const app = express();
@@ -35,13 +31,6 @@ app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 
 const io = new Server();
 app.io = io;
-
-// io.adapter(createAdapter());
-
-
-// setupWorker(io);
-
-// app.use("/api", apiRouter(app, passport, io, redisClient));
 
 app.get("/", function (req, res) {
    res.send('Welcome to Black Store GB.')
