@@ -7,6 +7,8 @@ import passport from "passport";
 import apiRouter from "./routes";
 import { createAdapter } from "@socket.io/cluster-adapter";
 import { setupWorker } from "@socket.io/sticky";
+import { Server } from "socket.io";
+import redisConnect from "./config/redis";
 
 const config = {
   host: hostServer(app)["host"],
@@ -16,8 +18,9 @@ const config = {
 (async () => {
   try {
     const httpServer = http.createServer(app);
-    const io = app.io;
-    io.attach(httpServer);
+    const io = new Server(httpServer);
+    //const io = app.io;
+    //io.attach(httpServer);
     io.adapter(createAdapter());
     setupWorker(io);
 
