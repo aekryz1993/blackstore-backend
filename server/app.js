@@ -6,8 +6,9 @@ import cors from "cors";
 import passport from "passport";
 import path from "path";
 import { Server } from "socket.io";
-// const { createAdapter } = require("@socket.io/cluster-adapter");
-// const { setupWorker } = require("@socket.io/sticky");
+import http from 'http';
+//const { createAdapter } = require("@socket.io/cluster-adapter");
+//const { setupWorker } = require("@socket.io/sticky");
 
 import { SESSION_SECRET, SESSION_SECRET_VALUE } from "./config/passport.config";
 import apiRouter from "./routes";
@@ -32,13 +33,11 @@ app.use(
 app.use(express.static(path.join(CURRENT_WORKING_DIR, "certificate")));
 app.use(express.static(path.join(CURRENT_WORKING_DIR, "resources")));
 app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
-
+export const httpServer = http.createServer(app);
 const io = new Server();
 app.io = io;
 
-// export const httpServer = http.createServer(app);
-
-// const io = new Server(httpServer);
+const io = new Server(httpServer);
 
 // io.adapter(createAdapter());
 
