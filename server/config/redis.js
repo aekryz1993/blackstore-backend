@@ -1,6 +1,7 @@
 import { createClient } from "redis";
+import { createAdapter } from "@socket.io/redis-adapter";
 
-export default function redisConnect() {
+export default function redisConnect(io) {
   const client = createClient({
     password: config.password,
     socket: {
@@ -8,6 +9,8 @@ export default function redisConnect() {
       port: config.port,
     },
   });
+  const subClient = client.duplicate();
+  io.adapter(createAdapter(client, subClient));
   (async () => {
     try {
       await client.connect();

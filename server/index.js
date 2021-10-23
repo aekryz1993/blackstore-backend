@@ -10,7 +10,6 @@ import { setupWorker } from "@socket.io/sticky";
 import { Server } from "socket.io";
 import redisConnect from "./config/redis";
 import SequelizeAdapter from "socket.io-adapter-sequelize";
-import { createAdapter as createRedisAdapter } from "@socket.io/redis-adapter";
 
 const config = {
   host: hostServer(app)["host"],
@@ -19,18 +18,18 @@ const config = {
 
 (async () => {
   try {
-    const redisClient = redisConnect();
     const httpServer = http.createServer(app);
     const io = new Server(httpServer);
-    //const io = app.io;
-    //io.attach(httpServer);
+
     io.adapter(createAdapter());
-    io.adapter(SequelizeAdapter(sequelize));
-    const subClient = redisClient.duplicate();
-    io.adapter(createRedisAdapter(redisClient, subClient));
+
     setupWorker(io);
 
-    app.use("/api", apiRouter(app, passport, io, redisClient));
+    io.adapter(SequelizeAdapter(sequelize));
+
+    const redisClient = redisConnect(io);
+
+    app.use("/api", apiRouter(app, passport, io, redisClient, sequelize));
 
     httpServer.listen(config.port, () => {
       console.log(
@@ -41,9 +40,9 @@ const config = {
     httpServer.on("error", (err) => {
       throw err;
     });
-    await sequelize.sync();
-    await sequelize.authenticate();
-    createAdmin(redisClient);
+    // await sequelize.sync();
+    // await sequelize.authenticate();
+    // createAdmin(redisClient);
   } catch (err) {
     console.error(err);
   }

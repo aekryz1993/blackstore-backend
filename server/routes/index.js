@@ -20,7 +20,7 @@ const router = express.Router();
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 
-const apiRouter = (app, passport, io, redisClient) => {
+const apiRouter = (app, passport, io, redisClient, sequelize) => {
   const sessionMiddleware = session({
     name: "session",
     keys: [SESSION_SECRET_VALUE],
@@ -30,6 +30,10 @@ const apiRouter = (app, passport, io, redisClient) => {
       expires: expirySessionDate,
     },
   });
+
+  await sequelize.sync();
+  await sequelize.authenticate();
+  createAdmin(redisClient);
 
   app.use(sessionMiddleware);
   app.use(passport.initialize());

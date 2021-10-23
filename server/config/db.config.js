@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 // import path from "path";
 // import fs from "fs";
 
-import {env} from '../app';
+// import {env} from '../app';
 
 // const CURRENT_WORKING_DIR = process.cwd();
 
