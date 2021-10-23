@@ -19,7 +19,7 @@ module.exports = {
       name: "bluestore",
       script: "./dist/main.js",
       merge_logs: true,
-      instances: "max",
+      instances: 1,
       exec_mode: "cluster",
       env: {
         NODE_ENV: "production",

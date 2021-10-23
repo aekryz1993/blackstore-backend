@@ -1,15 +1,14 @@
 import app from "./app";
 import { hostServer } from "./config/server.config";
-import { createAdmin } from "./db/seed";
 import sequelize from "./config/db.config";
 import http from "http";
 import passport from "passport";
 import apiRouter from "./routes";
-import { createAdapter } from "@socket.io/cluster-adapter";
-import { setupWorker } from "@socket.io/sticky";
+//import { createAdapter } from "@socket.io/cluster-adapter";
+//import { setupWorker } from "@socket.io/sticky";
 import { Server } from "socket.io";
 import redisConnect from "./config/redis";
-import SequelizeAdapter from "socket.io-adapter-sequelize";
+//import SequelizeAdapter from "socket.io-adapter-sequelize";
 
 const config = {
   host: hostServer(app)["host"],
@@ -21,11 +20,11 @@ const config = {
     const httpServer = http.createServer(app);
     const io = new Server(httpServer);
 
-    io.adapter(createAdapter());
+    //io.adapter(createAdapter());
 
-    setupWorker(io);
+    //setupWorker(io);
 
-    io.adapter(SequelizeAdapter(sequelize));
+    //io.adapter(SequelizeAdapter(sequelize));
 
     const redisClient = redisConnect(io);
 

@@ -1,6 +1,6 @@
 FROM node:14-alpine
 
-RUN npm install -g @socket.io/pm2
+#RUN npm install -g pm2
 
 WORKDIR /app
 
@@ -12,4 +12,4 @@ COPY . .
 
 RUN npm run build
 
-CMD [ "npm", "run", "pm2" ]
+CMD [ "npm", "run", "start" ]

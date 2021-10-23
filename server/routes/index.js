@@ -1,5 +1,6 @@
 import express from "express";
 import session from "cookie-session";
+import { createAdmin } from "../db/seed";
 
 import {
   localPassportStrategy,
@@ -14,6 +15,7 @@ import {
 } from "../controllers/middleware/permissions";
 import adminSessionRouter from "./adminSession";
 import { webhookEvents } from "../controllers/payment";
+//import SequelizeAdapter from "socket.io-adapter-sequelize";
 
 const router = express.Router();
 
@@ -33,6 +35,7 @@ const apiRouter = (app, passport, io, redisClient, sequelize) => {
   (async () => {
     await sequelize.sync();
     await sequelize.authenticate();
+    //io.adapter(SequelizeAdapter(sequelize));
     createAdmin(redisClient);
   })()
 
