@@ -8,6 +8,8 @@ RUN npm i
 
 COPY . .
 
+RUN npm install -g @socket.io/pm2
+
 RUN npm run build
 
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "pm2" ]
