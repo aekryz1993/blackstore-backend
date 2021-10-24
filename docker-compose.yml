@@ -33,7 +33,7 @@ services:
       - "80:80"
       - "443:443"
 
-  bluestore:
+  bluestore_1:
     build:
       context: .
     env_file: .env
@@ -48,6 +48,75 @@ services:
       - REDIS_PORT:${REDIS_PORT}
       - COINBASE_API_KEY:${COINBASE_API_KEY}
       - SHAREDSECRET:${SHAREDSECRET}
+    ports:
+    - "5001:5000"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+       - bluestore-storeage:/app/resources
+  bluestore_2:
+    build:
+      context: .
+    env_file: .env
+    environment:
+      - REDIS_HOST:${REDIS_HOST}
+      - DB_HOST:${DB_HOST}
+      - DB_SCHEMA:${DB_SCHEMA}
+      - DB_USER:${DB_USER}
+      - DB_PASSWORD:${DB_USER}
+      - REDIS_USER:${DB_USER}
+      - REDIS_PASSWORD:${REDIS_PASSWORD}
+      - REDIS_PORT:${REDIS_PORT}
+      - COINBASE_API_KEY:${COINBASE_API_KEY}
+      - SHAREDSECRET:${SHAREDSECRET}
+    ports:
+    - "5002:5000"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+       - bluestore-storeage:/app/resources
+  bluestore_3:
+    build:
+      context: .
+    env_file: .env
+    environment:
+      - REDIS_HOST:${REDIS_HOST}
+      - DB_HOST:${DB_HOST}
+      - DB_SCHEMA:${DB_SCHEMA}
+      - DB_USER:${DB_USER}
+      - DB_PASSWORD:${DB_USER}
+      - REDIS_USER:${DB_USER}
+      - REDIS_PASSWORD:${REDIS_PASSWORD}
+      - REDIS_PORT:${REDIS_PORT}
+      - COINBASE_API_KEY:${COINBASE_API_KEY}
+      - SHAREDSECRET:${SHAREDSECRET}
+    ports:
+    - "5003:5000"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+       - bluestore-storeage:/app/resources
+  bluestore_4:
+    build:
+      context: .
+    env_file: .env
+    environment:
+      - REDIS_HOST:${REDIS_HOST}
+      - DB_HOST:${DB_HOST}
+      - DB_SCHEMA:${DB_SCHEMA}
+      - DB_USER:${DB_USER}
+      - DB_PASSWORD:${DB_USER}
+      - REDIS_USER:${DB_USER}
+      - REDIS_PASSWORD:${REDIS_PASSWORD}
+      - REDIS_PORT:${REDIS_PORT}
+      - COINBASE_API_KEY:${COINBASE_API_KEY}
+      - SHAREDSECRET:${SHAREDSECRET}
+    ports:
+    - "5004:5000"
+
     depends_on:
       - postgres
       - redis
