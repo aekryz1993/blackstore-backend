@@ -27,6 +27,7 @@ app.use(express.static(path.join(CURRENT_WORKING_DIR, "resources")));
 app.set(SESSION_SECRET, SESSION_SECRET_VALUE);
 
 app.get("/", function (req, res) {
+   console.log(`Server running on ${process.env.PORT} port, PID: ${process.pid}`);
    res.send('Welcome to Black Store GB.')
 });
 
