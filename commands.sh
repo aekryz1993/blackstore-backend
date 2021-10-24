@@ -3,5 +3,6 @@ docker-compose stop
 #docker rmi $(docker images -a -q) -f
 docker image prune -f
 docker images
+# docker-compose up --scale bluestore=4 --build -d
 docker-compose up --scale bluestore=4 --build -d
 docker-compose logs --follow

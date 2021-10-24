@@ -15,7 +15,6 @@ import {
 } from "../controllers/middleware/permissions";
 import adminSessionRouter from "./adminSession";
 import { webhookEvents } from "../controllers/payment";
-//import SequelizeAdapter from "socket.io-adapter-sequelize";
 
 const router = express.Router();
 
@@ -35,7 +34,6 @@ const apiRouter = (app, passport, io, redisClient, sequelize) => {
   (async () => {
     await sequelize.sync();
     await sequelize.authenticate();
-    //io.adapter(SequelizeAdapter(sequelize));
     createAdmin(redisClient);
   })()
 
@@ -48,8 +46,6 @@ const apiRouter = (app, passport, io, redisClient, sequelize) => {
   io.use(wrap(passport.session()));
 
   localPassportStrategy(passport);
-
-  // ensureSocketAuthorized(io)
 
   router.use("/auth", authRouter(passport));
   router.use(

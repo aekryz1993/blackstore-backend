@@ -4,11 +4,8 @@ import sequelize from "./config/db.config";
 import http from "http";
 import passport from "passport";
 import apiRouter from "./routes";
-//import { createAdapter } from "@socket.io/cluster-adapter";
-//import { setupWorker } from "@socket.io/sticky";
 import { Server } from "socket.io";
 import redisConnect from "./config/redis";
-//import SequelizeAdapter from "socket.io-adapter-sequelize";
 
 const config = {
   host: hostServer(app)["host"],
@@ -19,12 +16,6 @@ const config = {
   try {
     const httpServer = http.createServer(app);
     const io = new Server(httpServer);
-
-    //io.adapter(createAdapter());
-
-    //setupWorker(io);
-
-    //io.adapter(SequelizeAdapter(sequelize));
 
     const redisClient = redisConnect(io);
 
@@ -39,9 +30,6 @@ const config = {
     httpServer.on("error", (err) => {
       throw err;
     });
-    // await sequelize.sync();
-    // await sequelize.authenticate();
-    // createAdmin(redisClient);
   } catch (err) {
     console.error(err);
   }
