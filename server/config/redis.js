@@ -1,4 +1,5 @@
 import { createClient } from "redis";
+import redisAdapter from '@socket.io/redis-adapter';
 
 export default function redisConnect(io) {
   const client = createClient({
@@ -10,6 +11,8 @@ export default function redisConnect(io) {
   });
   (async () => {
     try {
+      const subClient = client.duplicate();
+      io.adapter(redisAdapter(client, subClient));
       await client.connect();
       client.on("error", (err) => console.log("Redis Client Error", err));
     } catch (error) {
