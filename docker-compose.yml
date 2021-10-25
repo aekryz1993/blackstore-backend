@@ -5,8 +5,8 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    #restart: unless-stopped
-    restart: always
+    restart: unless-stopped
+    #restart: always
     volumes:
       - bluestore-db:/var/lib/postgresql/data
     ports:

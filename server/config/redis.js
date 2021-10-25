@@ -9,14 +9,16 @@ export default function redisConnect(io) {
       port: config.port,
     },
   });
+
   (async () => {
+    const subClient = client.duplicate();
+    subClient.psubscribe = subClient.pSubscribe;
+    io.adapter(redisAdapter(client, subClient));
     try {
-      const subClient = client.duplicate();
-      io.adapter(redisAdapter(client, subClient));
       await client.connect();
       client.on("error", (err) => console.log("Redis Client Error", err));
     } catch (error) {
-      console.log("Redis Client Error", error) 
+      console.log("Redis Client Error", error)
     }
   })();
   return client;
