@@ -1,12 +1,12 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres
+    image: postgres:14-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    restart: unless-stopped
-    #restart: always
+    #restart: unless-stopped
+    restart: always
     volumes:
       - bluestore-db:/var/lib/postgresql/data
     ports:
@@ -25,7 +25,10 @@ services:
      
   nginx:
     depends_on:
-      - bluestore
+      - bluestore_1
+      - bluestore_2
+      - bluestore_3
+      - bluestore_4
     restart: always
     build:
       context: ./nginx
@@ -48,13 +51,13 @@ services:
       - REDIS_PORT:${REDIS_PORT}
       - COINBASE_API_KEY:${COINBASE_API_KEY}
       - SHAREDSECRET:${SHAREDSECRET}
-    ports:
-    - "5001:5000"
+      - PORT=${PORT_1}
     depends_on:
       - postgres
       - redis
     volumes:
        - bluestore-storeage:/app/resources
+  
   bluestore_2:
     build:
       context: .
@@ -70,13 +73,13 @@ services:
       - REDIS_PORT:${REDIS_PORT}
       - COINBASE_API_KEY:${COINBASE_API_KEY}
       - SHAREDSECRET:${SHAREDSECRET}
-    ports:
-    - "5002:5000"
+      - PORT=${PORT_2}
     depends_on:
       - postgres
       - redis
     volumes:
        - bluestore-storeage:/app/resources
+
   bluestore_3:
     build:
       context: .
@@ -92,13 +95,13 @@ services:
       - REDIS_PORT:${REDIS_PORT}
       - COINBASE_API_KEY:${COINBASE_API_KEY}
       - SHAREDSECRET:${SHAREDSECRET}
-    ports:
-    - "5003:5000"
+      - PORT:${PORT_3}
     depends_on:
       - postgres
       - redis
     volumes:
        - bluestore-storeage:/app/resources
+  
   bluestore_4:
     build:
       context: .
@@ -114,15 +117,12 @@ services:
       - REDIS_PORT:${REDIS_PORT}
       - COINBASE_API_KEY:${COINBASE_API_KEY}
       - SHAREDSECRET:${SHAREDSECRET}
-    ports:
-    - "5004:5000"
-
+      - PORT=${PORT_4}
     depends_on:
       - postgres
       - redis
     volumes:
        - bluestore-storeage:/app/resources
-
 volumes:
   bluestore-db:
   bluestore-redis:
