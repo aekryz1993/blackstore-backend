@@ -22,7 +22,6 @@ Image.init({
     },
     url: {
         type: DataTypes.STRING,
-        allowNull: false,
     },
 }, {
     sequelize,

@@ -28,10 +28,11 @@ export const addUser = (redisClient) => (req, res) => {
       const imageBody = {
         type: "image/png",
         name: `default.png`,
-        url: path.resolve(
-          CURRENT_WORKING_DIR,
-          `resource/static/assets/pictures/users/default.png`
-        ),
+        // url: path.resolve(
+        //   CURRENT_WORKING_DIR,
+        //   `resource/static/assets/pictures/users/default.png`
+        // ),
+        url: null,
         UserId: user.dataValues.id,
       }
       await imageQueries.create(imageBody);
