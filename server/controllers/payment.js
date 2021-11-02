@@ -8,6 +8,7 @@ import libTypedarrays from "crypto-js/lib-typedarrays";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import { serverErrorMessage } from "../utils/messages";
 import fetch from "node-fetch";
+import axios from "axios";
 
 // -- Coinbase ------------------------- Webhook Events -------------------------------------
 export const coinbaseWebhookEvents = (io) => (req, res) => {
@@ -142,7 +143,7 @@ export const buyingCreditBinance = (req, res) => {
       const payload_to_sign = timestamp + "\n" + nonce + "\n" + body + "\n";
       const signature = hmacSHA512(payload_to_sign, BINANCE_SECRET_KEY)
         .toString()
-        .toUpperCase();
+        .toUpperCase();console.log(JSON.stringify(body))
 
       const requestOptions = {
         method: "POST",
@@ -154,17 +155,17 @@ export const buyingCreditBinance = (req, res) => {
           "BinancePay-Signature": signature,
         },
         body: JSON.stringify(body),
-  	redirect: 'follow'
+        url: "https://bpay.binanceapi.com/binancepay/openapi/order"
       };
 
-      const response = await fetch(
-        "https://bpay.binanceapi.com/binancepay/openapi/order",
+      const response = await axios(
+        // "https://bpay.binanceapi.com/binancepay/openapi/order",
         requestOptions
       );console.log(response)
 
       const order = response
 
-      return res.status(200).json({ success: true, amount });
+      return res.status(200).json({ success: true, order });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
