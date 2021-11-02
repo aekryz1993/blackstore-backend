@@ -3,8 +3,12 @@ import peyMethodQueries from "../models/query/peyMethod";
 import walletQueries from "../models/query/wallet";
 import epayment from "../config/e-payment";
 import { Webhook } from "coinbase-commerce-node";
+import { uuid } from "uuidv4";
+import libTypedarrays from "crypto-js/lib-typedarrays";
+import hmacSHA512 from "crypto-js/hmac-sha512";
 
-export const webhookEvents = (io) => (req, res) => {
+// -- Coinbase ------------------------- Webhook Events -------------------------------------
+export const coinbaseWebhookEvents = (io) => (req, res) => {
   (async () => {
     const signature = req.headers["x-cc-webhook-signature"];
     const sharedSecret = process.env.SHAREDSECRET;
@@ -60,6 +64,7 @@ export const webhookEvents = (io) => (req, res) => {
   })();
 };
 
+// -- Coinbase ------------------------- Fetch Charges -------------------------------------
 export const fetchCoinbaseCharges = (req, res) => {
   (async () => {
     let chargesStatus = [];
@@ -85,6 +90,7 @@ export const fetchCoinbaseCharges = (req, res) => {
   })();
 };
 
+// -- Coinbase ------------------------- Create a Charge -------------------------------------
 export const buyingCreditCoinbase = (req, res) => {
   (async () => {
     const { amount } = req.params;
@@ -111,6 +117,57 @@ export const buyingCreditCoinbase = (req, res) => {
   })();
 };
 
+// -- Binance ------------------------- Create an Order -------------------------------------
+export const buyingCreditBinance = (req, res) => {
+  (async () => {
+    try {
+      const { amount } = req.body;
+      const { id } = req.user;
+      const { BINANCE_API_KEY, BINANCE_SECRET_KEY } = process.env;
+      const timestamp = Date.now();
+      const merchantTradeNo = uuid();
+      const nonce = libTypedarrays.random(128 / 8).toString();
+
+      const body = {
+        merchantTradeNo,
+        tradeType: "APP",
+        totalFee: amount,
+        currency: "USDT",
+        productType: "CREDIT",
+        productName: "USD",
+      };
+
+      const payload_to_sign = timestamp + "\n" + nonce + "\n" + body + "\n";
+      const signature = hmacSHA512(payload_to_sign, BINANCE_SECRET_KEY)
+        .toString()
+        .toUpperCase();
+
+      const myHeaders = new Headers();
+      myHeaders.append("content-type", "application/json");
+      myHeaders.append("BinancePay-Timestamp", timestamp);
+      myHeaders.append("BinancePay-Nonce", nonce);
+      myHeaders.append("BinancePay-Certificate-SN", BINANCE_API_KEY);
+      myHeaders.append("BinancePay-Signature", signature);
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(body),
+      };
+
+      const order = await fetch(
+        "https://bpay.binanceapi.com/binancepay/openapi/order",
+        requestOptions
+      );
+
+      return res.status(200).json({ success: true, order });
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
+
+// ----------------------------------------------------------------------------------------------------------------
 export const fetchNotConfirmedPayments = (req, res) => {
   (async () => {
     try {

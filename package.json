@@ -45,6 +45,7 @@
     "compression": "^1.7.4",
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
     "morgan": "^1.10.0",
@@ -59,6 +60,7 @@
     "sequelize": "^6.5.0",
     "sharp": "^0.28.3",
     "socket.io": "^4.2.0",
+    "uuidv4": "^6.2.12",
     "xlsx": "^0.17.0"
   },
   "jest": {
