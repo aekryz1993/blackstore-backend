@@ -19,7 +19,7 @@ const devEnv = {
 const prodEnv = {
   database: process.env.DB_SCHEMA || "auth_api_dev",
   username: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || 123456,
+  password: process.env.DB_PASSWORD || "postgres",
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT || 5432,
   dialectOptions : {

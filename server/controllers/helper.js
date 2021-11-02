@@ -15,14 +15,14 @@ export const loginRequest = (user, req, res) => {
       );
       const userImage = await imageQueries.find(currentUser.id);
 
-      const profilePic = userImage.dataValues.url
+      const profilePic = userImage.dataValues.url ? userImage.dataValues.url
         .split("/")
         .slice(
           userImage.dataValues.url
             .split("/")
             .findIndex((ele) => ele === "resources") + 1
         )
-        .join("/");
+        .join("/") : null;
 
       return res.json({
         message: "Welcome to your account",

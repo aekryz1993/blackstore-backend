@@ -6,6 +6,7 @@ import { Webhook } from "coinbase-commerce-node";
 import { uuid } from "uuidv4";
 import libTypedarrays from "crypto-js/lib-typedarrays";
 import hmacSHA512 from "crypto-js/hmac-sha512";
+import { serverErrorMessage } from "../utils/messages";
 
 // -- Coinbase ------------------------- Webhook Events -------------------------------------
 export const coinbaseWebhookEvents = (io) => (req, res) => {
@@ -142,16 +143,15 @@ export const buyingCreditBinance = (req, res) => {
         .toString()
         .toUpperCase();
 
-      const myHeaders = new Headers();
-      myHeaders.append("content-type", "application/json");
-      myHeaders.append("BinancePay-Timestamp", timestamp);
-      myHeaders.append("BinancePay-Nonce", nonce);
-      myHeaders.append("BinancePay-Certificate-SN", BINANCE_API_KEY);
-      myHeaders.append("BinancePay-Signature", signature);
-
-      var requestOptions = {
+      const requestOptions = {
         method: "POST",
-        headers: myHeaders,
+        headers: {
+	  "content-type": "application/json",
+	  "BinancePay-Timestamp": timestamp,
+	  "BinancePay-Nonce": nonce,
+	  "BinancePay-Certificate-SN": BINANCE_API_KEY,
+	  "BinancePay-Signature": signature,
+	},
         body: JSON.stringify(body),
       };
 
