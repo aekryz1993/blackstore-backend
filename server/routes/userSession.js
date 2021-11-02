@@ -9,7 +9,7 @@ import { logout } from "../controllers/auth";
 import uploadImage from "../controllers/middleware/image";
 import { updateProfilePicture } from "../controllers/user";
 import { addPicture } from "../controllers/image";
-import { buyingCreditCoinbase } from "../controllers/payment";
+import { buyingCreditBinance, buyingCreditCoinbase } from "../controllers/payment";
 import userQueries from "../models/query/user";
 import {
   getNotifications,
@@ -37,6 +37,7 @@ const userSessionRouter = (io, redisClient) => {
     productCodeRouter(orderCommandNamespace, redisClient)
   );
   router.post("/payment/coinbase/:amount", buyingCreditCoinbase);
+  router.post("/payment/binance", buyingCreditBinance);
   router.put(
     "/updateProfilePicture",
     uploadImage.single("picture"),
