@@ -3,7 +3,7 @@ import peyMethodQueries from "../models/query/peyMethod";
 import walletQueries from "../models/query/wallet";
 import epayment from "../config/e-payment";
 import { Webhook } from "coinbase-commerce-node";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuidv4";
 import libTypedarrays from "crypto-js/lib-typedarrays";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import { serverErrorMessage } from "../utils/messages";
@@ -132,7 +132,7 @@ export const buyingCreditBinance = (req, res) => {
 
       const body = {
         merchantTradeNo,
-        tradeType: "APP",
+        tradeType: "WEB",
         totalFee: amount,
         currency: "USDT",
         productType: "CREDIT",
@@ -156,12 +156,14 @@ export const buyingCreditBinance = (req, res) => {
         body: JSON.stringify(body),
       };
 
-      const order = await fetch(
+      const response = await fetch(
         "https://bpay.binanceapi.com/binancepay/openapi/order",
         requestOptions
       );
 
-      return res.status(200).json({ success: true, order });
+      const order = response.text()
+
+      return res.status(200).json({ success: true, order, requestOptions });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
