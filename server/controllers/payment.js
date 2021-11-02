@@ -7,6 +7,7 @@ import { uuid } from "uuidv4";
 import libTypedarrays from "crypto-js/lib-typedarrays";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import { serverErrorMessage } from "../utils/messages";
+import fetch from "node-fetch";
 
 // -- Coinbase ------------------------- Webhook Events -------------------------------------
 export const coinbaseWebhookEvents = (io) => (req, res) => {
@@ -146,12 +147,12 @@ export const buyingCreditBinance = (req, res) => {
       const requestOptions = {
         method: "POST",
         headers: {
-	  "content-type": "application/json",
-	  "BinancePay-Timestamp": timestamp,
-	  "BinancePay-Nonce": nonce,
-	  "BinancePay-Certificate-SN": BINANCE_API_KEY,
-	  "BinancePay-Signature": signature,
-	},
+          "content-type": "application/json",
+          "BinancePay-Timestamp": timestamp,
+          "BinancePay-Nonce": nonce,
+          "BinancePay-Certificate-SN": BINANCE_API_KEY,
+          "BinancePay-Signature": signature,
+        },
         body: JSON.stringify(body),
       };
 
