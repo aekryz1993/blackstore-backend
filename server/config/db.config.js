@@ -17,10 +17,10 @@ const devEnv = {
 };
 
 const prodEnv = {
-  database: process.env.DB_SCHEMA || "auth_api_dev",
+  database: process.env.DB_SCHEMA || "postgres",
   username: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "postgres",
-  host: process.env.DB_HOST || "localhost",
+  host: process.env.DB_HOST || "postgres",
   port: process.env.DB_PORT || 5432,
   dialectOptions : {
     // ssl: {
@@ -38,7 +38,7 @@ const prodEnv = {
   },
 };
 
-const environment = process.env.NODE_ENV === 'development' ? prodEnv : devEnv;
+const environment = process.env.NODE_ENV === 'production' ? prodEnv : devEnv;
 
 const sequelize = new Sequelize(
   environment.database,

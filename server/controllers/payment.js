@@ -3,7 +3,7 @@ import peyMethodQueries from "../models/query/peyMethod";
 import walletQueries from "../models/query/wallet";
 import epayment from "../config/e-payment";
 import { Webhook } from "coinbase-commerce-node";
-import { v4 as uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import libTypedarrays from "crypto-js/lib-typedarrays";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import { serverErrorMessage } from "../utils/messages";
@@ -147,23 +147,24 @@ export const buyingCreditBinance = (req, res) => {
       const requestOptions = {
         method: "POST",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
           "BinancePay-Timestamp": timestamp,
           "BinancePay-Nonce": nonce,
           "BinancePay-Certificate-SN": BINANCE_API_KEY,
           "BinancePay-Signature": signature,
         },
         body: JSON.stringify(body),
+  	redirect: 'follow'
       };
 
       const response = await fetch(
         "https://bpay.binanceapi.com/binancepay/openapi/order",
         requestOptions
-      );
+      );console.log(response)
 
-      const order = response.text()
+      const order = response
 
-      return res.status(200).json({ success: true, order, requestOptions });
+      return res.status(200).json({ success: true, amount });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
