@@ -1,10 +1,4 @@
 import { Sequelize } from "sequelize";
-// import path from "path";
-// import fs from "fs";
-
-// import {env} from '../app';
-
-// const CURRENT_WORKING_DIR = process.cwd();
 
 const devEnv = {
   database: process.env.DB_SCHEMA || "auth_api_dev",
@@ -23,12 +17,7 @@ const prodEnv = {
   host: process.env.DB_HOST || "postgres",
   port: process.env.DB_PORT || 5432,
   dialectOptions : {
-    // ssl: {
-    //   ca: fs.readFileSync(path.resolve(CURRENT_WORKING_DIR, 'postgress_ssl.crt')),
-    // },
     ssl: process.env.DB_SSL == "true",
-    // rejectUnauthorized: process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0",
-    // rejectUnauthorized: true,
   },
   pool: {
     max: 5,

@@ -10,13 +10,12 @@ Payment.init({
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    amount: {
+    peyMethod: {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
-    status: {
+    orderId: {
         type: DataTypes.STRING,
-        allowNull: false,
     },
 }, {
     sequelize,

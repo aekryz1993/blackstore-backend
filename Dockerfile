@@ -1,7 +1,5 @@
 FROM node:14-alpine
 
-#RUN npm install -g pm2
-
 WORKDIR /app
 
 COPY ./package.json ./
@@ -9,6 +7,10 @@ COPY ./package.json ./
 RUN npm i
 
 COPY . .
+
+RUN npm run db:migrations-down
+
+RUN npm run db:migrations
 
 RUN npm run build
 
