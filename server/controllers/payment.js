@@ -128,7 +128,7 @@ export const buyingCreditBinance = (req, res) => {
       const { id } = req.user;
       const { BINANCE_API_KEY, BINANCE_SECRET_KEY } = process.env;
       const timestamp = Date.now();
-      const merchantTradeNo = uuid();
+      const merchantTradeNo = uuid().split('-').join('');
       const nonce = libTypedarrays.random(128 / 8).toString();
 
       const body = {
@@ -140,13 +140,12 @@ export const buyingCreditBinance = (req, res) => {
         productName: "USD",
       };
 
-      const payload_to_sign = timestamp + "\n" + nonce + "\n" + body + "\n";
+      const payload_to_sign = timestamp + "\n" + nonce + "\n" + JSON.stringify(body) + "\n";
       const signature = hmacSHA512(payload_to_sign, BINANCE_SECRET_KEY)
         .toString()
-        .toUpperCase();console.log(JSON.stringify(body))
+        .toUpperCase();
 
       const requestOptions = {
-        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "BinancePay-Timestamp": timestamp,
@@ -154,20 +153,17 @@ export const buyingCreditBinance = (req, res) => {
           "BinancePay-Certificate-SN": BINANCE_API_KEY,
           "BinancePay-Signature": signature,
         },
-        body: JSON.stringify(body),
-        url: "https://bpay.binanceapi.com/binancepay/openapi/order"
       };
 
-      const response = await axios(
-        // "https://bpay.binanceapi.com/binancepay/openapi/order",
+      const response = await axios.post(
+        "https://bpay.binanceapi.com/binancepay/openapi/order",
+	JSON.stringify(body),
         requestOptions
-      );console.log(response)
+      );
 
-      const order = response
-
-      return res.status(200).json({ success: true, order });
+      return res.status(200).json({ success: true, order: response.data });
     } catch (err) {
-      return res.json(serverErrorMessage(err.message));
+      return res.json(serverErrorMessage(err));
     }
   })();
 };
