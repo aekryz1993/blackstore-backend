@@ -7,7 +7,6 @@ import { v4 as uuid } from "uuid";
 import libTypedarrays from "crypto-js/lib-typedarrays";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import { serverErrorMessage } from "../utils/messages";
-import fetch from "node-fetch";
 import axios from "axios";
 
 // -- Coinbase ------------------------- Webhook Events -------------------------------------
@@ -58,10 +57,6 @@ export const coinbaseWebhookEvents = (io) => (req, res) => {
       }
       return res.json({ response: event.id });
     } catch (error) {
-      console.log(
-        "********************************ERROR**************************************"
-      );
-      console.log(error);
       return res.status(400).send({ message: error });
     }
   })();
@@ -72,8 +67,7 @@ export const fetchCoinbaseCharges = (req, res) => {
   (async () => {
     let chargesStatus = [];
     const { userId } = req.params;
-    let charges = await fetch("https://api.commerce.coinbase.com/charges", {
-      method: "GET",
+    let charges = await axios.get("https://api.commerce.coinbase.com/charges", {
       headers: {
         "Content-Type": "application/json",
         "X-CC-Api-Key": process.env.COINBASE_API_KEY,
@@ -96,23 +90,31 @@ export const fetchCoinbaseCharges = (req, res) => {
 // -- Coinbase ------------------------- Create a Charge -------------------------------------
 export const buyingCreditCoinbase = (req, res) => {
   (async () => {
-    const { amount } = req.params;
-    const { id } = req.user;
-    const { Charge } = epayment().resources;
-    const chargeData = {
-      name: "USD Wallet",
-      description: "Fill USD Wallet",
-      local_price: {
-        amount,
-        currency: "USD",
-      },
-      pricing_type: "fixed_price",
-      metadata: {
-        customer_id: id,
-      },
-    };
     try {
+      const { amount } = req.body;
+      const { id } = req.user;
+      const { Charge } = epayment().resources;
+      const chargeData = {
+        name: "USD Wallet",
+        description: "Fill USD Wallet",
+        local_price: {
+          amount,
+          currency: "USD",
+        },
+        pricing_type: "fixed_price",
+        metadata: {
+          customer_id: id,
+        },
+      };
       const charge = await Charge.create(chargeData);
+
+      const orderBody = {
+        UserId: id,
+        peyMethod: "coinbase",
+        orderId: charge.id,
+      };
+      await paymentQueries.create(orderBody);
+
       return res.status(200).json({ success: true, charge });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
@@ -128,7 +130,7 @@ export const buyingCreditBinance = (req, res) => {
       const { id } = req.user;
       const { BINANCE_API_KEY, BINANCE_SECRET_KEY } = process.env;
       const timestamp = Date.now();
-      const merchantTradeNo = uuid().split('-').join('');
+      const merchantTradeNo = uuid().split("-").join("");
       const nonce = libTypedarrays.random(128 / 8).toString();
 
       const body = {
@@ -140,7 +142,8 @@ export const buyingCreditBinance = (req, res) => {
         productName: "USD",
       };
 
-      const payload_to_sign = timestamp + "\n" + nonce + "\n" + JSON.stringify(body) + "\n";
+      const payload_to_sign =
+        timestamp + "\n" + nonce + "\n" + JSON.stringify(body) + "\n";
       const signature = hmacSHA512(payload_to_sign, BINANCE_SECRET_KEY)
         .toString()
         .toUpperCase();
@@ -157,13 +160,34 @@ export const buyingCreditBinance = (req, res) => {
 
       const response = await axios.post(
         "https://bpay.binanceapi.com/binancepay/openapi/order",
-	JSON.stringify(body),
+        JSON.stringify(body),
         requestOptions
       );
 
-      return res.status(200).json({ success: true, order: response.data });
+      if (response.status === "SUCCESS") {
+        const orderBody = {
+          UserId: id,
+          peyMethod: "binance",
+          orderId: merchantTradeNo,
+        };
+        await paymentQueries.create(orderBody);
+        return res.status(200).json({ success: true, order: response.data });
+      }
     } catch (err) {
       return res.json(serverErrorMessage(err));
+    }
+  })();
+};
+
+// -- Binance ------------------------- Webhook Events -------------------------------------
+export const binanceWebhookEvents = (io) => (req, res) => {
+  (async () => {
+    try {
+      console.log(req)
+      return res.json({ req: req, res: res });
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send({ message: error });
     }
   })();
 };

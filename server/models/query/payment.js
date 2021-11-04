@@ -1,5 +1,16 @@
 import models from "../associations";
 
+const create = (body) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const payment = models.Payment.create(body)
+      resolve(payment);
+    } catch (err) {
+      reject(err);
+    }
+  })
+}
+
 const find = (codeID) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -47,17 +58,6 @@ const update = (id, status) => {
   });
 };
 
-const create = (body) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const payment = await models.Payment.create(body);
-      resolve(payment);
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
-
 const getNotConfirmed = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -85,9 +85,9 @@ const getConfirmed = () => {
 };
 
 export default {
+  create,
   find,
   updateConfirmed,
-  create,
   update,
   getNotConfirmed,
   getConfirmed,

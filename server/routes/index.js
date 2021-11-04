@@ -14,7 +14,7 @@ import {
   checkAdminPermission,
 } from "../controllers/middleware/permissions";
 import adminSessionRouter from "./adminSession";
-import { coinbaseWebhookEvents } from "../controllers/payment";
+import { binanceWebhookEvents, coinbaseWebhookEvents } from "../controllers/payment";
 
 const router = express.Router();
 
@@ -62,6 +62,7 @@ const apiRouter = (app, passport, io, redisClient, sequelize) => {
     adminSessionRouter(io, redisClient)
   );
   router.post('/coinbase/webhook', coinbaseWebhookEvents(io));
+  router.post('/binance/webhook', binanceWebhookEvents(io));
   return router;
 };
 

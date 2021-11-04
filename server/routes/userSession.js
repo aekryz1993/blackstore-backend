@@ -36,7 +36,7 @@ const userSessionRouter = (io, redisClient) => {
     "/productCode",
     productCodeRouter(orderCommandNamespace, redisClient)
   );
-  router.post("/payment/coinbase/:amount", buyingCreditCoinbase);
+  router.post("/payment/coinbase", buyingCreditCoinbase);
   router.post("/payment/binance", buyingCreditBinance);
   router.put(
     "/updateProfilePicture",
