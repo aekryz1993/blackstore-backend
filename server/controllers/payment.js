@@ -164,7 +164,6 @@ export const buyingCreditBinance = (req, res) => {
         requestOptions
       );
 
-      if (response.status === "SUCCESS") {
         const orderBody = {
           UserId: id,
           peyMethod: "binance",
@@ -172,7 +171,6 @@ export const buyingCreditBinance = (req, res) => {
         };
         await paymentQueries.create(orderBody);
         return res.status(200).json({ success: true, order: response.data });
-      }
     } catch (err) {
       return res.json(serverErrorMessage(err));
     }

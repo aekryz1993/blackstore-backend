@@ -8,10 +8,6 @@ RUN npm i
 
 COPY . .
 
-RUN npm run db:migrations-down
-
-RUN npm run db:migrations
-
 RUN npm run build
 
 CMD [ "npm", "run", "start" ]
