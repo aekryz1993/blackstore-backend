@@ -55,7 +55,7 @@ export const coinbaseWebhookEvents = (io) => (req, res) => {
       } else {
         coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
       }
-      return res.json({ response: event.id });
+      return res.json({ message: "Notification has been occurred" });
     } catch (error) {
       return res.status(400).send({ message: error });
     }
@@ -183,8 +183,21 @@ export const buyingCreditBinance = (req, res) => {
 export const binanceWebhookEvents = (io) => (req, res) => {
   (async () => {
     try {
-      console.log(req)
-      return res.json({ req: req, res: res });
+      const { data, bizStatus } = req.body;
+      const { merchantTradeNo, totalFee } = data;
+      const payment = await paymentQueries.find(merchantTradeNo);
+      const userId = payment.dataValues.UserId;
+      if (bizStatus === "PAY_SUCCESS") {
+        const wallet = await walletQueries.find(userId);
+        const newCredit = wallet.dataValues.dollar + parseFloat(totalFee);
+        await walletQueries.update({
+          UserId: userId,
+          newCredit,
+          currency: "dollar",
+        });
+        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", req.body);
+      }
+      return res.json({ message: "Notification has been occurred" });
     } catch (error) {
       console.log(error);
       return res.status(400).send({ message: error });

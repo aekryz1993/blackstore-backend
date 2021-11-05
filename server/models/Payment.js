@@ -16,6 +16,7 @@ Payment.init({
     },
     orderId: {
         type: DataTypes.STRING,
+        unique: true,
     },
 }, {
     sequelize,
