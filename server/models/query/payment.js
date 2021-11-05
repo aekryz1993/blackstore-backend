@@ -11,12 +11,12 @@ const create = (body) => {
   })
 }
 
-const find = (codeID) => {
+const find = (orderId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const payment = await models.Payment.findOne({
         where: {
-          codeID,
+          orderId,
         },
       });
       resolve(payment);
