@@ -164,13 +164,13 @@ export const buyingCreditBinance = (req, res) => {
         requestOptions
       );
 
-        const orderBody = {
-          UserId: id,
-          peyMethod: "binance",
-          orderId: merchantTradeNo,
-        };
-        await paymentQueries.create(orderBody);
-        return res.status(200).json({ success: true, order: response.data });
+      const orderBody = {
+        UserId: id,
+        peyMethod: "binance",
+        orderId: merchantTradeNo,
+      };
+      await paymentQueries.create(orderBody);
+      return res.status(200).json({ success: true, order: response.data });
     } catch (err) {
       return res.json(serverErrorMessage(err));
     }
