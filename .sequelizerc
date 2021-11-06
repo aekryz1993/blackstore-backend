@@ -2,6 +2,5 @@ const path = require('path');
 
 module.exports = {
   'migrations-path': path.resolve('server', 'migrations'),
-  "config": path.resolve('./server/config', 'db.config.js'),
-  // 'url': 'postgres://postgres:postgres@postgres:5432/postgres',
+  "config": path.resolve('./server/config', 'db.config.vars.js'),
 }
