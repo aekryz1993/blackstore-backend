@@ -10,13 +10,33 @@ Payment.init({
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    peyMethod: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-    },
     orderId: {
         type: DataTypes.STRING,
         unique: true,
+    },
+    peyMethod: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    currency: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    confirmed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+    },
+    amount: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    checkoutUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
 }, {
     sequelize,

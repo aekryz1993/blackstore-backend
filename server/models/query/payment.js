@@ -26,6 +26,22 @@ const find = (orderId) => {
   });
 };
 
+const findByUserAnsCurrency = ({currency, UserId}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const payments = await models.Payment.findAll({
+        where: {
+          currency,
+          UserId,
+        },
+      });
+      resolve(payments);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 const updateConfirmed = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -42,13 +58,13 @@ const updateConfirmed = (id) => {
   });
 };
 
-const update = (id, status) => {
+const updateStatus = ({orderId, status, confirmed}) => {
   return new Promise(async (resolve, reject) => {
     try {
       const payment = await models.Payment.findAndUpdate(
-        { status },
+        { status, confirmed },
         {
-          where: { id },
+          where: { orderId },
         }
       );
       resolve(payment);
@@ -87,8 +103,9 @@ const getConfirmed = () => {
 export default {
   create,
   find,
+  findByUserAnsCurrency,
   updateConfirmed,
-  update,
+  updateStatus,
   getNotConfirmed,
   getConfirmed,
 };

@@ -1,11 +1,9 @@
 import paymentQueries from "../models/query/payment";
 import peyMethodQueries from "../models/query/peyMethod";
 import walletQueries from "../models/query/wallet";
-import epayment from "../config/e-payment";
+import { coinBaseConfig, binanceConfig } from "../config/e-payment";
 import { Webhook } from "coinbase-commerce-node";
 import { v4 as uuid } from "uuid";
-import libTypedarrays from "crypto-js/lib-typedarrays";
-import hmacSHA512 from "crypto-js/hmac-sha512";
 import { serverErrorMessage } from "../utils/messages";
 import axios from "axios";
 
@@ -26,24 +24,25 @@ export const coinbaseWebhookEvents = (io) => (req, res) => {
       const status = event.data.timeline[event.data.timeline.length - 1].status;
       const chargeId = event.data.id;
 
-      const charge = {
-        id: chargeId,
-        status,
-        amount,
-      };
+      // const charge = {
+      //   id: chargeId,
+      //   status,
+      //   amount,
+      // };
 
-      const coinbaseWebHooksNamespace = io.of("/coinbaseWebHooksNamespace");
+      // const coinbaseWebHooksNamespace = io.of("/coinbaseWebHooksNamespace");
 
-      if (status.toLowerCase() === "new") {
-        coinbaseWebHooksNamespace.on("connection", async (socket) => {
-          try {
-            socket.join(userId);
-          } catch (error) {
-            console.log(error);
-          }
-        });
-        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
-      } else if (status.toLowerCase() === "completed") {
+      // if (status.toLowerCase() === "new") {
+      //   coinbaseWebHooksNamespace.on("connection", async (socket) => {
+      //     try {
+      //       socket.join(userId);
+      //     } catch (error) {
+      //       console.log(error);
+      //     }
+      //   });
+      //   coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
+      // } else 
+      if (status.toLowerCase() === "completed") {
         const wallet = await walletQueries.find(userId);
         const newCredit = wallet.dataValues.dollar + parseFloat(amount);
         await walletQueries.update({
@@ -51,39 +50,17 @@ export const coinbaseWebhookEvents = (io) => (req, res) => {
           newCredit,
           currency: "dollar",
         });
-        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
+        await paymentQueries.updateStatus({orderId: id, status, confirmed: true});
+        // coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
       } else {
-        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
+        await paymentQueries.updateStatus({orderId: id, status, confirmed: false});
+        // coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
       }
-      return res.json({ message: "Notification has been occurred" });
+
+      return res.status(200).json({ message: "Notification has been occurred" });
     } catch (error) {
       return res.status(400).send({ message: error });
     }
-  })();
-};
-
-// -- Coinbase ------------------------- Fetch Charges -------------------------------------
-export const fetchCoinbaseCharges = (req, res) => {
-  (async () => {
-    let chargesStatus = [];
-    const { userId } = req.params;
-    let charges = await axios.get("https://api.commerce.coinbase.com/charges", {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CC-Api-Key": process.env.COINBASE_API_KEY,
-        "X-CC-Version": "2018-03-22",
-      },
-    });
-    charges = charges.data.filter(
-      (charge) => charge.metadata.customer_id === userId
-    );
-    for (let charge of charges.data) {
-      const status = charge.timeline[charge.timeline.length - 1].status;
-      const amount = parseFloat(charge.pricing.local.amount);
-      const id = parseFloat(charge.id);
-      chargesStatus.push({ id, status, amount });
-    }
-    return res.json({ data: chargesStatus, success: true });
   })();
 };
 
@@ -93,7 +70,7 @@ export const buyingCreditCoinbase = (req, res) => {
     try {
       const { amount } = req.body;
       const { id } = req.user;
-      const { Charge } = epayment().resources;
+      const { Charge } = coinBaseConfig().resources;
       const chargeData = {
         name: "USD Wallet",
         description: "Fill USD Wallet",
@@ -110,12 +87,16 @@ export const buyingCreditCoinbase = (req, res) => {
 
       const orderBody = {
         UserId: id,
-        peyMethod: "coinbase",
         orderId: charge.id,
+        peyMethod: "coinbase",
+        currency: 'USD',
+        status: 'NEW',
+        amount,
+        checkoutUrl: charge.hosted_url,
       };
       await paymentQueries.create(orderBody);
 
-      return res.status(200).json({ success: true, charge });
+      return res.status(200).json({ success: true, order: orderBody });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
@@ -128,10 +109,7 @@ export const buyingCreditBinance = (req, res) => {
     try {
       const { amount } = req.body;
       const { id } = req.user;
-      const { BINANCE_API_KEY, BINANCE_SECRET_KEY } = process.env;
-      const timestamp = Date.now();
       const merchantTradeNo = uuid().split("-").join("");
-      const nonce = libTypedarrays.random(128 / 8).toString();
 
       const body = {
         merchantTradeNo,
@@ -142,35 +120,25 @@ export const buyingCreditBinance = (req, res) => {
         productName: "USD",
       };
 
-      const payload_to_sign =
-        timestamp + "\n" + nonce + "\n" + JSON.stringify(body) + "\n";
-      const signature = hmacSHA512(payload_to_sign, BINANCE_SECRET_KEY)
-        .toString()
-        .toUpperCase();
-
-      const requestOptions = {
-        headers: {
-          "Content-Type": "application/json",
-          "BinancePay-Timestamp": timestamp,
-          "BinancePay-Nonce": nonce,
-          "BinancePay-Certificate-SN": BINANCE_API_KEY,
-          "BinancePay-Signature": signature,
-        },
-      };
+      const config = binanceConfig({ body });
 
       const response = await axios.post(
-        "https://bpay.binanceapi.com/binancepay/openapi/order",
+        config.orderUrl,
         JSON.stringify(body),
-        requestOptions
+        config.requestOptions
       );
 
       const orderBody = {
         UserId: id,
-        peyMethod: "binance",
         orderId: merchantTradeNo,
+        peyMethod: "binance",
+        currency: 'USD',
+        status: 'NEW',
+        amount,
+        checkoutUrl: response.data.checkoutUrl,
       };
       await paymentQueries.create(orderBody);
-      return res.status(200).json({ success: true, order: response.data });
+      return res.status(200).json({ success: true, order: orderBody });
     } catch (err) {
       return res.json(serverErrorMessage(err));
     }
@@ -193,11 +161,46 @@ export const binanceWebhookEvents = (io) => (req, res) => {
           newCredit,
           currency: "dollar",
         });
-        coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", req.body);
+        await paymentQueries.updateStatus({orderId: merchantTradeNo, status: bizStatus, confirmed: true});
+        // coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", req.body);
       }
-      return res.json({ message: "Notification has been occurred" });
+      return res.status(200).json({ message: "Notification has been occurred" });
     } catch (error) {
       console.log(error);
+      return res.status(400).send({ message: error });
+    }
+  })();
+};
+
+// --------------------------- Get Payments -------------------------------------
+export const fetchPayments = (req, res) => {
+  (async () => {
+    const { id: UserId } = req.user;
+    const { currency } = req.params;
+
+    try {
+      const payments = await paymentQueries.findByUserAnsCurrency({
+        currency,
+        UserId,
+      });
+      
+      // const fetchedPayments = await Promise.all(
+      //   payments.map(async (payment) => {
+      //     let fetchPayment
+      //     switch (payment.dataValues.peyMethod) {
+      //       case 'binance':
+      //         fetchPayment = await fetchBinanceOrder(payment.dataValues.orderId)
+      //         break;
+      //       case 'coinbase':
+      //         fetchPayment = await fetchCoinbaseOrder(payment.dataValues.orderId)
+      //         break;
+      //     }
+      //     return fetchPayment
+      //   })
+      // );
+
+      return res.json({ payments, success: true });
+    } catch (error) {
       return res.status(400).send({ message: error });
     }
   })();
