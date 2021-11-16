@@ -26,7 +26,7 @@ const find = (orderId) => {
   });
 };
 
-const findByUserAnsCurrency = ({currency, UserId}) => {
+const findByUserAndCurrency = ({currency, UserId}) => {
   return new Promise(async (resolve, reject) => {
     try {
       const payments = await models.Payment.findAll({
@@ -103,7 +103,7 @@ const getConfirmed = () => {
 export default {
   create,
   find,
-  findByUserAnsCurrency,
+  findByUserAndCurrency,
   updateConfirmed,
   updateStatus,
   getNotConfirmed,

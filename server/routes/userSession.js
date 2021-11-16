@@ -9,12 +9,12 @@ import { logout } from "../controllers/auth";
 import uploadImage from "../controllers/middleware/image";
 import { updateProfilePicture } from "../controllers/user";
 import { addPicture } from "../controllers/image";
-import { buyingCreditBinance, buyingCreditCoinbase } from "../controllers/payment";
 import userQueries from "../models/query/user";
 import {
   getNotifications,
   resetNotificationsCount,
 } from "../controllers/notification";
+import paymentRouter from "./user/payment";
 
 const router = express.Router();
 
@@ -32,12 +32,11 @@ const userSessionRouter = (io, redisClient) => {
   router.use("/wallet", walletRouter());
   router.use("/productCategory", productCategoryRouter());
   router.use("/productID", productIDRouter());
+  router.use("/payment", paymentRouter());
   router.use(
     "/productCode",
     productCodeRouter(orderCommandNamespace, redisClient)
   );
-  router.post("/payment/coinbase", buyingCreditCoinbase);
-  router.post("/payment/binance", buyingCreditBinance);
   router.put(
     "/updateProfilePicture",
     uploadImage.single("picture"),

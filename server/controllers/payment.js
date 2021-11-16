@@ -179,25 +179,10 @@ export const fetchPayments = (req, res) => {
     const { currency } = req.params;
 
     try {
-      const payments = await paymentQueries.findByUserAnsCurrency({
+      const payments = await paymentQueries.findByUserAndCurrency({
         currency,
         UserId,
       });
-      
-      // const fetchedPayments = await Promise.all(
-      //   payments.map(async (payment) => {
-      //     let fetchPayment
-      //     switch (payment.dataValues.peyMethod) {
-      //       case 'binance':
-      //         fetchPayment = await fetchBinanceOrder(payment.dataValues.orderId)
-      //         break;
-      //       case 'coinbase':
-      //         fetchPayment = await fetchCoinbaseOrder(payment.dataValues.orderId)
-      //         break;
-      //     }
-      //     return fetchPayment
-      //   })
-      // );
 
       return res.json({ payments, success: true });
     } catch (error) {
