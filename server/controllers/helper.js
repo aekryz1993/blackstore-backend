@@ -25,14 +25,13 @@ export const loginRequest = (user, req, res) => {
                   .findIndex((ele) => ele === "resources") + 1
               )
               .join("/")
-          : null;
+          : null;console.log(res)
 
         return res.status(200).json({
           message: "Welcome to your account",
           currentUser,
           profilePic,
           auth: true,
-          token: req.headers.cookie,
         });
       }
     } catch (error) {

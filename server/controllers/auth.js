@@ -1,6 +1,7 @@
 import { serverErrorMessage } from "../utils/messages";
 import { userNotExist } from "../utils/messages/user";
 import { loginRequest } from "./helper";
+import imageQueries from "../models/query/image";
 
 export const signIn = (passport) => (req, res) => {
   passport.authenticate("local", (error, user, info) => {
@@ -26,6 +27,7 @@ export const checkSession = (req, res) => {
   (async () => {
     try {
       const { token } = req.body;
+      const user = req.user
       if (token === req.headers.cookie) {
         const currentUser = Object.fromEntries(
           Object.entries(user.dataValues).filter(
@@ -52,8 +54,9 @@ export const checkSession = (req, res) => {
           profilePic,
           auth: true,
         });
-      }
-      return res.status(400).json({ auth: false });
+      } else {
+      	return res.status(400).json({ auth: false });
+       }
     } catch (error) {
       return res.status(401).json(serverErrorMessage(error));
     }
