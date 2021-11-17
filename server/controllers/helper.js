@@ -27,12 +27,12 @@ export const loginRequest = (user, req, res) => {
               .join("/")
           : null;
 
-        return res.json({
+        return res.status(200).json({
           message: "Welcome to your account",
           currentUser,
           profilePic,
           auth: true,
-	  token: req.headers.cookie
+          token: req.headers.cookie,
         });
       }
     } catch (error) {

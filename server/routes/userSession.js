@@ -5,7 +5,7 @@ import productCategoryRouter from "./user/productCategory";
 import productIDRouter from "./user/productID";
 import walletRouter from "./user/wallet";
 import productCodeRouter from "./user/productCode";
-import { logout } from "../controllers/auth";
+import { checkSession, logout } from "../controllers/auth";
 import uploadImage from "../controllers/middleware/image";
 import { updateProfilePicture } from "../controllers/user";
 import { addPicture } from "../controllers/image";
@@ -46,6 +46,7 @@ const userSessionRouter = (io, redisClient) => {
   router.get("/getNotifications", getNotifications(redisClient));
   router.put("/resetNotificationsCount", resetNotificationsCount(redisClient));
   router.get("/logout", logout);
+  router.get("/session", checkSession);
 
   return router;
 };
