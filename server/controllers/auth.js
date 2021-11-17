@@ -27,7 +27,7 @@ export const checkSession = (req, res) => {
   (async () => {
     try {
       const { token } = req.body;
-      const user = req.user
+      const user = req.user;
       if (token === req.headers.cookie) {
         const currentUser = Object.fromEntries(
           Object.entries(user.dataValues).filter(
@@ -55,10 +55,18 @@ export const checkSession = (req, res) => {
           auth: true,
         });
       } else {
-      	return res.status(400).json({ auth: false });
-       }
+        return res.status(400).json({ auth: false });
+      }
     } catch (error) {
       return res.status(401).json(serverErrorMessage(error));
     }
   })();
+};
+
+export const getToken = (req, res) => {
+  try {console.log(req.headers.cookie)
+    res.status(200).json({ token: req.headers.cookie });
+  } catch (error) {
+    return res.status(401).json(serverErrorMessage(error));
+  }
 };
