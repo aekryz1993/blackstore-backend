@@ -28,7 +28,7 @@ Payment.init({
     },
     confirmed: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        defaultValue: false,
     },
     amount: {
         type: DataTypes.STRING,

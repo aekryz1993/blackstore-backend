@@ -89,7 +89,7 @@ export const buyingCreditCoinbase = (req, res) => {
         UserId: id,
         orderId: charge.id,
         peyMethod: "coinbase",
-        currency: 'USD',
+        currency: 'dollar',
         status: 'NEW',
         amount,
         checkoutUrl: charge.hosted_url,
@@ -132,10 +132,10 @@ export const buyingCreditBinance = (req, res) => {
         UserId: id,
         orderId: merchantTradeNo,
         peyMethod: "binance",
-        currency: 'USD',
+        currency: 'dollar',
         status: 'NEW',
         amount,
-        checkoutUrl: response.data.checkoutUrl,
+        checkoutUrl: response.data.data.checkoutUrl,
       };
       await paymentQueries.create(orderBody);
       return res.status(200).json({ success: true, order: orderBody });
