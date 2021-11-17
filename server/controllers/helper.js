@@ -32,6 +32,7 @@ export const loginRequest = (user, req, res) => {
           currentUser,
           profilePic,
           auth: true,
+	  token: req.headers.cookie
         });
       }
     } catch (error) {
