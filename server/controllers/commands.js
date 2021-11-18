@@ -11,7 +11,7 @@ export const getCommandsByUser = (req, res) => {
     const { page, isTreated } = req.params;
     try {
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, commandQueries.count, 7, false, {
+        await paginateData(page, commandQueries.count, 15, true, {
           UserId: currentUserId,
           isTreated,
         });
@@ -40,7 +40,7 @@ export const getCommands = (req, res) => {
     try {
       let commands = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, commandQueries.count, 7, false, {
+        await paginateData(page, commandQueries.count, 15, true, {
           isTreated,
         });
       const initiaCommands = await commandQueries.findIsTreated(

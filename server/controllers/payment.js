@@ -6,6 +6,7 @@ import { Webhook } from "coinbase-commerce-node";
 import { v4 as uuid } from "uuid";
 import { serverErrorMessage } from "../utils/messages";
 import axios from "axios";
+import { paginateData } from "./helper";
 
 // -- Coinbase ------------------------- Webhook Events -------------------------------------
 export const coinbaseWebhookEvents = (io) => (req, res) => {
@@ -41,7 +42,7 @@ export const coinbaseWebhookEvents = (io) => (req, res) => {
       //     }
       //   });
       //   coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
-      // } else 
+      // } else
       if (status.toLowerCase() === "completed") {
         const wallet = await walletQueries.find(userId);
         const newCredit = wallet.dataValues.dollar + parseFloat(amount);
@@ -50,14 +51,24 @@ export const coinbaseWebhookEvents = (io) => (req, res) => {
           newCredit,
           currency: "dollar",
         });
-        await paymentQueries.updateStatus({orderId: id, status, confirmed: true});
+        await paymentQueries.updateStatus({
+          orderId: id,
+          status,
+          confirmed: true,
+        });
         // coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
       } else {
-        await paymentQueries.updateStatus({orderId: id, status, confirmed: false});
+        await paymentQueries.updateStatus({
+          orderId: id,
+          status,
+          confirmed: false,
+        });
         // coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", charge);
       }
 
-      return res.status(200).json({ message: "Notification has been occurred" });
+      return res
+        .status(200)
+        .json({ message: "Notification has been occurred" });
     } catch (error) {
       return res.status(400).send({ message: error });
     }
@@ -89,8 +100,8 @@ export const buyingCreditCoinbase = (req, res) => {
         UserId: id,
         orderId: charge.id,
         peyMethod: "coinbase",
-        currency: 'dollar',
-        status: 'NEW',
+        currency: "dollar",
+        status: "NEW",
         amount,
         checkoutUrl: charge.hosted_url,
       };
@@ -132,8 +143,8 @@ export const buyingCreditBinance = (req, res) => {
         UserId: id,
         orderId: merchantTradeNo,
         peyMethod: "binance",
-        currency: 'dollar',
-        status: 'NEW',
+        currency: "dollar",
+        status: "NEW",
         amount,
         checkoutUrl: response.data.data.checkoutUrl,
       };
@@ -161,10 +172,16 @@ export const binanceWebhookEvents = (io) => (req, res) => {
           newCredit,
           currency: "dollar",
         });
-        await paymentQueries.updateStatus({orderId: merchantTradeNo, status: bizStatus, confirmed: true});
+        await paymentQueries.updateStatus({
+          orderId: merchantTradeNo,
+          status: bizStatus,
+          confirmed: true,
+        });
         // coinbaseWebHooksNamespace.to(userId).emit("webhooks_status", req.body);
       }
-      return res.status(200).json({ message: "Notification has been occurred" });
+      return res
+        .status(200)
+        .json({ message: "Notification has been occurred" });
     } catch (error) {
       console.log(error);
       return res.status(400).send({ message: error });
@@ -176,15 +193,35 @@ export const binanceWebhookEvents = (io) => (req, res) => {
 export const fetchPayments = (req, res) => {
   (async () => {
     const { id: UserId } = req.user;
-    const { currency } = req.params;
+    const { currency, page, isTreated } = req.params;
 
     try {
+      // let payments = [];
+      const { offset, limit, totalItems, nextPage } = await paginateData(
+        page,
+        paymentQueries.count,
+        15,
+        true,
+        {
+          currency,
+          UserId,
+        }
+      );
+
       const payments = await paymentQueries.findByUserAndCurrency({
+        limit,
+        offset,
         currency,
         UserId,
       });
 
-      return res.json({ payments, success: true });
+      return res.json({
+        payments,
+        totalItems,
+        nextPage,
+        totalPages,
+        success: true,
+      });
     } catch (error) {
       return res.status(400).send({ message: error });
     }

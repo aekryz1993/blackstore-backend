@@ -26,16 +26,31 @@ const find = (orderId) => {
   });
 };
 
-const findByUserAndCurrency = ({currency, UserId}) => {
+const findByUserAndCurrency = ({currency, UserId, limit, offset}) => {
   return new Promise(async (resolve, reject) => {
     try {
       const payments = await models.Payment.findAll({
+        offset,
+        limit,
         where: {
           currency,
           UserId,
         },
       });
       resolve(payments);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+const count = (props) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const totalPayments = await models.Payment.count({
+        where: { ...props },
+      });
+      resolve(totalPayments);
     } catch (err) {
       reject(err);
     }
@@ -104,6 +119,7 @@ export default {
   create,
   find,
   findByUserAndCurrency,
+  count,
   updateConfirmed,
   updateStatus,
   getNotConfirmed,
