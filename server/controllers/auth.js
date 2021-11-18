@@ -64,7 +64,7 @@ export const checkSession = (req, res) => {
 };
 
 export const getToken = (req, res) => {
-  try {console.log(req.headers.cookie)
+  try {
     res.status(200).json({ token: req.headers.cookie });
   } catch (error) {
     return res.status(401).json(serverErrorMessage(error));

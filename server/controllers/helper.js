@@ -25,7 +25,7 @@ export const loginRequest = (user, req, res) => {
                   .findIndex((ele) => ele === "resources") + 1
               )
               .join("/")
-          : null;console.log(res)
+          : null;
 
         return res.status(200).json({
           message: "Welcome to your account",
