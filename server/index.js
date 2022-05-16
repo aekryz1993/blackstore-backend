@@ -21,7 +21,7 @@ const config = {
 
     app.use("/api", apiRouter(app, passport, io, redisClient, sequelize));
 
-    httpServer.listen(config.port, () => {
+    httpServer.listen(config.port, config.host, () => {
       console.log(
         "Connection has been established successfully on port ",
         config.port

@@ -34,7 +34,7 @@ export const saveUsers = (users, redisClient) => {
         } else {
           notExist = true;
           const UserId = user.dataValues.id;
-          await redisClient.set(UserId, "0")
+          await redisClient.set(UserId, "0");
           await permissionQueries.create({ UserId });
           await walletQueries.create({ credit, UserId });
           const imageBody = {

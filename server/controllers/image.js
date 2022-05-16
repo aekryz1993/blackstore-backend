@@ -34,6 +34,10 @@ export const addPicture = (req, res) => {
       const thumbnailName = `thumbnail-${req.file.filename}`;
       const thumbnailtPath = path.resolve(req.file.destination, thumbnailName);
 
+      const subThumbnailtPath = thumbnailtPath.substring(
+        thumbnailtPath.indexOf("static")
+      );
+
       const image = await sharp(req.file.path)
         .resize(100, 100)
         .toFile(thumbnailtPath);
@@ -42,7 +46,7 @@ export const addPicture = (req, res) => {
         type: req.file.mimetype,
         name: thumbnailName,
         size: image.size,
-        url: thumbnailtPath,
+        url: subThumbnailtPath,
         [req.body.associatedModel]: req.body.associatedModelId,
       };
 

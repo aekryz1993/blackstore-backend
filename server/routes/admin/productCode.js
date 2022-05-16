@@ -1,9 +1,11 @@
 import express from "express";
 
 import uploadExcel, { readExcel } from "../../controllers/middleware/excel";
+import uploadTxt, { readTxt } from "../../controllers/middleware/textFile";
 import { checkPermission } from "../../controllers/middleware/permissions";
 import {
   addProductCode,
+  addMultiProductCodeByMultiCategory,
   addMultiProductCode,
 } from "../../controllers/productCode";
 import { treatCommand, getCommands } from "../../controllers/commands";
@@ -13,12 +15,20 @@ const router = express.Router();
 const productCodeRouter = (io, redisClient) => {
   router.post("/add", checkPermission("addProduct"), addProductCode);
   router.post(
-    "/addMulti",
+    "/addMultiByMultiCategories",
     checkPermission("addProduct"),
     uploadExcel(false),
     readExcel,
+    addMultiProductCodeByMultiCategory
+  );
+  router.post(
+    "/addMulti/:categoryId",
+    checkPermission("addProduct"),
+    uploadTxt(),
+    readTxt,
     addMultiProductCode
   );
+  router.get("/get/:serviceName", getProductCodesByMultCategoriesFromAdmin);
   router.get(
     "/getCommands/:page/:isTreated",
     checkPermission("viewcmnd"),
@@ -29,7 +39,7 @@ const productCodeRouter = (io, redisClient) => {
     checkPermission("viewcmnd"),
     uploadExcel(false),
     readExcel,
-    treatCommand(io, redisClient),
+    treatCommand(io, redisClient)
   );
   return router;
 };

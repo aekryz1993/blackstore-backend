@@ -46,8 +46,7 @@ const userSessionRouter = (io, redisClient) => {
   router.get("/getNotifications", getNotifications(redisClient));
   router.put("/resetNotificationsCount", resetNotificationsCount(redisClient));
   router.get("/logout", logout);
-  router.get("/token", getToken);
-  router.post("/session", checkSession);
+  router.get("/session", checkSession);
 
   return router;
 };

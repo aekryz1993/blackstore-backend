@@ -1,5 +1,4 @@
 import fs from "fs";
-import path from "path";
 
 import imageQueries from "../models/query/image";
 import paymentQueries from "../models/query/payment";
@@ -7,11 +6,13 @@ import permissionQueires from "../models/query/permission";
 import userQueries from "../models/query/user";
 import walletQueries from "../models/query/wallet";
 import { serverErrorMessage } from "../utils/messages";
-import { fieldAlreadyExist, successRegistrationUser, successUpdatedUser } from "../utils/messages/user";
+import {
+  fieldAlreadyExist,
+  successRegistrationUser,
+  successUpdatedUser,
+} from "../utils/messages/user";
 import { paginateData } from "./helper";
 import { saveUsers } from "./middleware/user";
-
-const CURRENT_WORKING_DIR = process.cwd();
 
 export const addUser = (redisClient) => (req, res) => {
   (async () => {
@@ -24,24 +25,21 @@ export const addUser = (redisClient) => (req, res) => {
       if (!isNewUser) {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
-      await redisClient.set(user.dataValues.id, '0')
+      await redisClient.set(user.dataValues.id, "0");
       const imageBody = {
         type: "image/png",
         name: `default.png`,
-        // url: path.resolve(
-        //   CURRENT_WORKING_DIR,
-        //   `resource/static/assets/pictures/users/default.png`
-        // ),
         url: null,
         UserId: user.dataValues.id,
-      }
+      };
+      console.log(imageBody);
       await imageQueries.create(imageBody);
       await permissionQueires.create({
         UserId: user.dataValues.id,
       });
-      await walletQueries.create({UserId: user.dataValues.id})
+      await walletQueries.create({ UserId: user.dataValues.id });
 
-      const thisUser = await userQueries.findById(user.dataValues.id)
+      const thisUser = await userQueries.findById(user.dataValues.id);
 
       return res.status(201).json(successRegistrationUser(thisUser.dataValues));
     } catch (err) {
@@ -54,7 +52,7 @@ export const updateUser = () => (req, res) => {
   (async () => {
     const body = req.body;
     try {
-      await userQueries.update({body, id: req.params.id});
+      await userQueries.update({ body, id: req.params.id });
 
       return res.status(201).json(successUpdatedUser(body.username));
     } catch (err) {
@@ -63,7 +61,7 @@ export const updateUser = () => (req, res) => {
   })();
 };
 
-export const addMultiUser = (redisClient) =>(req, res) => {
+export const addMultiUser = (redisClient) => (req, res) => {
   (async () => {
     const users = req.dataObj;
     try {
@@ -82,7 +80,11 @@ export const getAllUsers = () => (req, res) => {
       const users = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
         await paginateData(page, userQueries.count(req.user.id), 6, true);
-      const initAllUsers = await userQueries.findAll(limit, offset, req.user.id);
+      const initAllUsers = await userQueries.findAll(
+        limit,
+        offset,
+        req.user.id
+      );
       for (let user of initAllUsers) {
         user = user.dataValues;
         let userInfo = Object.fromEntries(

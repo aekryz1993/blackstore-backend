@@ -1,8 +1,8 @@
-import imageQueries from "../models/query/image";
+import { issueJWT } from "../config/passport.config";
 import { serverErrorMessage } from "../utils/messages";
 
 export const loginRequest = (user, req, res) => {
-  req.login(user, async (error) => {
+  req.login(user, { session: false }, async (error) => {
     try {
       if (error) {
         return res.status(500).json(serverErrorMessage(error.message));
@@ -14,24 +14,13 @@ export const loginRequest = (user, req, res) => {
               key !== "password" && key !== "createdAt" && key !== "updatedAt"
           )
         );
-        const userImage = await imageQueries.find(currentUser.id);
 
-        const profilePic = userImage.dataValues.url
-          ? userImage.dataValues.url
-              .split("/")
-              .slice(
-                userImage.dataValues.url
-                  .split("/")
-                  .findIndex((ele) => ele === "resources") + 1
-              )
-              .join("/")
-          : null;
+        const tokenObject = issueJWT(currentUser);
 
         return res.status(200).json({
-          message: "Welcome to your account",
-          currentUser,
-          profilePic,
-          auth: true,
+          user: currentUser,
+          token: tokenObject.token,
+          expires: tokenObject.expires,
         });
       }
     } catch (error) {

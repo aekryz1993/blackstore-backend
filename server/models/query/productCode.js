@@ -24,6 +24,20 @@ const find = (code) => {
   });
 };
 
+const findOrCreate = (body) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const [code, created] = await models.ProductCode.findOrCreate({
+        where: { code: body.code },
+        default: body,
+      });
+      resolve({ code, created });
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 const findAll = (quantity, categoryId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -77,6 +91,7 @@ const findSoldByUser = (currentUserId) => {
 
 export default {
   create,
+  findOrCreate,
   find,
   findAll,
   update,

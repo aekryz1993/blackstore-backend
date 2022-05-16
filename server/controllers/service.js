@@ -27,7 +27,7 @@ export const fetchServices = (req, res) => {
   (async () => {
     try {
       const services = await serviceQueries.findByCategory(req.params.category);
-      return res.json({ services, success: true });
+      return res.json({ services });
     } catch (err) {
       console.error(err);
       return res.json(serverErrorMessage(err.message));

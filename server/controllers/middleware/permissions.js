@@ -27,11 +27,10 @@ export const checkPermission = (label) => (req, res, next) => {
       const permission = await permissionQueries.find(userId);
       if (!permission)
         res.status(403).json({ message: "permission doesn't exist" });
-      if (!permission.dataValues[label])
+      if (!permission?.dataValues[label])
         res.status(403).json(forbiddenPremission());
       next();
     } catch (err) {
-      console.error(err);
       return res.json(serverErrorMessage(err.message));
     }
   })();

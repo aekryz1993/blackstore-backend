@@ -11,7 +11,7 @@ import {
   productCategoryNotExistMsg,
   productCategorySuccessRegistrationMsg,
 } from "../utils/messages/productCategory";
-import { saveCodes } from "./middleware/productCode";
+import { saveCodes, saveCodesFromTxt } from "./middleware/productCode";
 import { writeExcel } from "./middleware/excel";
 import { dataFormat } from "../helpers/excel";
 import { addNotification } from "./middleware/notification";
@@ -64,7 +64,7 @@ export const addProductCode = (req, res) => {
   })();
 };
 
-export const addMultiProductCode = (req, res) => {
+export const addMultiProductCodeByMultiCategory = (req, res) => {
   (async () => {
     const body = req.body;
     const codes = req.dataObj;
@@ -77,6 +77,26 @@ export const addMultiProductCode = (req, res) => {
         throw serviceNotExist(body.serviceName);
       }
       const message = await saveCodes(codes, body.serviceName, body.ServiceId);
+      return res.status(201).json(message);
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
+
+export const addMultiProductCode = (req, res) => {
+  (async () => {
+    const codes = req.data;
+    const { categoryId } = req.params;
+    try {
+      if (!codes) {
+        return res.status(400).json({ message: "Please upload a file" });
+      }
+      const category = await productCategoryQueries.findById(categoryId);
+      if (category === null) {
+        throw { success: false, message: `This category doesn't exist` };
+      }
+      const message = await saveCodesFromTxt(codes, categoryId);
       return res.status(201).json(message);
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
@@ -209,3 +229,60 @@ export const getProductCodesByMultCategories =
       }
     })();
   };
+
+export const getProductCodesByMultCategoriesFromAdmin = (req, res) => {
+  (async () => {
+    const { serviceName } = req.params;
+    const { orders } = body;
+    const currentUserId = req.user.id;
+    try {
+      let codes = {};
+      let commands = [];
+
+      for (const order of orders) {
+        const id = order["id"];
+        const quantity = order["quantity"];
+        const label = order["label"];
+        if (quantity !== 0) {
+          const productCodes = await productCodeQueries.findAll(quantity, id);
+          codes[label] = productCodes.map((product) =>
+            Object.fromEntries(
+              Object.entries(product).filter(([key, _]) => key === "dataValues")
+            )
+          );
+          codes[label] = codes[label].map((code) =>
+            Object.fromEntries(
+              Object.entries(code.dataValues).filter(
+                ([key, _]) =>
+                  key !== "sold" &&
+                  key !== "createdAt" &&
+                  key !== "updatedAt" &&
+                  key !== "ProductCategoryId" &&
+                  key !== "CommandId" &&
+                  key !== "UserId"
+              )
+            )
+          );
+          productCodes.forEach(async (product) => {
+            await productCodeQueries.update(product.id, currentUserId);
+          });
+
+          if (productCodes.length < quantity) {
+            commands = [...commands, { [label]: productCodes.length }];
+          }
+        }
+      }
+      codes = dataFormat(codes);
+      const savedFile = await writeExcel(codes, serviceName);
+      return res.status(200).json({
+        codes,
+        commands,
+        savedFile,
+        success: true,
+        message: "تمت العملية بنجاح",
+      });
+    } catch (err) {
+      return res.status(401).json(serverErrorMessage(err.message));
+    }
+  })();
+};

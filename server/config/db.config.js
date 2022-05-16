@@ -3,7 +3,7 @@ import { Sequelize } from "sequelize";
 const devEnv = {
   database: process.env.DB_SCHEMA || "auth_api_dev",
   username: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || 123456,
+  password: process.env.DB_PASSWORD || "postgres",
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT || 5432,
   pool: {},
@@ -16,7 +16,7 @@ const prodEnv = {
   password: process.env.DB_PASSWORD || "postgres",
   host: process.env.DB_HOST || "postgres",
   port: process.env.DB_PORT || 5432,
-  dialectOptions : {
+  dialectOptions: {
     ssl: process.env.DB_SSL == "true",
   },
   pool: {
@@ -27,7 +27,7 @@ const prodEnv = {
   },
 };
 
-const environment = process.env.NODE_ENV === 'production' ? prodEnv : devEnv;
+const environment = process.env.NODE_ENV === "production" ? prodEnv : devEnv;
 
 const sequelize = new Sequelize(
   environment.database,

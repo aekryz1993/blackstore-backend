@@ -79,3 +79,33 @@ export const saveCodes = (codes, serviceName, ServiceId) => {
     }
   });
 };
+
+export const saveCodesFromTxt = (codes, categoryId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const existCodes = [];
+      for (let code of codes) {
+        const { created } = await productCodeQueries.findOrCreate({
+          code,
+          ProductCategoryId: categoryId,
+        });
+        if (!created) {
+          existCodes.push(code);
+        }
+      }
+      const message =
+        existCodes.length === 0
+          ? "The codes have been successfully added"
+          : existCodes.length < codes.length
+          ? "Some codes have been successfully added others are already existed"
+          : "All these codes are already existed";
+      resolve({
+        message,
+        existCodes,
+        success: true,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
