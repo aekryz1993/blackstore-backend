@@ -7,6 +7,7 @@ import {
   addProductCode,
   addMultiProductCodeByMultiCategory,
   addMultiProductCode,
+  getProductCodesByMultCategoriesFromAdmin,
 } from "../../controllers/productCode";
 import { treatCommand, getCommands } from "../../controllers/commands";
 
