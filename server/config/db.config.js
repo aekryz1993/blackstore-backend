@@ -27,7 +27,7 @@ const prodEnv = {
   },
 };
 
-const environment = process.env.NODE_ENV === "production" ? prodEnv : devEnv;
+const environment = process.env.NODE_ENV === "production" ? devEnv : devEnv;
 
 const sequelize = new Sequelize(
   environment.database,
