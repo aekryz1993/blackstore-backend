@@ -3,7 +3,7 @@ import fs from "fs";
 import imageQueries from "../models/query/image";
 import serviceQueries from "../models/query/service";
 import { serverErrorMessage } from "../utils/messages";
-import { fieldAlreadyExist } from "../utils/messages/service";
+import { fieldAlreadyExist, serviceNotExist } from "../utils/messages/service";
 
 export const addService = (req, res, next) => {
   (async () => {
@@ -17,6 +17,36 @@ export const addService = (req, res, next) => {
       req.body.associatedModelId = service.dataValues.id;
       req.body.associatedModel = "ServiceId";
       return next();
+    } catch (err) {
+      return res.json(serverErrorMessage(err.message));
+    }
+  })();
+};
+
+export const updateService = (req, res, next) => {
+  (async () => {
+    const body = req.body;
+    const { id } = req.params;
+    try {
+      const service = await serviceQueries.update({ id, body });
+
+      const image = await imageQueries.find(id);
+
+      if (image) {
+        const currentImageUrl = image.dataValues.url;
+        await image.destroy();
+        if (!currentImageUrl.endsWith("default.png")) {
+          fs.unlink(currentImageUrl, (err) => {
+            if (err) throw err;
+          });
+        }
+
+        req.body.associatedModelId = id;
+        req.body.associatedModel = "ServiceId";
+        req.body.label = service.dataValues.label;
+
+        next();
+      }
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }

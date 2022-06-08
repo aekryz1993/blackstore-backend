@@ -1,11 +1,11 @@
-import path from "path";
+// import path from "path";
 
-import imageQueries from "../models/query/image";
+// import imageQueries from "../models/query/image";
 import permissionQuaries from "../models/query/permission";
 import userQueries from "../models/query/user";
 
-const STORAGE_DIR =
-  process.env.NODE_ENV === "development" ? process.cwd() : "/var/lib";
+// const STORAGE_DIR =
+//   process.env.NODE_ENV === "development" ? process.cwd() : "/var/lib";
 
 export const createAdmin = (redisClient) => {
   (async () => {
@@ -14,15 +14,15 @@ export const createAdmin = (redisClient) => {
       const UserId = user.dataValues.id;
       if (isNewUser) {
         await redisClient.set(UserId, "0");
-        const metadata = {
-          type: "image/png",
-          name: `default.png`,
-          url: path.resolve(
-            STORAGE_DIR,
-            `resource/static/assets/pictures/users/default.png`
-          ),
-          UserId,
-        };
+        // const metadata = {
+        //   type: "image/png",
+        //   name: `default.png`,
+        //   url: path.resolve(
+        //     STORAGE_DIR,
+        //     `resource/static/assets/pictures/users/default.png`
+        //   ),
+        //   UserId,
+        // };
         await permissionQuaries.create({ ...permission, UserId });
         // await imageQueries.create(metadata);
         console.log("owner has been successfully created.");

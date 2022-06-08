@@ -29,7 +29,10 @@ const productCodeRouter = (io, redisClient) => {
     readTxt,
     addMultiProductCode
   );
-  router.get("/get/:serviceName", getProductCodesByMultCategoriesFromAdmin);
+  router.get(
+    "/get/:serviceName/:orders",
+    getProductCodesByMultCategoriesFromAdmin
+  );
   router.get(
     "/getCommands/:page/:isTreated",
     checkPermission("viewcmnd"),

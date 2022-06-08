@@ -8,6 +8,9 @@ export const loginRequest = (user, req, res) => {
         return res.status(500).json(serverErrorMessage(error.message));
       }
       if (req.isAuthenticated()) {
+        const fullname = await user.getFullname();
+        user.dataValues.fullname = fullname;
+
         const currentUser = Object.fromEntries(
           Object.entries(user.dataValues).filter(
             ([key, _]) =>
@@ -37,12 +40,12 @@ export const paginateData = async (
   extraData
 ) => {
   const totalItems = await countItems(extraData);
-  const afterLastPage = scorable ? -1 : 0;
+  // const afterLastPage = scorable ? -1 : 0;
   if (totalItems !== 0) {
     const offset = page ? limit * page : 0;
     const totalPages = Math.ceil(totalItems / limit);
-    const nextPage =
-      totalPages === Number(page) + 1 ? afterLastPage : Number(page) + 1;
+    const nextPage = (Number(page) + 1) % totalPages;
+    // totalPages === Number(page) + 1 ? afterLastPage : Number(page) + 1;
     return {
       offset,
       limit,

@@ -1,7 +1,7 @@
 import { fixPort } from "./helper";
 
 export const devHostServer = {
-  host: process.env.HOST || "192.168.100.6",
+  host: process.env.HOST || "localhost",
   port: Number(process.env.PORT) || 5000,
 };
 

@@ -1,9 +1,0 @@
-.git
-.gitignore
-.postgres.env
-.redis.env
-.db.env
-.env
-.env2
-node_modules/
-npm-debug.log

@@ -13,10 +13,11 @@ import {
 } from "../utils/messages/user";
 import { paginateData } from "./helper";
 import { saveUsers } from "./middleware/user";
+import permissionQueries from "../models/query/permission";
 
 export const addUser = (redisClient) => (req, res) => {
   (async () => {
-    const userBody = req.body;
+    const { permissions, ...userBody } = req.body;
     try {
       const { user, isNewUser } = await userQueries.create(userBody);
 
@@ -26,22 +27,30 @@ export const addUser = (redisClient) => (req, res) => {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
       await redisClient.set(user.dataValues.id, "0");
-      const imageBody = {
-        type: "image/png",
-        name: `default.png`,
-        url: null,
-        UserId: user.dataValues.id,
-      };
-      console.log(imageBody);
-      await imageQueries.create(imageBody);
+      // const imageBody = {
+      //   type: "image/png",
+      //   name: `default.png`,
+      //   url: null,
+      //   UserId: user.dataValues.id,
+      // };
+
+      // await imageQueries.create(imageBody);
       await permissionQueires.create({
+        ...permissions,
         UserId: user.dataValues.id,
       });
       await walletQueries.create({ UserId: user.dataValues.id });
 
-      const thisUser = await userQueries.findById(user.dataValues.id);
+      const newUser = await userQueries.findById(user.dataValues.id);
 
-      return res.status(201).json(successRegistrationUser(thisUser.dataValues));
+      const fullname = await newUser.getFullname();
+      newUser.dataValues.fullname = fullname;
+
+      const totalUsers = await userQueries.count(req.user.id)();
+
+      return res
+        .status(201)
+        .json(successRegistrationUser(newUser.dataValues, totalUsers));
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
@@ -52,9 +61,19 @@ export const updateUser = () => (req, res) => {
   (async () => {
     const body = req.body;
     try {
-      await userQueries.update({ body, id: req.params.id });
+      await userQueries.update({ body: body.user, id: req.params.id });
 
-      return res.status(201).json(successUpdatedUser(body.username));
+      await permissionQueries.update({
+        UserId: req.params.id,
+        body: body.permissions,
+      });
+
+      const user = await userQueries.findById(req.params.id);
+
+      const fullname = await user.getFullname();
+      user.dataValues.fullname = fullname;
+
+      return res.status(201).json(successUpdatedUser(user));
     } catch (err) {
       return res.json(serverErrorMessage(err.message));
     }
@@ -79,18 +98,20 @@ export const getAllUsers = () => (req, res) => {
       const { page } = req.params;
       const users = [];
       const { offset, limit, totalPages, totalItems, nextPage } =
-        await paginateData(page, userQueries.count(req.user.id), 6, true);
+        await paginateData(page, userQueries.count(req.user.id), 6, false);
       const initAllUsers = await userQueries.findAll(
         limit,
         offset,
         req.user.id
       );
       for (let user of initAllUsers) {
+        const fullname = await user.getFullname();
         user = user.dataValues;
+        user.fullname = fullname;
         let userInfo = Object.fromEntries(
           Object.entries(user).filter(([key, _]) => key !== "password")
         );
-        userInfo = { ...userInfo, image: user.Image.dataValues.url };
+        // userInfo = { ...userInfo, image: user.Image.dataValues.url };
         users.push(userInfo);
       }
 
@@ -98,7 +119,7 @@ export const getAllUsers = () => (req, res) => {
         success: true,
         users,
         totalPages,
-        nextPage,
+        page: nextPage,
         totalUsers: totalItems,
       });
     } catch (err) {

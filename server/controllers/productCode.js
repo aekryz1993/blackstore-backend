@@ -214,10 +214,12 @@ export const getProductCodesByMultCategories =
           });
           codes = dataFormat(codes);
           const savedFile = await writeExcel(codes, serviceName);
+          console.log(savedFile);
+
           return res.status(200).json({
             codes,
             commands,
-            savedFile,
+            fileUrl: savedFile,
             success: true,
             message: "تمت العملية بنجاح",
           });
@@ -232,19 +234,21 @@ export const getProductCodesByMultCategories =
 
 export const getProductCodesByMultCategoriesFromAdmin = (req, res) => {
   (async () => {
-    const { serviceName } = req.params;
-    const { orders } = body;
+    const { serviceName, orders } = req.params;
     const currentUserId = req.user.id;
     try {
       let codes = {};
       let commands = [];
 
-      for (const order of orders) {
-        const id = order["id"];
+      for (const order of JSON.parse(orders)) {
+        const categoryId = order["id"];
         const quantity = order["quantity"];
         const label = order["label"];
         if (quantity !== 0) {
-          const productCodes = await productCodeQueries.findAll(quantity, id);
+          const productCodes = await productCodeQueries.findAll(
+            quantity,
+            categoryId
+          );
           codes[label] = productCodes.map((product) =>
             Object.fromEntries(
               Object.entries(product).filter(([key, _]) => key === "dataValues")
@@ -277,7 +281,7 @@ export const getProductCodesByMultCategoriesFromAdmin = (req, res) => {
       return res.status(200).json({
         codes,
         commands,
-        savedFile,
+        filePath: savedFile,
         success: true,
         message: "تمت العملية بنجاح",
       });
