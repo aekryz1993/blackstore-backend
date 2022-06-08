@@ -17,15 +17,18 @@ import { updatePermission } from "../../controllers/permission";
 
 const router = express.Router();
 
-const usersRouter = (redisClient) => {
-  router.post("/add", checkPermission("addUser"), addUser(redisClient));
+// const usersRouter = (redisClient) => {
+//   router.post("/add", checkPermission("addUser"), addUser(redisClient));
+const usersRouter = () => {
+  router.post("/add", checkPermission("addUser"), addUser());
 
   router.post(
     "/addMulti",
     checkPermission("addUser"),
     uploadExcel(false),
     readExcel,
-    addMultiUser(redisClient)
+    // addMultiUser(redisClient)
+    addMultiUser()
   );
 
   router.put("/update/:id", checkPermission("updateUser"), updateUser());

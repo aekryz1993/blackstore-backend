@@ -7,13 +7,14 @@ import userQueries from "../models/query/user";
 // const STORAGE_DIR =
 //   process.env.NODE_ENV === "development" ? process.cwd() : "/var/lib";
 
-export const createAdmin = (redisClient) => {
+export const createAdmin = () => {
+  // export const createAdmin = (redisClient) => {
   (async () => {
     try {
       const { user, isNewUser } = await userQueries.create(initUser);
       const UserId = user.dataValues.id;
       if (isNewUser) {
-        await redisClient.set(UserId, "0");
+        // await redisClient.set(UserId, "0");
         // const metadata = {
         //   type: "image/png",
         //   name: `default.png`,

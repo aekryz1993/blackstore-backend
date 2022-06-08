@@ -12,21 +12,23 @@ import {
   checkAdminPermission,
 } from "../controllers/middleware/permissions";
 import adminSessionRouter from "./adminSession";
-import {
-  binanceWebhookEvents,
-  coinbaseWebhookEvents,
-} from "../controllers/payment";
+// import {
+//   binanceWebhookEvents,
+//   coinbaseWebhookEvents,
+// } from "../controllers/payment";
 
 const router = express.Router();
 
 // const wrap = (middleware) => (socket, next) =>
 //   middleware(socket.request, {}, next);
 
-const apiRouter = (app, passport, io, redisClient, sequelize) => {
+// const apiRouter = (app, passport, io, redisClient, sequelize) => {
+const apiRouter = (app, passport, sequelize) => {
   (async () => {
     await sequelize.sync();
     await sequelize.authenticate();
-    createAdmin(redisClient);
+    // createAdmin(redisClient);
+    createAdmin();
   })();
 
   // io.use(wrap(passport.initialize()));
@@ -40,17 +42,19 @@ const apiRouter = (app, passport, io, redisClient, sequelize) => {
     "/userSession",
     passport.authenticate("jwt", { session: false }),
     checkActivePermission,
-    userSessionRouter(io, redisClient)
+    // userSessionRouter(io, redisClient)
+    userSessionRouter()
   );
   router.use(
     "/adminSession",
     passport.authenticate("jwt", { session: false }),
     checkActivePermission,
     checkAdminPermission,
-    adminSessionRouter(io, redisClient)
+    // adminSessionRouter(io, redisClient)
+    adminSessionRouter()
   );
-  router.post("/coinbase/webhook", coinbaseWebhookEvents(io));
-  router.post("/binance/webhook", binanceWebhookEvents(io));
+  // router.post("/coinbase/webhook", coinbaseWebhookEvents(io));
+  // router.post("/binance/webhook", binanceWebhookEvents(io));
   return router;
 };
 

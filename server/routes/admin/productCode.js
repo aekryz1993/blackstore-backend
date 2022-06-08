@@ -13,7 +13,8 @@ import { treatCommand, getCommands } from "../../controllers/commands";
 
 const router = express.Router();
 
-const productCodeRouter = (io, redisClient) => {
+// const productCodeRouter = (io, redisClient) => {
+const productCodeRouter = () => {
   router.post("/add", checkPermission("addProduct"), addProductCode);
   router.post(
     "/addMultiByMultiCategories",
@@ -43,7 +44,8 @@ const productCodeRouter = (io, redisClient) => {
     checkPermission("viewcmnd"),
     uploadExcel(false),
     readExcel,
-    treatCommand(io, redisClient)
+    // treatCommand(io, redisClient)
+    treatCommand()
   );
   return router;
 };

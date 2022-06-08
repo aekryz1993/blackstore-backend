@@ -1,5 +1,5 @@
 import commandQueries from "../models/query/command";
-import notificationQueries from "../models/query/notification";
+// import notificationQueries from "../models/query/notification";
 import productCodeQueries from "../models/query/productCode";
 import userQueries from "../models/query/user";
 import { serverErrorMessage } from "../utils/messages";
@@ -69,7 +69,8 @@ export const getCommands = (req, res) => {
   })();
 };
 
-export const treatCommand = (io, redisClient) => (req, res, next) => {
+// export const treatCommand = (io, redisClient) => (req, res, next) => {
+export const treatCommand = () => (req, res, next) => {
   (async () => {
     const { userId, commandId, categoryId } = req.params;
     const codes = req.dataObj;
@@ -89,23 +90,23 @@ export const treatCommand = (io, redisClient) => (req, res, next) => {
         });
       }
       await commandQueries.updateIsTreated(commandId);
-      const notification = await notificationQueries.create({
-        action: "command has been sent",
-        UserId: userId,
-        CommandId: commandId,
-      });
-      const notifyCount = await redisClient.get(userId);
-      await redisClient.set(
-        userId,
-        (parseInt(notifyCount) + 1).toString()
-      );
-      io.to(userId).emit("send_command", {
-        notification,
-        from: `${req.user.firstname} ${req.user.lastname}`,
-        // product: label,
-        // quantity: newCommand.dataValues.quantity,
-        // date: newCommand.dataValues.createdAt,
-      });
+      // const notification = await notificationQueries.create({
+      //   action: "command has been sent",
+      //   UserId: userId,
+      //   CommandId: commandId,
+      // });
+      // const notifyCount = await redisClient.get(userId);
+      // await redisClient.set(
+      //   userId,
+      //   (parseInt(notifyCount) + 1).toString()
+      // );
+      // io.to(userId).emit("send_command", {
+      //   notification,
+      //   from: `${req.user.firstname} ${req.user.lastname}`,
+      //   // product: label,
+      //   // quantity: newCommand.dataValues.quantity,
+      //   // date: newCommand.dataValues.createdAt,
+      // });
       return res
         .status(201)
         .json({ success: true, message: "Command has been successfully sent" });

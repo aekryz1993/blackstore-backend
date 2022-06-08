@@ -105,7 +105,8 @@ export const addMultiProductCode = (req, res) => {
 };
 
 export const getProductCodesByMultCategories =
-  (orderCommandNamespace, redisClient) => (req, res) => {
+  // (orderCommandNamespace, redisClient) => (req, res) => {
+  () => (req, res) => {
     (async () => {
       const { currency, amount, serviceName } = req.params;
       const orders = JSON.parse(req.params.order);
@@ -182,30 +183,30 @@ export const getProductCodesByMultCategories =
                       ? (notifications = [...notifications, notification])
                       : (notifications = [notification]);
                   }
-                  const notificationCount = await redisClient.get(
-                    admin.dataValues.id
-                  );
-                  await redisClient.set(
-                    admin.dataValues.id,
-                    (parseInt(notificationCount) + 1).toString()
-                  );
+                  // const notificationCount = await redisClient.get(
+                  //   admin.dataValues.id
+                  // );
+                  // await redisClient.set(
+                  //   admin.dataValues.id,
+                  //   (parseInt(notificationCount) + 1).toString()
+                  // );
                 }
                 commands = [...commands, newCommand];
               }
             }
           }
-          for (const admin of admins) {
-            const notificationCount = await redisClient.get(
-              admin.dataValues.id
-            );
-            orderCommandNamespace
-              .to(admin.dataValues.id)
-              .emit(
-                "send_command_order",
-                notifications,
-                parseInt(notificationCount)
-              );
-          }
+          // for (const admin of admins) {
+          //   const notificationCount = await redisClient.get(
+          //     admin.dataValues.id
+          //   );
+          //   orderCommandNamespace
+          //     .to(admin.dataValues.id)
+          //     .emit(
+          //       "send_command_order",
+          //       notifications,
+          //       parseInt(notificationCount)
+          //     );
+          // }
           const newCredit = wallet.dataValues[currency] - amount;
           await walletQueries.update({
             UserId: currentUserId,

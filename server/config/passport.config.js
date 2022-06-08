@@ -63,15 +63,15 @@ export const localPassportStrategy = (passport) =>
 export const jwtPassportStrategy = (passport) =>
   passport.use("jwt", jwtStrategy);
 
-export const ensureSocketAuthorized = (io) => {
-  io.use((socket, next) => {
-    if (socket.request.user) {
-      next();
-    } else {
-      next(new Error("unauthorized"));
-    }
-  });
-};
+// export const ensureSocketAuthorized = (io) => {
+//   io.use((socket, next) => {
+//     if (socket.request.user) {
+//       next();
+//     } else {
+//       next(new Error("unauthorized"));
+//     }
+//   });
+// };
 
 export function issueJWT(user) {
   const _id = user.id;

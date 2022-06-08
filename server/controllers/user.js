@@ -15,7 +15,8 @@ import { paginateData } from "./helper";
 import { saveUsers } from "./middleware/user";
 import permissionQueries from "../models/query/permission";
 
-export const addUser = (redisClient) => (req, res) => {
+// export const addUser = (redisClient) => (req, res) => {
+export const addUser = () => (req, res) => {
   (async () => {
     const { permissions, ...userBody } = req.body;
     try {
@@ -26,7 +27,7 @@ export const addUser = (redisClient) => (req, res) => {
       if (!isNewUser) {
         return res.status(409).json(fieldAlreadyExist(username, email, phone));
       }
-      await redisClient.set(user.dataValues.id, "0");
+      // await redisClient.set(user.dataValues.id, "0");
       // const imageBody = {
       //   type: "image/png",
       //   name: `default.png`,
@@ -80,11 +81,12 @@ export const updateUser = () => (req, res) => {
   })();
 };
 
-export const addMultiUser = (redisClient) => (req, res) => {
+// export const addMultiUser = (redisClient) => (req, res) => {
+export const addMultiUser = () => (req, res) => {
   (async () => {
     const users = req.dataObj;
     try {
-      const message = await saveUsers(users, redisClient);
+      const message = await saveUsers(users);
       return res.status(201).json({ message });
     } catch (err) {
       return res.json(serverErrorMessage(err.message));

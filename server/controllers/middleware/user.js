@@ -7,7 +7,8 @@ import walletQueries from "../../models/query/wallet";
 
 const CURRENT_WORKING_DIR = process.cwd();
 
-export const saveUsers = (users, redisClient) => {
+// export const saveUsers = (users, redisClient) => {
+export const saveUsers = (users) => {
   return new Promise(async (resolve, reject) => {
     let exist = [];
     let notExist = false;
@@ -34,7 +35,7 @@ export const saveUsers = (users, redisClient) => {
         } else {
           notExist = true;
           const UserId = user.dataValues.id;
-          await redisClient.set(UserId, "0");
+          // await redisClient.set(UserId, "0");
           await permissionQueries.create({ UserId });
           await walletQueries.create({ credit, UserId });
           const imageBody = {
